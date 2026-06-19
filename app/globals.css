@@ -1,0 +1,180 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply antialiased;
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded-full;
+  }
+  
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400;
+  }
+
+  .future-scene {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    background: #020617;
+  }
+
+  .future-grid {
+    position: absolute;
+    inset: -20% -10% 0;
+    transform: perspective(760px) rotateX(58deg) translateY(18%);
+    transform-origin: center bottom;
+    opacity: 0.55;
+    animation: future-grid-drift 10s linear infinite;
+  }
+
+  .future-grid-line {
+    position: absolute;
+    display: block;
+    background: rgba(103, 232, 249, 0.3);
+    box-shadow: 0 0 14px rgba(103, 232, 249, 0.25);
+  }
+
+  .future-grid-line-h {
+    left: 0;
+    right: 0;
+    height: 1px;
+  }
+
+  .future-grid-line-v {
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: rgba(16, 185, 129, 0.26);
+  }
+
+  .future-lane {
+    position: absolute;
+    top: -16%;
+    width: 2px;
+    height: 38%;
+    background: #67e8f9;
+    box-shadow: 0 0 18px rgba(103, 232, 249, 0.9);
+    opacity: 0.42;
+    animation-name: future-lane-drop;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+
+  .future-core {
+    position: absolute;
+    right: 8%;
+    top: 19%;
+    width: min(42vw, 520px);
+    aspect-ratio: 1;
+  }
+
+  .future-ring {
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(103, 232, 249, 0.55);
+    border-radius: 999px;
+    transform: rotateX(64deg) rotateZ(18deg);
+  }
+
+  .future-ring-a {
+    animation: future-spin-a 16s linear infinite;
+  }
+
+  .future-ring-b {
+    inset: 13%;
+    border-color: rgba(16, 185, 129, 0.65);
+    animation: future-spin-b 12s linear infinite;
+  }
+
+  .future-console {
+    position: absolute;
+    left: 22%;
+    top: 38%;
+    width: 56%;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 8px;
+    background: rgba(2, 6, 23, 0.88);
+    padding: 18px;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+  }
+
+  .future-console span,
+  .future-console small {
+    display: block;
+    color: #a5f3fc;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  .future-console strong {
+    display: block;
+    margin: 10px 0;
+    color: #ffffff;
+    font-size: clamp(28px, 5vw, 58px);
+    line-height: 1;
+  }
+
+  @keyframes future-grid-drift {
+    from {
+      transform: perspective(760px) rotateX(58deg) translateY(18%);
+    }
+    to {
+      transform: perspective(760px) rotateX(58deg) translateY(22%);
+    }
+  }
+
+  @keyframes future-lane-drop {
+    from {
+      transform: translateY(-20vh);
+    }
+    to {
+      transform: translateY(132vh);
+    }
+  }
+
+  @keyframes future-spin-a {
+    from {
+      transform: rotateX(64deg) rotateZ(18deg);
+    }
+    to {
+      transform: rotateX(64deg) rotateZ(378deg);
+    }
+  }
+
+  @keyframes future-spin-b {
+    from {
+      transform: rotateX(64deg) rotateZ(0deg);
+    }
+    to {
+      transform: rotateX(64deg) rotateZ(-360deg);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .future-core {
+      right: -18%;
+      top: 12%;
+      width: 86vw;
+      opacity: 0.5;
+    }
+
+    .future-console {
+      display: none;
+    }
+  }
+}

@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant_storage:/qdrant/storage
+    environment:
+      - QDRANT__SERVICE__HTTP_PORT=6333
+
+  rag-service:
+    build: .
+    ports:
+      - "8001:8001"
+    environment:
+      - QDRANT_HOST=qdrant
+      - QDRANT_PORT=6333
+      # Use the RunPod LLM endpoint 
+      - LLM_ENDPOINT=${API_ENDPOINT:-https://zg13sbnxzs8r0x-8000.proxy.runpod.net/v1/chat/completions}
+      - EMBEDDING_ENDPOINT=${EMBEDDING_ENDPOINT:-https://zg13sbnxzs8r0x-8000.proxy.runpod.net/v1/embeddings}
+      - LLM_MODEL=google/gemma-4-e4b-it
+      - LLM_API_KEY=${LLM_API_KEY:-sk-IrR7Bwxtin0haWagUnPrBgq5PurnUz86}
+      - CHUNK_SIZE=${CHUNK_SIZE:-1200}
+      - CHUNK_OVERLAP=${CHUNK_OVERLAP:-200}
+      - TOP_K_RETRIEVAL=${TOP_K_RETRIEVAL:-12}
+      - RAG_CONTEXT_CHAR_LIMIT=${RAG_CONTEXT_CHAR_LIMIT:-45000}
+      - RAG_SCROLL_LIMIT=${RAG_SCROLL_LIMIT:-2000}
+      - ENABLE_EMBEDDINGS=${ENABLE_EMBEDDINGS:-false}
+      - RAG_DEBUG=${RAG_DEBUG:-true}
+      - RAG_LOG_PAYLOADS=${RAG_LOG_PAYLOADS:-false}
+      - LLM_AUDIO_CONTENT_FORMAT=${LLM_AUDIO_CONTENT_FORMAT:-audio_url}
+    volumes:
+      - ./uploads:/app/uploads
+    depends_on:
+      - qdrant
+
+volumes:
+  qdrant_storage:
