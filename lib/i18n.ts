@@ -66,7 +66,7 @@ export const landingCopy = {
       eyebrow: 'AI chat, documents, and APIs',
       title: 'Your AI service layer for conversations and products.',
       subtitle:
-        'Wadi brings a ChatGPT-style workspace, file-aware tools, Arabic and English support, and developer endpoints into one clean AI platform powered by accessible models.',
+        'Wadi brings an AI workspace, file-aware tools, Arabic and English support, and developer endpoints into one clean AI platform powered by accessible models.',
       primary: 'Start with chat',
       secondary: 'Read API docs',
       chips: ['Ask naturally', 'Attach files', 'Create documents', 'Connect apps'],
@@ -158,7 +158,7 @@ export const landingCopy = {
       eyebrow: 'محادثة وملفات وواجهات API',
       title: 'طبقة خدمات ذكاء اصطناعي للمحادثات والمنتجات.',
       subtitle:
-        'يجمع Wadi بين مساحة عمل شبيهة بـ ChatGPT، وأدوات تفهم الملفات، ودعم العربية والإنجليزية، ونقاط API للمطورين داخل منصة واحدة تعمل بنماذج متاحة.',
+        'يجمع Wadi بين مساحة عمل للذكاء الاصطناعي، وأدوات تفهم الملفات، ودعم العربية والإنجليزية، ونقاط API للمطورين داخل منصة واحدة تعمل بنماذج متاحة.',
       primary: 'ابدأ بالمحادثة',
       secondary: 'اقرأ توثيق API',
       chips: ['اسأل بطبيعية', 'أرفق الملفات', 'أنشئ المستندات', 'اربط التطبيقات'],

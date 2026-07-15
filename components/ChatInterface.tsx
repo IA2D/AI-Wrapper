@@ -9,6 +9,8 @@ import { ErrorHandler } from '@/utils/errorHandling';
 import { RAGClient } from '@/services/RAGClient';
 import MessageList from './MessageList';
 import MessageInput from './MessageInput';
+import { chatCopy } from '@/lib/chatCopy';
+import { useLanguage } from './LanguageProvider';
 
 interface ChatInterfaceProps {
   session: ChatSession;
@@ -45,13 +47,15 @@ export default function ChatInterface({
   onToggleThinkingMode,
   onOpenMemories,
 }: ChatInterfaceProps) {
+  const { locale } = useLanguage();
+  const copy = chatCopy[locale];
   const [currentInput, setCurrentInput] = useState('');
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [selectedImages, setSelectedImages] = useState<ImageAttachment[]>([]);
   const [selectedAudio, setSelectedAudio] = useState<AudioAttachment[]>([]);
   const [attachedPDFs, setAttachedPDFs] = useState<PDFAttachment[]>(session.attachedPDFs || []);
   const [isLoading, setIsLoading] = useState(false);
-  const [processingLabel, setProcessingLabel] = useState('Processing');
+  const [processingLabel, setProcessingLabel] = useState(copy.chat.processing);
   const [isPDFUploading, setIsPDFUploading] = useState(false);
   const [chatDragType, setChatDragType] = useState<ChatDragAttachmentType>(null);
   const [error, setError] = useState<string | null>(null);
@@ -67,7 +71,6 @@ export default function ChatInterface({
   const pollStopRef = useRef(false);
   
   void apiConfig;
-  void onToggleThinkingMode;
   const ragClient = new RAGClient();
   const {
     isStreaming,
@@ -88,6 +91,12 @@ export default function ChatInterface({
   const handleInputChange = (text: string) => {
     setCurrentInput(text);
   };
+
+  useEffect(() => {
+    if (!isLoading && !isStreaming) {
+      setProcessingLabel(copy.chat.processing);
+    }
+  }, [copy.chat.processing, isLoading, isStreaming]);
 
   useEffect(() => {
     let cancelled = false;
@@ -242,11 +251,11 @@ export default function ChatInterface({
     runAnswerRef.current = '';
     runThinkingRef.current = '';
     setIsLoading(false);
-    setProcessingLabel('Processing');
+    setProcessingLabel(copy.chat.processing);
     pendingSessionRef.current = null;
     resetStreaming();
     resetThinkingStreaming();
-  }, [resetStreaming, resetThinkingStreaming]);
+  }, [copy.chat.processing, resetStreaming, resetThinkingStreaming]);
 
   const appendAssistantMessage = useCallback((assistantMessage: Message, baseSession?: ChatSession | null) => {
     const targetSession = baseSession || pendingSessionRef.current || session;
@@ -282,7 +291,7 @@ export default function ChatInterface({
     }
 
     setIsLoading(isActiveRun);
-    setProcessingLabel(run.statusMessage || (isActiveRun ? 'Processing' : 'Processing'));
+    setProcessingLabel(run.statusMessage || copy.chat.processing);
 
     if (run.answerText.startsWith(runAnswerRef.current)) {
       const delta = run.answerText.slice(runAnswerRef.current.length);
@@ -334,6 +343,7 @@ export default function ChatInterface({
     startThinkingStreaming,
     stopStreaming,
     stopThinkingStreaming,
+    copy.chat.processing,
     session.id,
   ]);
 
@@ -600,14 +610,14 @@ export default function ChatInterface({
         <div className="pointer-events-none absolute inset-4 z-20 flex items-center justify-center rounded-lg border-2 border-dashed border-[#1C7178] bg-[#e7f5f6]/90 text-[#15565c] shadow-[0_28px_90px_rgba(28,113,120,0.18)] backdrop-blur-xl dark:bg-[#082f33]/88 dark:text-[#d3edef]">
           <div className="text-center">
             <div className="text-lg font-black">
-              {chatDragType === 'image' ? 'Drop images to attach' : chatDragType === 'pdf' ? 'Drop PDF to attach' : 'Drop files to attach'}
+              {chatDragType === 'image' ? copy.chat.dropImage : chatDragType === 'pdf' ? copy.chat.dropPdf : copy.chat.dropFiles}
             </div>
             <div className="mt-1 text-sm font-bold opacity-70">
               {chatDragType === 'image'
-                ? 'Images will be added to your next message.'
+                ? copy.chat.dropImageDetail
                 : chatDragType === 'pdf'
-                  ? 'It will be processed into this chat context.'
-                  : 'Images attach to the next message; PDFs are processed into chat context.'}
+                  ? copy.chat.dropPdfDetail
+                  : copy.chat.dropFilesDetail}
             </div>
           </div>
         </div>
@@ -628,13 +638,13 @@ export default function ChatInterface({
                   onClick={handleRetry}
                   className="text-sm text-red-700 dark:text-red-300 hover:text-red-900 dark:hover:text-red-100 font-medium"
                 >
-                  Retry
+                  {copy.chat.retry}
                 </button>
               ) : null}
               <button
                 onClick={() => setError(null)}
                 className="text-red-600 dark:text-red-400 hover:text-red-800 dark:hover:text-red-200"
-                aria-label="Dismiss error"
+                aria-label={copy.chat.dismissError}
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -663,12 +673,7 @@ export default function ChatInterface({
             <div className="mx-auto max-w-4xl">
               {session.messages.length === 0 && !currentInput && (
                 <div className="mb-3 flex flex-wrap justify-center gap-2">
-                  {[
-                    'Summarize this PDF',
-                    'Draft an Arabic reply',
-                    'Create a proposal outline',
-                    'Turn notes into action items',
-                  ].map((prompt) => (
+                  {copy.chat.starters.map((prompt) => (
                     <button
                       key={prompt}
                       type="button"
@@ -682,28 +687,28 @@ export default function ChatInterface({
               )}
               {canContinueLastMessage && !isBusyInCurrentSession && (
                 <div className="mb-3 rounded-lg border border-amber-200 bg-amber-50/90 px-4 py-3 text-center text-sm font-bold text-amber-900 shadow-sm backdrop-blur-xl dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-100">
-                  <div className="font-black">The response stopped before it finished.</div>
+                  <div className="font-black">{copy.chat.stoppedTitle}</div>
                   <div className="mt-2 flex justify-center">
                     <button
                       onClick={handleContinueResponse}
                       className="rounded-full bg-amber-600 px-4 py-1.5 text-sm font-black text-white transition-colors hover:bg-amber-500"
                     >
-                      Continue where it stopped
+                      {copy.chat.continue}
                     </button>
                   </div>
                 </div>
               )}
               {availableModels.length > 0 && (
                 <div className="wadi-model-selector mb-3 flex flex-wrap items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm">
-                  <span className="font-black text-black/62 dark:text-white/62">Model</span>
+                  <span className="font-black text-black/72 dark:text-white/78">{copy.chat.model}</span>
                   <select
                     value={modelSelection}
                     onChange={(event) => setModelSelection(event.target.value)}
                     disabled={isBusyInCurrentSession}
-                    className="min-w-[220px] rounded-full border border-black/10 bg-white/80 px-3 py-1.5 text-sm font-bold text-gray-800 outline-none focus:border-[#1C7178] dark:border-white/10 dark:bg-white/8 dark:text-gray-100"
+                    className="min-w-[220px] rounded-full border border-black/10 bg-white/90 px-3 py-1.5 text-sm font-bold text-gray-900 outline-none focus:border-[#1C7178] dark:border-white/10 dark:bg-[#111817] dark:text-gray-100"
                   >
-                    <option value="default">Default</option>
-                    {adaptiveAvailable && <option value="adaptive">Adaptive</option>}
+                    <option value="default">{copy.chat.modelDefault}</option>
+                    {adaptiveAvailable && <option value="adaptive">{copy.chat.modelAdaptive}</option>}
                     {availableModels.map((model) => (
                       <option key={model.id} value={model.id}>
                         {model.label}{model.isDefault ? ' (default)' : ''} - {model.provider}
@@ -730,71 +735,15 @@ export default function ChatInterface({
                 selectedPDFs={attachedPDFs}
                 onPDFRemove={handlePDFRemove}
                 isPDFUploading={isPDFUploading}
+                thinkingMode={thinkingMode}
+                onToggleThinkingMode={onToggleThinkingMode}
+                labels={copy.input}
               />
             </div>
           </div>
         </section>
 
-        <aside className="wadi-context-rail hidden w-[320px] shrink-0 flex-col gap-3 p-4 xl:flex">
-          <div className="wadi-context-card">
-            <div className="text-[11px] font-black uppercase tracking-[0.18em] text-[#1C7178] dark:text-[#8fcfd3]">Session</div>
-            <div className="mt-3 grid grid-cols-3 gap-2">
-              <ContextStat label="Messages" value={String(session.messages.length)} />
-              <ContextStat label="PDFs" value={String(attachedPDFs.length)} />
-              <ContextStat label="Media" value={String(selectedImages.length + selectedAudio.length)} />
-            </div>
-          </div>
-
-          <div className="wadi-context-card">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <div className="text-[11px] font-black uppercase tracking-[0.18em] text-[#1C7178] dark:text-[#8fcfd3]">Memory</div>
-                <p className="mt-2 text-sm font-bold leading-6 text-black/58 dark:text-white/52">
-                  Keep important facts attached to the workspace.
-                </p>
-              </div>
-              <button type="button" onClick={onOpenMemories} className="wadi-context-action">
-                Open
-              </button>
-            </div>
-          </div>
-
-          <div className="wadi-context-card">
-            <div className="text-[11px] font-black uppercase tracking-[0.18em] text-[#1C7178] dark:text-[#8fcfd3]">Context</div>
-            <div className="mt-3 space-y-2">
-              {attachedPDFs.length > 0 ? (
-                attachedPDFs.slice(0, 4).map((pdf) => (
-                  <div key={pdf.docId} className="wadi-context-row">
-                    <span className="min-w-0 truncate">{pdf.name}</span>
-                    <strong>{pdf.pageCount}p</strong>
-                  </div>
-                ))
-              ) : (
-                <div className="rounded-lg border border-dashed border-black/10 px-3 py-5 text-center text-sm font-bold text-black/42 dark:border-white/10 dark:text-white/36">
-                  Drop a PDF into the chat to add context.
-                </div>
-              )}
-            </div>
-          </div>
-
-          <div className="wadi-context-card mt-auto">
-            <div className="text-[11px] font-black uppercase tracking-[0.18em] text-[#1C7178] dark:text-[#8fcfd3]">Mode</div>
-            <div className="mt-3 flex items-center justify-between gap-3 rounded-lg bg-[#e7f5f6] px-3 py-2 text-sm font-black text-[#15565c] dark:bg-white/8 dark:text-[#d3edef]">
-              <span>{thinkingMode ? 'Thinking enabled' : 'Direct answer'}</span>
-              <span className={`h-2.5 w-2.5 rounded-full ${thinkingMode ? 'bg-[#1C7178]' : 'bg-black/20 dark:bg-white/24'}`} />
-            </div>
-          </div>
-        </aside>
       </div>
-    </div>
-  );
-}
-
-function ContextStat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-lg bg-[#e7f5f6] px-3 py-3 text-center dark:bg-white/8">
-      <div className="text-lg font-black text-[#15565c] dark:text-[#d3edef]">{value}</div>
-      <div className="mt-0.5 text-[10px] font-black uppercase tracking-wide text-black/42 dark:text-white/36">{label}</div>
     </div>
   );
 }

@@ -4,6 +4,9 @@ import { useState } from 'react';
 import { ChatSession } from '@/types';
 import { ToolMode } from './ToolWorkspace';
 import WadiLogo from './WadiLogo';
+import { textDirection, textAlignClass } from '@/utils/textDirection';
+import { chatCopy } from '@/lib/chatCopy';
+import { useLanguage } from './LanguageProvider';
 
 interface SidebarProps {
   sessions: ChatSession[];
@@ -30,6 +33,8 @@ export default function Sidebar({
   isOpen,
   onToggle,
 }: SidebarProps) {
+  const { locale } = useLanguage();
+  const copy = chatCopy[locale];
   const [hoveredSessionId, setHoveredSessionId] = useState<string | null>(null);
   const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState('');
@@ -40,9 +45,9 @@ export default function Sidebar({
     return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
   });
   const tools: Array<{ id: ToolMode; label: string; detail: string }> = [
-    { id: 'documents', label: 'Documents', detail: 'PDF, Word, Excel, slides' },
-    { id: 'flow', label: 'Flow diagrams', detail: 'Create process diagrams' },
-    { id: 'quiz', label: 'Quiz maker', detail: 'Build question sets' },
+    { id: 'documents', ...copy.sidebar.toolItems.documents },
+    { id: 'flow', ...copy.sidebar.toolItems.flow },
+    { id: 'quiz', ...copy.sidebar.toolItems.quiz },
   ];
 
   // Generate session title based on requirements
@@ -54,7 +59,7 @@ export default function Sidebar({
 
     // If no messages, show "New Chat"
     if (!session.messages || session.messages.length === 0) {
-      return 'New Chat';
+      return copy.sidebar.newChat;
     }
 
     // Show truncated first message
@@ -63,7 +68,7 @@ export default function Sidebar({
     const maxLength = 40;
     
     if (text.length <= maxLength) {
-      return text || 'New Chat';
+      return text || copy.sidebar.newChat;
     }
     
     return text.substring(0, maxLength) + '...';
@@ -77,13 +82,13 @@ export default function Sidebar({
     const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
     if (diffDays === 0) {
-      return 'Today';
+      return copy.sidebar.today;
     } else if (diffDays === 1) {
-      return 'Yesterday';
+      return copy.sidebar.yesterday;
     } else if (diffDays < 7) {
-      return `${diffDays} days ago`;
+      return copy.sidebar.daysAgo(diffDays);
     } else {
-      return messageDate.toLocaleDateString('en-US', { 
+      return messageDate.toLocaleDateString(locale === 'ar' ? 'ar-EG' : 'en-US', {
         month: 'short', 
         day: 'numeric',
         year: messageDate.getFullYear() !== now.getFullYear() ? 'numeric' : undefined
@@ -138,6 +143,7 @@ export default function Sidebar({
 
       {/* Sidebar */}
       <aside
+        dir="ltr"
         className={`
           fixed md:relative top-0 left-0 h-full
           w-72
@@ -153,13 +159,15 @@ export default function Sidebar({
           <a href="/" className="mb-4 flex items-center justify-between gap-3 rounded-lg px-1">
             <WadiLogo />
             <span className="rounded-full border border-black/10 bg-white/70 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-[#1C7178]">
-              Workspace
+              {copy.sidebar.workspace}
             </span>
           </a>
           <button
+            type="button"
             onClick={onNewChat}
-            className="wadi-sidebar-new-chat flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-black transition-colors"
+            className="wadi-sidebar-new-chat flex w-full items-center justify-between gap-3 rounded-lg px-3 py-3 text-sm font-black transition-colors"
           >
+            <span>{copy.sidebar.newChat}</span>
             <svg
               className="w-4 h-4"
               fill="none"
@@ -173,15 +181,15 @@ export default function Sidebar({
                 d="M12 4v16m8-8H4"
               />
             </svg>
-            <span>New Chat</span>
           </button>
         </div>
 
         <div className="border-b border-black/10 px-3 py-4">
-          <div className="px-1 pb-2 text-xs font-black uppercase tracking-[0.18em] text-black/38">Tools</div>
+          <div className="px-1 pb-2 text-xs font-black uppercase tracking-[0.18em] text-black/50 dark:text-white/62">{copy.sidebar.tools}</div>
           <div className="space-y-1">
             {tools.map((tool) => (
               <button
+                type="button"
                 key={tool.id}
                 onClick={() => onToolSelect(tool.id)}
                 className={`wadi-sidebar-tool w-full rounded-lg px-3 py-2.5 text-left transition-colors ${
@@ -198,7 +206,7 @@ export default function Sidebar({
                   </svg>
                   <div className="min-w-0">
                     <div className="truncate text-sm font-black">{tool.label}</div>
-                    <div className={`truncate text-xs font-bold ${activeTool === tool.id ? 'text-[#15565c]/70' : 'text-black/34'}`}>{tool.detail}</div>
+                    <div className={`truncate text-xs font-bold ${activeTool === tool.id ? 'text-[#15565c]/75 dark:text-[#d3edef]/75' : 'text-black/48 dark:text-white/45'}`}>{tool.detail}</div>
                   </div>
                 </div>
               </button>
@@ -210,7 +218,7 @@ export default function Sidebar({
         <div className="flex-1 overflow-y-auto py-3 scrollbar-thin">
           {sortedSessions.length === 0 ? (
             <div className="mx-3 rounded-lg border border-black/10 bg-white/62 px-3 py-8 text-center text-sm font-bold text-black/38">
-              No chat history yet
+              {copy.sidebar.noHistory}
             </div>
           ) : (
             sortedSessions.map((session) => {
@@ -229,19 +237,21 @@ export default function Sidebar({
                   {isDeleting ? (
                     // Delete confirmation
                     <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-red-900">
-                      <p className="text-sm mb-2">Delete this chat?</p>
+                      <p className="text-sm mb-2">{copy.sidebar.deletePrompt}</p>
                       <div className="flex gap-2">
                         <button
+                          type="button"
                           onClick={() => handleDeleteConfirm(session.id)}
-                          className="flex-1 rounded bg-red-600 px-2 py-1 text-xs font-bold transition-colors hover:bg-red-700"
+                          className="flex-1 rounded bg-red-600 px-2 py-1 text-xs font-bold text-white transition-colors hover:bg-red-700"
                         >
-                          Delete
+                          {copy.sidebar.delete}
                         </button>
                         <button
+                          type="button"
                           onClick={handleDeleteCancel}
                           className="flex-1 rounded bg-black/10 px-2 py-1 text-xs font-bold transition-colors hover:bg-black/15"
                         >
-                          Cancel
+                          {copy.sidebar.cancel}
                         </button>
                       </div>
                     </div>
@@ -278,13 +288,15 @@ export default function Sidebar({
                     >
                       <div className="flex items-start justify-between gap-2">
                         <button
+                          type="button"
                           onClick={() => onSessionSelect(session.id)}
-                          className="flex-1 min-w-0 text-left"
+                          className={`min-w-0 flex-1 ${textAlignClass(getSessionTitle(session))}`}
+                          dir={textDirection(getSessionTitle(session))}
                         >
                           <div className="truncate text-sm font-black">
                             {getSessionTitle(session)}
                           </div>
-                          <div className="mt-0.5 text-xs font-bold text-black/34">
+                          <div className={`mt-0.5 text-xs font-bold ${isActive ? 'text-[#15565c]/65 dark:text-[#d3edef]/70' : 'text-black/48 dark:text-white/42'}`}>
                             {formatDate(session.updatedAt)}
                           </div>
                         </button>
@@ -293,9 +305,10 @@ export default function Sidebar({
                         {isHovered && !isActive && (
                           <div className="flex gap-1 flex-shrink-0">
                             <button
+                              type="button"
                               onClick={() => handleRenameStart(session)}
                               className="rounded p-1 transition-colors hover:bg-black/5"
-                              aria-label="Rename chat"
+                              aria-label={copy.sidebar.renameChat}
                             >
                               <svg
                                 className="w-4 h-4"
@@ -312,9 +325,10 @@ export default function Sidebar({
                               </svg>
                             </button>
                             <button
+                              type="button"
                               onClick={() => handleDeleteClick(session.id)}
                               className="rounded p-1 transition-colors hover:bg-red-600/20"
-                              aria-label="Delete chat"
+                              aria-label={copy.sidebar.deleteChat}
                             >
                               <svg
                                 className="w-4 h-4"
@@ -343,8 +357,10 @@ export default function Sidebar({
 
         {/* Mobile close button */}
         <button
+          type="button"
           onClick={onToggle}
           className="border-t border-black/10 p-3 transition-colors hover:bg-black/5 md:hidden"
+          aria-label={copy.sidebar.close}
         >
           <svg
             className="w-5 h-5 mx-auto"

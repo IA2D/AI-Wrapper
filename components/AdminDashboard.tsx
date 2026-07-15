@@ -457,28 +457,32 @@ export default function AdminDashboard({ admin }: { admin: AdminUser }) {
   };
 
   return (
-    <main className="min-h-screen bg-gray-50 text-gray-950 dark:bg-gray-950 dark:text-white">
-      <header className="border-b border-gray-200 bg-white px-4 py-4 dark:border-gray-800 dark:bg-gray-900">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4">
-          <div>
-            <h1 className="text-xl font-semibold">Admin Dashboard</h1>
-            <p className="text-sm text-gray-500 dark:text-gray-400">{admin.email}</p>
+    <main className="wadi-admin min-h-screen bg-[#f7f7f4] text-[#050505] dark:bg-[#080d0d] dark:text-white">
+      <header className="wadi-admin-header sticky top-0 z-30 px-4 py-4 sm:px-6">
+        <div className="mx-auto flex max-w-[1560px] items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="wadi-admin-mark" aria-hidden="true">W</div>
+            <div>
+              <p className="text-[11px] font-black uppercase tracking-[0.24em] text-[#1C7178] dark:text-[#9be4e8]">Workspace</p>
+              <h1 className="text-xl font-black leading-tight sm:text-2xl">Admin Dashboard</h1>
+              <p className="text-sm font-bold text-black/52 dark:text-white/58">{admin.email}</p>
+            </div>
           </div>
           <div className="flex items-center gap-2">
-            <ThemeToggle isDark={isDarkMode} onChange={handleThemeChange} />
             <a
               href="/chat"
-              className="rounded-lg bg-gray-100 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
+              className="wadi-admin-top-link"
             >
               Chat
             </a>
+            <ThemeToggle isDark={isDarkMode} onChange={handleThemeChange} />
           </div>
         </div>
       </header>
 
-      <div className="mx-auto max-w-7xl px-4 py-6">
+      <div className="mx-auto max-w-[1560px] px-4 py-6 sm:px-6 lg:py-8">
         {error && (
-          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-200">
+          <div className="mb-5 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700 shadow-sm dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-200">
             {error}
           </div>
         )}
@@ -489,7 +493,7 @@ export default function AdminDashboard({ admin }: { admin: AdminUser }) {
           <Metric label="Tokens" value={numberFormat(totals.tokens)} />
         </section>
 
-        <nav className="mb-5 flex flex-wrap gap-2">
+        <nav className="mb-6 flex flex-wrap justify-end gap-2">
           {[
             ['users', 'Users'],
             ['apiUsage', 'API Usage'],
@@ -500,10 +504,10 @@ export default function AdminDashboard({ admin }: { admin: AdminUser }) {
             <button
               key={id}
               onClick={() => setTab(id as Tab)}
-              className={`rounded-lg px-3 py-2 text-sm font-medium ${
+              className={`wadi-admin-tab ${
                 tab === id
-                  ? 'bg-teal-600 text-white'
-                  : 'bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800'
+                  ? 'is-active'
+                  : ''
               }`}
             >
               {label}
@@ -512,7 +516,7 @@ export default function AdminDashboard({ admin }: { admin: AdminUser }) {
         </nav>
 
         {isLoading ? (
-          <div className="rounded-lg bg-white p-6 text-sm text-gray-500 dark:bg-gray-900 dark:text-gray-400">Loading...</div>
+          <div className="wadi-admin-panel p-6 text-sm font-bold text-black/54 dark:text-white/58">Loading...</div>
         ) : (
           <>
             {tab === 'users' && (
@@ -521,17 +525,17 @@ export default function AdminDashboard({ admin }: { admin: AdminUser }) {
                   <DataTable
                     headers={['Name', 'Role', 'Keys', 'Requests', 'Tokens', 'Actions']}
                     rows={summary.users.map((user) => [
-                      <button key="name" onClick={() => setSelectedUserId(user.id)} className="text-left font-medium text-teal-600 hover:underline dark:text-teal-300">
-                        {user.name}<span className="block text-xs font-normal text-gray-500">{user.email}</span>
+                      <button key="name" onClick={() => setSelectedUserId(user.id)} className="text-left font-black text-[#15565c] hover:underline dark:text-[#d3edef]">
+                        {user.name}<span className="block text-xs font-bold text-black/46 dark:text-white/46">{user.email}</span>
                       </button>,
                       user.role,
                       summary.apiKeys.filter((key) => key.assignedUserId === user.id).length,
                       numberFormat(user.requests),
                       numberFormat(user.tokens),
                       <div key="actions" className="flex flex-wrap gap-2">
-                        <button onClick={() => setSelectedUserId(user.id)} className="rounded bg-teal-50 px-2 py-1 text-xs font-medium text-teal-700 dark:bg-teal-950 dark:text-teal-200">Edit</button>
+                        <button onClick={() => setSelectedUserId(user.id)} className="rounded-full bg-[#e7f5f6] px-2.5 py-1 text-xs font-black text-[#15565c] dark:bg-[#14383c] dark:text-[#d3edef]">Edit</button>
                         {user.id !== admin.id && (
-                          <button onClick={() => deleteUser(user.id)} className="rounded bg-red-50 px-2 py-1 text-xs font-medium text-red-700 dark:bg-red-950 dark:text-red-200">Delete</button>
+                          <button onClick={() => deleteUser(user.id)} className="rounded-full bg-red-50 px-2.5 py-1 text-xs font-black text-red-700 dark:bg-red-950/50 dark:text-red-200">Delete</button>
                         )}
                       </div>,
                     ])}
@@ -547,8 +551,8 @@ export default function AdminDashboard({ admin }: { admin: AdminUser }) {
                         <Metric label="Requests" value={numberFormat(userDetail.totals.requests)} compact />
                         <Metric label="Tokens" value={numberFormat(userDetail.totals.tokens)} compact />
                       </div>
-                      <div className="rounded-lg border border-gray-200 p-3 dark:border-gray-800">
-                        <h3 className="mb-3 text-sm font-semibold">Account</h3>
+                      <div className="wadi-admin-subpanel p-3">
+                        <h3 className="mb-3 text-sm font-black">Account</h3>
                         <div className="grid gap-3">
                           <input
                             value={userForm.name}
@@ -578,9 +582,9 @@ export default function AdminDashboard({ admin }: { admin: AdminUser }) {
                             placeholder="New password, optional"
                           />
                           <div className="flex gap-2">
-                            <button onClick={updateUser} className="rounded-lg bg-teal-600 px-3 py-2 text-sm font-medium text-white hover:bg-teal-500">Save account</button>
+                            <button onClick={updateUser} className="wadi-admin-primary">Save account</button>
                             {userDetail.user.id !== admin.id && (
-                              <button onClick={() => deleteUser(userDetail.user.id)} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-500">Delete</button>
+                              <button onClick={() => deleteUser(userDetail.user.id)} className="wadi-admin-danger">Delete</button>
                             )}
                           </div>
                         </div>
@@ -591,9 +595,9 @@ export default function AdminDashboard({ admin }: { admin: AdminUser }) {
                           {summary.apiKeys.filter((key) => key.assignedUserId === userDetail.user.id).length === 0 ? (
                             <p className="text-sm text-gray-500">No keys assigned.</p>
                           ) : summary.apiKeys.filter((key) => key.assignedUserId === userDetail.user.id).map((key) => (
-                            <div key={key.id} className="rounded-lg bg-gray-50 p-3 text-sm dark:bg-gray-950">
-                              <div className="font-medium">{key.name}</div>
-                              <div className="text-xs text-gray-500">{key.keyPrefix}... - {key.limitPeriod} - {key.status}</div>
+                            <div key={key.id} className="wadi-admin-inline-field text-sm">
+                              <div className="font-black">{key.name}</div>
+                              <div className="text-xs font-bold text-black/44 dark:text-white/44">{key.keyPrefix}... - {key.limitPeriod} - {key.status}</div>
                             </div>
                           ))}
                         </div>
@@ -794,7 +798,7 @@ export default function AdminDashboard({ admin }: { admin: AdminUser }) {
                         </label>
                       )}
                     </div>
-                    <button className="w-full rounded-lg bg-teal-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-teal-500">
+                    <button className="wadi-admin-primary w-full">
                       Create Key
                     </button>
                   </form>
@@ -810,11 +814,11 @@ export default function AdminDashboard({ admin }: { admin: AdminUser }) {
                 <Panel title="API Keys">
                   <div className="space-y-3">
                     {summary.apiKeys.map((key) => (
-                      <div key={key.id} className="rounded-lg border border-gray-200 p-4 dark:border-gray-800">
+                      <div key={key.id} className="wadi-admin-subpanel p-4">
                         <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
                           <div>
-                            <div className="font-medium">{key.name}</div>
-                            <div className="text-xs text-gray-500">
+                            <div className="font-black">{key.name}</div>
+                            <div className="text-xs font-bold text-black/46 dark:text-white/46">
                               {key.keyPrefix}... - {key.assignedUserEmail || 'Unassigned'}
                             </div>
                             {!key.canRevealToken && (
@@ -824,17 +828,17 @@ export default function AdminDashboard({ admin }: { admin: AdminUser }) {
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => updateKey(key.id, { status: key.status === 'active' ? 'disabled' : 'active' })}
-                              className={`rounded-lg px-3 py-1.5 text-sm font-medium ${
+                              className={`${
                                 key.status === 'active'
-                                  ? 'bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-200'
-                                  : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300'
+                                  ? 'wadi-admin-status is-active'
+                                  : 'wadi-admin-status'
                               }`}
                             >
                               {key.status}
                             </button>
                             <button
                               onClick={() => deleteKey(key.id)}
-                              className="rounded-lg bg-red-100 px-3 py-1.5 text-sm font-medium text-red-700 hover:bg-red-200 dark:bg-red-950 dark:text-red-200"
+                              className="wadi-admin-danger"
                               title="Delete API key"
                             >
                               Delete
@@ -843,8 +847,8 @@ export default function AdminDashboard({ admin }: { admin: AdminUser }) {
                         </div>
                         <CapabilityChecks value={key} onChange={(patch) => updateKey(key.id, patch)} compact />
                         <div className="mt-3 grid gap-2 text-sm md:grid-cols-3">
-                          <label className="block rounded-lg bg-gray-50 p-2 dark:bg-gray-950">
-                            <span className="text-xs text-gray-500">User</span>
+                          <label className="wadi-admin-inline-field">
+                            <span className="text-xs font-black uppercase tracking-wide text-black/44 dark:text-white/44">User</span>
                             <select
                               value={key.assignedUserId || ''}
                               onChange={(event) => updateKey(key.id, { assignedUserId: event.target.value || null } as Partial<ApiKey>)}
@@ -857,9 +861,9 @@ export default function AdminDashboard({ admin }: { admin: AdminUser }) {
                             </select>
                           </label>
                           <KeyLimitEditor apiKey={key} onUpdate={(patch) => updateKey(key.id, patch)} />
-                          <div className="rounded-lg bg-gray-50 p-2 dark:bg-gray-950">
-                            <div className="text-xs text-gray-500">Last used</div>
-                            <div>{dateFormat(key.lastUsedAt)}</div>
+                          <div className="wadi-admin-inline-field">
+                            <div className="text-xs font-black uppercase tracking-wide text-black/44 dark:text-white/44">Last used</div>
+                            <div className="font-bold">{dateFormat(key.lastUsedAt)}</div>
                           </div>
                         </div>
                       </div>
@@ -934,7 +938,7 @@ export default function AdminDashboard({ admin }: { admin: AdminUser }) {
                         placeholder="Provider token"
                       />
                     </label>
-                    <label className="flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm dark:border-gray-800">
+                    <label className="wadi-admin-check">
                       <input
                         type="checkbox"
                         checked={modelForm.isDefault}
@@ -943,7 +947,7 @@ export default function AdminDashboard({ admin }: { admin: AdminUser }) {
                       <span>Use as default model</span>
                     </label>
                     <ModelCapabilityChecks value={modelForm} onChange={(patch) => setModelForm({ ...modelForm, ...patch })} />
-                    <button className="w-full rounded-lg bg-teal-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-teal-500">
+                    <button className="wadi-admin-primary w-full">
                       Add Model
                     </button>
                   </form>
@@ -982,17 +986,17 @@ export default function AdminDashboard({ admin }: { admin: AdminUser }) {
 
 function Metric({ label, value, compact = false }: { label: string; value: string; compact?: boolean }) {
   return (
-    <div className={`rounded-lg bg-white ${compact ? 'p-3' : 'p-4'} shadow-sm dark:bg-gray-900`}>
-      <div className="text-xs font-medium uppercase tracking-wide text-gray-500">{label}</div>
-      <div className={`${compact ? 'text-lg' : 'text-2xl'} mt-1 font-semibold`}>{value}</div>
+    <div className={`wadi-admin-metric ${compact ? 'is-compact p-3' : 'p-5'}`}>
+      <div className="text-[11px] font-black uppercase tracking-[0.18em] text-black/46 dark:text-white/48">{label}</div>
+      <div className={`${compact ? 'text-xl' : 'text-3xl'} mt-2 font-black text-[#062c30] dark:text-[#e9fbfc]`}>{value}</div>
     </div>
   );
 }
 
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-lg bg-white p-4 shadow-sm dark:bg-gray-900">
-      <h2 className="mb-4 text-base font-semibold">{title}</h2>
+    <section className="wadi-admin-panel p-4 sm:p-5">
+      <h2 className="mb-4 text-base font-black text-[#062c30] dark:text-[#e9fbfc]">{title}</h2>
       {children}
     </section>
   );
@@ -1000,24 +1004,24 @@ function Panel({ title, children }: { title: string; children: React.ReactNode }
 
 function DataTable({ headers, rows }: { headers: string[]; rows: React.ReactNode[][] }) {
   return (
-    <div className="overflow-x-auto">
-      <table className="w-full min-w-[520px] text-left text-sm">
-        <thead className="text-xs uppercase tracking-wide text-gray-500">
+    <div className="wadi-admin-table-wrap overflow-x-auto">
+      <table className="w-full min-w-[560px] text-left text-sm">
+        <thead className="text-[11px] uppercase tracking-[0.12em] text-black/48 dark:text-white/48">
           <tr>
             {headers.map((header) => (
-              <th key={header} className="border-b border-gray-200 px-3 py-2 font-semibold dark:border-gray-800">{header}</th>
+              <th key={header} className="border-b border-black/8 px-3 py-3 font-black dark:border-white/10">{header}</th>
             ))}
           </tr>
         </thead>
         <tbody>
           {rows.length === 0 ? (
             <tr>
-              <td colSpan={headers.length} className="px-3 py-6 text-center text-gray-500">No data yet</td>
+              <td colSpan={headers.length} className="px-3 py-8 text-center font-bold text-black/42 dark:text-white/46">No data yet</td>
             </tr>
           ) : rows.map((row, index) => (
-            <tr key={index} className="border-b border-gray-100 last:border-0 dark:border-gray-800">
+            <tr key={index} className="border-b border-black/5 last:border-0 dark:border-white/8">
               {row.map((cell, cellIndex) => (
-                <td key={cellIndex} className="px-3 py-2 align-top">{cell}</td>
+                <td key={cellIndex} className="px-3 py-3 align-top font-bold text-black/76 dark:text-white/78">{cell}</td>
               ))}
             </tr>
           ))}
@@ -1039,7 +1043,7 @@ function CapabilityChecks({
   return (
     <div className={`grid grid-cols-2 gap-2 ${compact ? 'md:grid-cols-4' : ''}`}>
       {capabilityFields.map(([field, label]) => (
-        <label key={field} className="flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm dark:border-gray-800">
+        <label key={field} className="wadi-admin-check">
           <input
             type="checkbox"
             checked={Boolean(value[field])}
@@ -1065,7 +1069,7 @@ function ModelCapabilityChecks({
   return (
     <div className={`grid grid-cols-2 gap-2 ${compact ? 'md:grid-cols-4' : ''}`}>
       {modelCapabilityFields.map(([field, label]) => (
-        <label key={field} className="flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-sm dark:border-gray-800">
+        <label key={field} className="wadi-admin-check">
           <input
             type="checkbox"
             checked={Boolean(value[field])}
@@ -1107,28 +1111,28 @@ function ModelConfigCard({
   const [tokenLimit, setTokenLimit] = useState('');
 
   return (
-    <div className="rounded-lg border border-gray-200 p-4 dark:border-gray-800">
+    <div className="wadi-admin-subpanel p-4">
       <div className="mb-3 flex flex-wrap items-start justify-between gap-3">
         <div>
           <div className="flex flex-wrap items-center gap-2">
             <div className="font-medium">{model.label}</div>
-            {model.isDefault && <span className="rounded-full bg-teal-50 px-2 py-0.5 text-xs font-medium text-teal-700 dark:bg-teal-950 dark:text-teal-200">Default</span>}
+            {model.isDefault && <span className="wadi-admin-badge">Default</span>}
           </div>
-          <div className="mt-1 text-xs text-gray-500">{model.provider} - {model.model}</div>
-          <div className="mt-1 max-w-xl truncate text-xs text-gray-500">{model.endpoint}</div>
+          <div className="mt-1 text-xs font-bold text-black/48 dark:text-white/48">{model.provider} - {model.model}</div>
+          <div className="mt-1 max-w-xl truncate text-xs font-bold text-black/42 dark:text-white/42">{model.endpoint}</div>
         </div>
         <div className="flex items-center gap-2">
           <button
             onClick={() => onUpdate({ status: model.status === 'active' ? 'disabled' : 'active' })}
             className={`rounded-lg px-3 py-1.5 text-sm font-medium ${
               model.status === 'active'
-                ? 'bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-200'
-                : 'bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-300'
+                ? 'wadi-admin-status is-active'
+                : 'wadi-admin-status'
             }`}
           >
             {model.status}
           </button>
-          <button onClick={onDelete} className="rounded-lg bg-red-100 px-3 py-1.5 text-sm font-medium text-red-700 hover:bg-red-200 dark:bg-red-950 dark:text-red-200">
+          <button onClick={onDelete} className="wadi-admin-danger">
             Delete
           </button>
         </div>
@@ -1138,12 +1142,12 @@ function ModelConfigCard({
         <button
           onClick={() => onUpdate({ isDefault: true, status: 'active' })}
           disabled={model.isDefault}
-          className="rounded-lg border border-gray-300 px-3 py-2 text-sm font-medium disabled:opacity-50 dark:border-gray-700"
+          className="wadi-admin-secondary disabled:opacity-50"
         >
           Make Default
         </button>
-        <label className="block rounded-lg bg-gray-50 p-2 dark:bg-gray-950">
-          <span className="text-xs text-gray-500">New token</span>
+        <label className="wadi-admin-inline-field">
+          <span className="text-xs font-black uppercase tracking-wide text-black/44 dark:text-white/44">New token</span>
           <input
             type="password"
             value={apiKey}
@@ -1159,18 +1163,18 @@ function ModelConfigCard({
             setApiKey('');
           }}
           disabled={!apiKey.trim()}
-          className="rounded-lg bg-gray-900 px-3 py-2 text-sm font-medium text-white disabled:opacity-50 dark:bg-gray-100 dark:text-gray-950"
+          className="wadi-admin-primary disabled:opacity-50"
         >
           Update Token
         </button>
       </div>
-      <div className="mt-4 rounded-lg border border-gray-100 bg-gray-50 p-3 dark:border-gray-800 dark:bg-gray-950">
-        <div className="mb-2 text-sm font-medium">Per-user limits</div>
+      <div className="wadi-admin-subpanel mt-4 p-3">
+        <div className="mb-2 text-sm font-black">Per-user limits</div>
         <div className="grid gap-2 text-sm md:grid-cols-5">
           <select
             value={limitUserId}
             onChange={(event) => setLimitUserId(event.target.value)}
-            className="rounded-lg border border-gray-300 bg-white px-2 py-2 dark:border-gray-700 dark:bg-gray-900"
+            className="rounded-lg border border-black/10 bg-white px-2 py-2 text-sm font-bold outline-none dark:border-white/12 dark:bg-[#111817]"
           >
             <option value="">Select user</option>
             {users.map((user) => (
@@ -1180,7 +1184,7 @@ function ModelConfigCard({
           <select
             value={limitPeriod}
             onChange={(event) => setLimitPeriod(event.target.value as Period)}
-            className="rounded-lg border border-gray-300 bg-white px-2 py-2 dark:border-gray-700 dark:bg-gray-900"
+            className="rounded-lg border border-black/10 bg-white px-2 py-2 text-sm font-bold outline-none dark:border-white/12 dark:bg-[#111817]"
           >
             <option value="day">Day</option>
             <option value="week">Week</option>
@@ -1192,7 +1196,7 @@ function ModelConfigCard({
             min="1"
             value={requestLimit}
             onChange={(event) => setRequestLimit(event.target.value)}
-            className="rounded-lg border border-gray-300 bg-white px-2 py-2 dark:border-gray-700 dark:bg-gray-900"
+            className="rounded-lg border border-black/10 bg-white px-2 py-2 text-sm font-bold outline-none dark:border-white/12 dark:bg-[#111817]"
             placeholder="Request limit"
           />
           <input
@@ -1200,7 +1204,7 @@ function ModelConfigCard({
             min="1"
             value={tokenLimit}
             onChange={(event) => setTokenLimit(event.target.value)}
-            className="rounded-lg border border-gray-300 bg-white px-2 py-2 dark:border-gray-700 dark:bg-gray-900"
+            className="rounded-lg border border-black/10 bg-white px-2 py-2 text-sm font-bold outline-none dark:border-white/12 dark:bg-[#111817]"
             placeholder="Token limit"
           />
           <button
@@ -1217,7 +1221,7 @@ function ModelConfigCard({
               setTokenLimit('');
             }}
             disabled={!limitUserId}
-            className="rounded-lg bg-teal-600 px-3 py-2 text-sm font-medium text-white disabled:opacity-50"
+            className="wadi-admin-primary disabled:opacity-50"
           >
             Save Limit
           </button>
@@ -1227,7 +1231,7 @@ function ModelConfigCard({
             {limits.map((limit) => {
               const user = users.find((item) => item.id === limit.userId);
               return (
-                <span key={limit.id} className="rounded-full border border-gray-200 bg-white px-2.5 py-1 text-xs text-gray-600 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-300">
+                <span key={limit.id} className="wadi-admin-badge">
                   {user?.email || limit.userId}: {limit.requestLimit ? `${numberFormat(limit.requestLimit)} req` : ''}{limit.requestLimit && limit.tokenLimit ? ' / ' : ''}{limit.tokenLimit ? `${numberFormat(limit.tokenLimit)} tok` : ''} per {limit.limitPeriod}
                 </span>
               );
@@ -1235,15 +1239,15 @@ function ModelConfigCard({
           </div>
         )}
       </div>
-      <div className="mt-2 text-xs text-gray-500">Last used: {dateFormat(model.lastUsedAt)}</div>
+      <div className="mt-2 text-xs font-bold text-black/44 dark:text-white/44">Last used: {dateFormat(model.lastUsedAt)}</div>
     </div>
   );
 }
 
 function InlineSelect({ label, value, onChange }: { label: string; value: string; onChange: (value: string) => void }) {
   return (
-    <label className="block rounded-lg bg-gray-50 p-2 dark:bg-gray-950">
-      <span className="text-xs text-gray-500">{label}</span>
+    <label className="wadi-admin-inline-field">
+      <span className="text-xs font-black uppercase tracking-wide text-black/44 dark:text-white/44">{label}</span>
       <select value={value} onChange={(event) => onChange(event.target.value)} className="mt-1 w-full bg-transparent outline-none">
         <option value="day">Day</option>
         <option value="week">Week</option>
@@ -1262,8 +1266,8 @@ function InlineNumber({ label, value, onBlur }: { label: string; value: number |
   }, [value]);
 
   return (
-    <label className="block rounded-lg bg-gray-50 p-2 dark:bg-gray-950">
-      <span className="text-xs text-gray-500">{label}</span>
+    <label className="wadi-admin-inline-field">
+      <span className="text-xs font-black uppercase tracking-wide text-black/44 dark:text-white/44">{label}</span>
       <input
         type="number"
         min="1"
@@ -1348,15 +1352,15 @@ function KeyLimitEditor({ apiKey, onUpdate }: { apiKey: ApiKey; onUpdate: (patch
 
   if (!isEditing) {
     return (
-      <div className="block rounded-lg bg-gray-50 p-2 dark:bg-gray-950">
+      <div className="wadi-admin-inline-field">
         <div className="flex items-center justify-between">
           <div>
-            <span className="text-xs text-gray-500">Limit</span>
+            <span className="text-xs font-black uppercase tracking-wide text-black/44 dark:text-white/44">Limit</span>
             <div className="font-medium">{formatLimitDisplay()}</div>
           </div>
           <button
             onClick={startEditing}
-            className="rounded bg-teal-100 px-2 py-1 text-xs font-medium text-teal-700 hover:bg-teal-200 dark:bg-teal-950 dark:text-teal-200"
+            className="rounded-full bg-[#e7f5f6] px-2.5 py-1 text-xs font-black text-[#15565c] hover:bg-[#d3edef] dark:bg-[#14383c] dark:text-[#d3edef]"
           >
             Change
           </button>
@@ -1366,11 +1370,11 @@ function KeyLimitEditor({ apiKey, onUpdate }: { apiKey: ApiKey; onUpdate: (patch
   }
 
   return (
-    <div className="block rounded-lg bg-teal-50 p-2 dark:bg-teal-950/30">
-      <div className="mb-2 text-xs font-medium text-gray-600 dark:text-gray-300">Limit Type</div>
+    <div className="rounded-lg border border-[#1C7178]/20 bg-[#e7f5f6]/70 p-2 dark:border-[#8fcfd3]/20 dark:bg-[#14383c]/38">
+      <div className="mb-2 text-xs font-black text-black/62 dark:text-white/72">Limit Type</div>
       <div className="mb-2 grid grid-cols-2 gap-1">
         {(['unlimited', 'requests', 'tokens', 'date'] as LimitMode[]).map((mode) => (
-          <label key={mode} className={`flex cursor-pointer items-center gap-1 rounded border p-1 text-xs ${editMode === mode ? 'border-teal-500 bg-teal-100 dark:border-teal-400 dark:bg-teal-900' : 'border-gray-200 dark:border-gray-700'}`}>
+          <label key={mode} className={`flex cursor-pointer items-center gap-1 rounded border p-1 text-xs font-bold ${editMode === mode ? 'border-[#1C7178] bg-white text-[#15565c] dark:border-[#8fcfd3] dark:bg-[#0e1615] dark:text-[#d3edef]' : 'border-black/10 dark:border-white/12'}`}>
             <input
               type="radio"
               name={`limitMode-${apiKey.id}`}
@@ -1388,7 +1392,7 @@ function KeyLimitEditor({ apiKey, onUpdate }: { apiKey: ApiKey; onUpdate: (patch
         <select
           value={editPeriod}
           onChange={(e) => setEditPeriod(e.target.value as Period)}
-          className="mb-2 w-full rounded border border-gray-300 bg-white px-2 py-1 text-xs dark:border-gray-600 dark:bg-gray-800"
+          className="mb-2 w-full rounded border border-black/10 bg-white px-2 py-1 text-xs font-bold outline-none dark:border-white/12 dark:bg-[#111817]"
         >
           <option value="day">Per Day</option>
           <option value="week">Per Week</option>
@@ -1404,7 +1408,7 @@ function KeyLimitEditor({ apiKey, onUpdate }: { apiKey: ApiKey; onUpdate: (patch
           value={editValue}
           onChange={(e) => setEditValue(e.target.value)}
           placeholder={editMode === 'requests' ? 'Max requests' : 'Max tokens'}
-          className="mb-2 w-full rounded border border-gray-300 bg-white px-2 py-1 text-xs dark:border-gray-600 dark:bg-gray-800"
+          className="mb-2 w-full rounded border border-black/10 bg-white px-2 py-1 text-xs font-bold outline-none dark:border-white/12 dark:bg-[#111817]"
         />
       )}
 
@@ -1413,13 +1417,13 @@ function KeyLimitEditor({ apiKey, onUpdate }: { apiKey: ApiKey; onUpdate: (patch
           type="datetime-local"
           value={editDate}
           onChange={(e) => setEditDate(e.target.value)}
-          className="mb-2 w-full rounded border border-gray-300 bg-white px-2 py-1 text-xs dark:border-gray-600 dark:bg-gray-800"
+          className="mb-2 w-full rounded border border-black/10 bg-white px-2 py-1 text-xs font-bold outline-none dark:border-white/12 dark:bg-[#111817]"
         />
       )}
 
       <div className="flex gap-1">
-        <button onClick={save} className="flex-1 rounded bg-teal-600 px-2 py-1 text-xs font-medium text-white hover:bg-teal-500">Save</button>
-        <button onClick={cancel} className="flex-1 rounded bg-gray-200 px-2 py-1 text-xs font-medium text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200">Cancel</button>
+        <button onClick={save} className="flex-1 rounded bg-[#1C7178] px-2 py-1 text-xs font-black text-white hover:bg-[#15565c]">Save</button>
+        <button onClick={cancel} className="flex-1 rounded bg-white px-2 py-1 text-xs font-black text-black/70 hover:bg-black/5 dark:bg-white/10 dark:text-white">Cancel</button>
       </div>
     </div>
   );

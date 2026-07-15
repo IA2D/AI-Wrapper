@@ -359,6 +359,11 @@ function ParticleField() {
     let width = 0;
     let height = 0;
     let scrollProgress = 0;
+    let scrollPulse = 0;
+    let targetScrollPulse = 0;
+    let smoothedEnergy = 0;
+    let lastScrollY = window.scrollY;
+    let isDarkTheme = document.documentElement.classList.contains('dark');
     let particles: {
       baseX: number;
       baseY: number;
@@ -389,11 +394,31 @@ function ParticleField() {
           baseY: centerY + Math.sin(angle) * spreadY * distance * wobble,
           phase: random() * Math.PI * 2,
           drift: 0.6 + random() * 1.35,
-          radius: 1.35 + random() * 1.65,
-          alpha: 0.58 + random() * 0.38,
+          radius: 2.2 + random() * 2.5,
+          alpha: 0.62 + random() * 0.34,
           color: colors[Math.floor(random() * colors.length)],
         });
       }
+    };
+
+    const getParticleColors = () => {
+      if (isDarkTheme) {
+        return {
+          core: ['#d3edef', '#8fcfd3', '#4ba3aa'],
+          edge: ['#8fcfd3', '#62b8be', '#d3edef'],
+          deep: ['#4ba3aa', '#8fcfd3', '#15565c'],
+          line: '#8fcfd3',
+          stroke: '#d3edef',
+        };
+      }
+
+      return {
+        core: ['#8fcfd3', '#4ba3aa', '#15565c'],
+        edge: ['#8fcfd3', '#4ba3aa', '#d3edef'],
+        deep: ['#8fcfd3', '#4ba3aa', '#15565c'],
+        line: '#1c7178',
+        stroke: '#1c7178',
+      };
     };
 
     const resize = () => {
@@ -405,62 +430,102 @@ function ParticleField() {
       context.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       const density = width < 700 ? 0.38 : width < 1100 ? 0.56 : 0.82;
+      const colors = getParticleColors();
       particles = [];
-      createCluster(width * 0.31, height * 0.31, width * 0.18, height * 0.15, Math.floor(1050 * density), ['#8fcfd3', '#4ba3aa', '#15565c']);
-      createCluster(width * 0.65, height * 0.69, width * 0.22, height * 0.16, Math.floor(980 * density), ['#8fcfd3', '#4ba3aa', '#d3edef']);
-      createCluster(width * 0.73, height * 0.2, width * 0.14, height * 0.1, Math.floor(640 * density), ['#8fcfd3', '#4ba3aa', '#15565c']);
-      createCluster(width * 0.55, height * 0.47, width * 0.34, height * 0.22, Math.floor(240 * density), ['#8fcfd3', '#4ba3aa']);
+      createCluster(width * 0.31, height * 0.31, width * 0.18, height * 0.15, Math.floor(1050 * density), colors.deep);
+      createCluster(width * 0.65, height * 0.69, width * 0.22, height * 0.16, Math.floor(980 * density), colors.edge);
+      createCluster(width * 0.73, height * 0.2, width * 0.14, height * 0.1, Math.floor(640 * density), colors.core);
+      createCluster(width * 0.55, height * 0.47, width * 0.34, height * 0.22, Math.floor(240 * density), colors.core);
     };
 
     const updateScrollProgress = () => {
-      scrollProgress = Math.min(1, Math.max(0, window.scrollY / (window.innerHeight * 1.65)));
+      const nextScrollY = window.scrollY;
+      const scrollDelta = Math.abs(nextScrollY - lastScrollY);
+      lastScrollY = nextScrollY;
+      targetScrollPulse = Math.min(0.42, targetScrollPulse + scrollDelta / Math.max(window.innerHeight * 4.5, 1));
+      scrollProgress = Math.min(1, Math.max(0, window.scrollY / (window.innerHeight * 1.05)));
     };
 
     const draw = () => {
       context.clearRect(0, 0, width, height);
+      const colors = getParticleColors();
       const fadeStart = 0.58;
       const fadeEnd = 0.92;
       const fadeOut = scrollProgress <= fadeStart ? 1 : Math.max(0, 1 - (scrollProgress - fadeStart) / (fadeEnd - fadeStart));
-      const expansion = 1 + Math.min(scrollProgress, 0.58) * 0.38;
-      const radiusBoost = 1 + Math.min(scrollProgress, 0.58) * 0.95;
-      const lineAlpha = Math.min(scrollProgress, 0.58) * 0.22 * fadeOut;
+      const activeScroll = Math.min(scrollProgress, 0.72);
+      const expansion = 1 + activeScroll * 0.62;
+      scrollPulse += (targetScrollPulse - scrollPulse) * 0.08;
+      const energyTarget = prefersReducedMotion ? activeScroll : Math.min(0.72, activeScroll * 0.78 + scrollPulse * 0.42);
+      smoothedEnergy += (energyTarget - smoothedEnergy) * 0.075;
+      const animationEnergy = smoothedEnergy;
+      const radiusBoost = 1 + activeScroll * 1.12 + animationEnergy * 0.22;
+      const speedBoost = 1 + activeScroll * 1.25 + animationEnergy * 0.7;
+      const lineAlpha = (activeScroll * 0.2 + animationEnergy * 0.08) * fadeOut;
+      const darkGlow = isDarkTheme ? 1 : 0;
       const centerX = width * 0.52;
       const centerY = height * 0.5;
 
       const plotted: { x: number; y: number; radius: number; alpha: number; color: string }[] = [];
 
-      for (const particle of particles) {
-        const motion = prefersReducedMotion ? 0 : frame * 0.012 * particle.drift;
+      for (let particleIndex = 0; particleIndex < particles.length; particleIndex += 1) {
+        const particle = particles[particleIndex];
+        const motion = prefersReducedMotion ? 0 : frame * 0.022 * speedBoost * particle.drift;
         const expandedX = centerX + (particle.baseX - centerX) * expansion;
         const expandedY = centerY + (particle.baseY - centerY) * expansion;
-        const x = expandedX + Math.cos(particle.phase + motion) * (5.5 + scrollProgress * 5);
-        const y = expandedY + Math.sin(particle.phase * 0.8 + motion) * (4.2 + scrollProgress * 4);
-        const radius = particle.radius * radiusBoost;
+        const swirlAngle = particle.phase + motion * 0.46 + frame * 0.0035 * animationEnergy;
+        const swirlDistance = animationEnergy * (3.5 + particle.drift * 6);
+        const breathe = prefersReducedMotion
+          ? 1
+          : 1 + animationEnergy * (0.06 + (Math.sin(frame * 0.035 + particle.phase * 2.1) + 1) * 0.06);
+        const x =
+          expandedX +
+          Math.cos(particle.phase + motion) * (7 + activeScroll * 16) +
+          Math.cos(swirlAngle) * swirlDistance;
+        const y =
+          expandedY +
+          Math.sin(particle.phase * 0.8 + motion) * (5.5 + activeScroll * 13) +
+          Math.sin(swirlAngle) * swirlDistance;
+        const radius = particle.radius * radiusBoost * breathe;
+
+        if (animationEnergy > 0.2 && particleIndex % 37 === 0) {
+          const ringPhase = (Math.sin(frame * 0.04 + particle.phase * 3) + 1) / 2;
+          context.beginPath();
+          context.arc(x, y, radius + 4 + ringPhase * 10 * animationEnergy, 0, Math.PI * 2);
+          context.strokeStyle = particle.color;
+          context.lineWidth = 0.45 + animationEnergy * 0.35;
+          context.globalAlpha = (0.04 + ringPhase * 0.09) * animationEnergy * fadeOut;
+          context.stroke();
+        }
 
         context.beginPath();
         context.arc(x, y, radius, 0, Math.PI * 2);
         context.fillStyle = particle.color;
-        context.globalAlpha = Math.min(0.9, particle.alpha + scrollProgress * 0.06) * fadeOut;
+        context.shadowColor = isDarkTheme ? particle.color : 'transparent';
+        context.shadowBlur = isDarkTheme ? 8 + animationEnergy * 10 : 0;
+        context.globalAlpha = Math.min(1, particle.alpha + animationEnergy * 0.08 + darkGlow * 0.1) * fadeOut;
         context.fill();
-        context.lineWidth = 0.65 + scrollProgress * 0.35;
-        context.strokeStyle = '#1c7178';
-        context.globalAlpha = Math.min(1, particle.alpha + 0.1) * fadeOut;
+        context.lineWidth = 0.85 + activeScroll * 0.6;
+        context.shadowBlur = 0;
+        context.strokeStyle = colors.stroke;
+        context.globalAlpha = Math.min(1, particle.alpha + 0.08 + animationEnergy * 0.06 + darkGlow * 0.08) * fadeOut;
         context.stroke();
         plotted.push({ x, y, radius, alpha: particle.alpha, color: particle.color });
       }
 
       if (lineAlpha > 0.01) {
-        context.lineWidth = 0.75;
-        context.strokeStyle = '#1c7178';
-        for (let index = 0; index < plotted.length; index += 14) {
+        context.lineWidth = 0.65 + animationEnergy * 0.28;
+        context.strokeStyle = colors.line;
+        const stride = animationEnergy > 0.5 ? 12 : 16;
+        for (let index = 0; index < plotted.length; index += stride) {
           const point = plotted[index];
-          const next = plotted[(index + 29) % plotted.length];
+          const next = plotted[(index + 29 + Math.floor(frame * 0.035 * animationEnergy)) % plotted.length];
           const dx = point.x - next.x;
           const dy = point.y - next.y;
           const distance = Math.sqrt(dx * dx + dy * dy);
 
-          if (distance < 150 + scrollProgress * 150) {
-            context.globalAlpha = lineAlpha * Math.max(0, 1 - distance / 300);
+          if (distance < 170 + activeScroll * 220) {
+            const wave = prefersReducedMotion ? 1 : 0.78 + Math.sin(frame * 0.025 + index * 0.13) * 0.22;
+            context.globalAlpha = lineAlpha * wave * Math.max(0, 1 - distance / 360);
             context.beginPath();
             context.moveTo(point.x, point.y);
             context.lineTo(next.x, next.y);
@@ -470,19 +535,32 @@ function ParticleField() {
       }
 
       context.globalAlpha = 1;
+      context.shadowBlur = 0;
       frame += 1;
+      targetScrollPulse *= 0.9;
       if (!prefersReducedMotion) animationId = window.requestAnimationFrame(draw);
     };
+
+    const syncTheme = () => {
+      const nextIsDark = document.documentElement.classList.contains('dark');
+      if (nextIsDark === isDarkTheme) return;
+      isDarkTheme = nextIsDark;
+      resize();
+    };
+
+    const themeObserver = new MutationObserver(syncTheme);
 
     resize();
     updateScrollProgress();
     draw();
     window.addEventListener('resize', resize);
     window.addEventListener('scroll', updateScrollProgress, { passive: true });
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
     return () => {
       window.removeEventListener('resize', resize);
       window.removeEventListener('scroll', updateScrollProgress);
+      themeObserver.disconnect();
       window.cancelAnimationFrame(animationId);
     };
   }, []);

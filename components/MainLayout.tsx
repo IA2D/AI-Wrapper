@@ -1,18 +1,20 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { ChatSession, APIConfiguration, generateId } from '@/types';
+import { ChatSession, APIConfiguration } from '@/types';
 import { StorageService } from '@/services/StorageService';
 import { useChatSessions } from '@/hooks/useChatSessions';
 import Sidebar from './Sidebar';
 import ChatInterface from './ChatInterface';
-import ThinkingModeToggle from './ThinkingModeToggle';
 import ThemeToggle from './ThemeToggle';
 import AuthScreen from './AuthScreen';
 import ToolWorkspace, { ToolMode } from './ToolWorkspace';
 import MemoryPanel from './MemoryPanel';
 import WadiLogo from './WadiLogo';
 import { applyTheme, getPreferredTheme, persistTheme } from '@/lib/theme';
+import { nextLocale } from '@/lib/i18n';
+import { useLanguage } from './LanguageProvider';
+import { chatCopy } from '@/lib/chatCopy';
 
 // Default API configuration from environment variables
 const DEFAULT_API_CONFIG: APIConfiguration = {
@@ -22,6 +24,8 @@ const DEFAULT_API_CONFIG: APIConfiguration = {
 };
 
 export default function MainLayout() {
+  const { locale, setLocale } = useLanguage();
+  const copy = chatCopy[locale];
   // Session management
   const {
     sessions,
@@ -176,11 +180,6 @@ export default function MainLayout() {
     await StorageService.saveThinkingMode(newMode);
   }, [thinkingMode]);
 
-  const handleThinkingModeChange = useCallback(async (enabled: boolean) => {
-    setThinkingMode(enabled);
-    await StorageService.saveThinkingMode(enabled);
-  }, []);
-
   // Sidebar toggle
   const handleToggleSidebar = useCallback(() => {
     setIsSidebarOpen(prev => !prev);
@@ -206,7 +205,7 @@ export default function MainLayout() {
           <div className="mx-auto mb-4 h-1.5 w-36 overflow-hidden rounded-full bg-[#d3edef]">
             <span className="block h-full w-1/2 rounded-full bg-[#1C7178] animate-[landing-meter-pulse_1.6s_ease-in-out_infinite]" />
           </div>
-          <p className="text-sm font-black text-black/54">Preparing your workspace...</p>
+          <p className="text-sm font-black text-black/54">{copy.header.loading}</p>
         </div>
       </div>
     );
@@ -224,7 +223,7 @@ export default function MainLayout() {
   }
 
   return (
-    <div className="wadi-chat-shell flex h-screen overflow-hidden">
+    <div className="wadi-chat-shell flex h-screen overflow-hidden" dir="ltr">
       <div className="wadi-chat-bg" aria-hidden="true" />
       {/* Sidebar */}
       <Sidebar
@@ -244,7 +243,7 @@ export default function MainLayout() {
       <div className="wadi-chat-main flex min-w-0 flex-1 flex-col">
         {/* Header */}
         <header id="header" className="wadi-chat-header flex-shrink-0 px-3 py-3 md:px-4">
-          <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
+          <div className="flex items-center justify-between gap-3">
             {/* Left: Menu button (mobile) */}
             <button
               onClick={handleToggleSidebar}
@@ -272,23 +271,27 @@ export default function MainLayout() {
                 <WadiLogo showText={false} className="hidden shrink-0 sm:inline-flex" />
                 <div className="min-w-0">
                   <h1 className="truncate text-sm font-black text-black md:text-base dark:text-white">
-                    {activeTool ? 'Wadi tools' : currentSession?.title && currentSession.title !== 'New Chat' ? currentSession.title : 'Wadi chat'}
+                    {activeTool ? copy.header.toolsTitle : currentSession?.title && currentSession.title !== 'New Chat' ? currentSession.title : copy.header.chatTitle}
                   </h1>
-                  <p className="hidden text-xs font-bold text-black/45 sm:block dark:text-white/45">
-                    Chat, files, memory, and API context.
+                  <p className="hidden text-xs font-bold text-black/56 sm:block dark:text-white/68">
+                    {copy.header.subtitle}
                   </p>
                 </div>
               </div>
             </div>
 
             {/* Right: Controls */}
-            <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
+            <div className="flex flex-shrink-0 items-center gap-2 md:gap-3">
+              <ThemeToggle
+                isDark={isDarkMode}
+                onChange={handleThemeChange}
+              />
               {user.role === 'admin' && (
                 <a
                   href="/admin"
                   className="wadi-chat-pill hidden md:flex"
                 >
-                  Admin
+                  {copy.header.admin}
                 </a>
               )}
               {hasApiKeys && (
@@ -296,14 +299,23 @@ export default function MainLayout() {
                   href="/api-console"
                   className="wadi-chat-pill wadi-chat-pill-primary flex"
                 >
-                  API Console
+                  {copy.header.apiConsole}
                 </a>
               )}
               <button
+                type="button"
+                onClick={() => setLocale(nextLocale(locale))}
+                className="wadi-chat-pill"
+                lang={locale === 'en' ? 'ar' : 'en'}
+                title="Switch language"
+              >
+                {copy.header.language}
+              </button>
+              <button
                 onClick={() => setIsMemoryOpen(true)}
                 className="wadi-chat-icon-button"
-                aria-label="Open memory"
-                title="Memory"
+                aria-label={copy.header.memory}
+                title={copy.header.memory}
               >
                 <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.75c-3.2 0-5.8 2.45-5.8 5.48 0 1.4.55 2.68 1.47 3.65.43.45.66 1.05.66 1.67v1.08c0 .9.73 1.62 1.62 1.62h4.1c.9 0 1.62-.73 1.62-1.62v-1.08c0-.62.23-1.22.66-1.67a5.3 5.3 0 0 0 1.47-3.65c0-3.03-2.6-5.48-5.8-5.48Z" />
@@ -314,16 +326,8 @@ export default function MainLayout() {
                 onClick={handleLogout}
                 className="wadi-chat-pill hidden md:flex"
               >
-                Logout
+                {copy.header.logout}
               </button>
-              <ThinkingModeToggle
-                enabled={thinkingMode}
-                onChange={handleThinkingModeChange}
-              />
-              <ThemeToggle
-                isDark={isDarkMode}
-                onChange={handleThemeChange}
-              />
             </div>
           </div>
         </header>
@@ -348,12 +352,12 @@ export default function MainLayout() {
               <div className="flex flex-1 items-center justify-center">
                 <div className="wadi-chat-empty-panel text-center">
                   <WadiLogo showText={false} className="mx-auto mb-4 scale-125" />
-                  <p className="mb-4 text-sm font-black text-black/58 dark:text-white/58">No session selected</p>
+                  <p className="mb-4 text-sm font-black text-black/58 dark:text-white/70">{copy.header.noSession}</p>
                   <button
                     onClick={handleNewChat}
                     className="rounded-full bg-[#1C7178] px-5 py-3 text-sm font-black text-white transition hover:bg-[#15565c]"
                   >
-                    Start New Chat
+                    {copy.header.startNewChat}
                   </button>
                 </div>
               </div>

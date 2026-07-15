@@ -6,6 +6,8 @@ import MessageItem from './MessageItem';
 import MarkdownContent from './MarkdownContent';
 import ThinkingBlock from './ThinkingBlock';
 import { textDirection, textAlignClass } from '@/utils/textDirection';
+import { chatCopy } from '@/lib/chatCopy';
+import { useLanguage } from './LanguageProvider';
 
 interface MessageListProps {
   messages: Message[];
@@ -26,6 +28,8 @@ export default function MessageList({
   onOpenMemories,
   processingLabel = 'Processing',
 }: MessageListProps) {
+  const { locale } = useLanguage();
+  const copy = chatCopy[locale];
   const containerRef = useRef<HTMLDivElement | null>(null);
   const endRef = useRef<HTMLDivElement | null>(null);
   const [scrollTop, setScrollTop] = useState(0);
@@ -111,19 +115,21 @@ export default function MessageList({
   return (
     <div ref={containerRef} onScroll={handleScroll} className="wadi-message-list flex-1 overflow-y-auto">
       {messages.length === 0 && !isStreaming ? (
-        <div className="flex h-full items-center justify-center px-4 text-center">
-          <div className="wadi-chat-empty-panel max-w-xl">
+        <div className="flex h-full items-center justify-center px-4 py-8 text-center">
+          <div className="wadi-chat-empty-panel max-w-2xl">
             <div className="mx-auto mb-5 grid h-14 w-14 place-items-center rounded-full bg-[#1C7178] text-sm font-black text-white shadow-[0_18px_46px_rgba(28,113,120,0.24)]">
               AI
             </div>
-            <div className="text-2xl font-black text-gray-900 dark:text-white">Start with a question, file, or voice note.</div>
-            <div className="mx-auto mt-3 max-w-md text-sm font-bold leading-6 text-black/54 dark:text-white/50">
-              Wadi can read context, remember useful details, and turn messy work into clean answers.
+            <div className="text-2xl font-black text-gray-950 dark:text-white">{copy.chat.emptyTitle}</div>
+            <div className="mx-auto mt-3 max-w-md text-sm font-bold leading-6 text-black/64 dark:text-white/76">
+              {copy.chat.emptyBody}
             </div>
             <div className="mt-6 flex flex-wrap justify-center gap-2 text-xs font-black text-[#15565c] dark:text-[#d3edef]">
-              <span className="rounded-full bg-[#e7f5f6] px-3 py-1.5 dark:bg-white/8">Attach PDF</span>
-              <span className="rounded-full bg-[#e7f5f6] px-3 py-1.5 dark:bg-white/8">Ask in Arabic or English</span>
-              <span className="rounded-full bg-[#e7f5f6] px-3 py-1.5 dark:bg-white/8">Generate files</span>
+              {copy.chat.emptyChips.map((chip) => (
+                <span key={chip} className="rounded-full bg-[#e7f5f6] px-3 py-1.5 dark:bg-[#d3edef] dark:text-[#082f33]">
+                  {chip}
+                </span>
+              ))}
             </div>
           </div>
         </div>

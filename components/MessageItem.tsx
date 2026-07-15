@@ -156,7 +156,7 @@ export default function MessageItem({ message, onMeasure, showThinking = false, 
           {!isUser && (modelLabel || tokenUsage) && (
             <div className={`mt-2 text-[11px] text-gray-500 dark:text-gray-400 ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>
               {tokenUsage ? `${tokenUsage.totalTokens.toLocaleString()} tokens` : 'Tokens unavailable'}
-              {modelLabel ? ` · ${modelLabel}` : ''}
+              {modelLabel ? ` - ${modelLabel}` : ''}
             </div>
           )}
           </div>

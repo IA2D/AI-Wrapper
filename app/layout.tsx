@@ -12,7 +12,14 @@ import {
   localeDirections,
   type Locale,
 } from '@/lib/i18n';
-import { getThemeFromCookieValue, THEME_COOKIE, THEME_STORAGE_KEY, type ThemeMode } from '@/lib/theme';
+import {
+  getThemeFromCookieValue,
+  THEME_CHOICE_COOKIE,
+  THEME_CHOICE_STORAGE_KEY,
+  THEME_COOKIE,
+  THEME_STORAGE_KEY,
+  type ThemeMode,
+} from '@/lib/theme';
 
 export const metadata: Metadata = {
   title: 'Wadi AI',
@@ -24,7 +31,7 @@ function localeBootstrapScript(initialLocale: Locale) {
 }
 
 function themeBootstrapScript(initialTheme: ThemeMode | null) {
-  return `(function(){try{var theme=null;try{theme=window.localStorage.getItem(${JSON.stringify(THEME_STORAGE_KEY)})}catch(e){}if(theme!=='light'&&theme!=='dark'){var match=document.cookie.match(/(?:^|; )${THEME_COOKIE}=(light|dark)(?:;|$)/);theme=match?match[1]:null}if(theme!=='light'&&theme!=='dark'){theme=${initialTheme ? JSON.stringify(initialTheme) : 'null'}}if(theme!=='light'&&theme!=='dark'){theme=window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}document.documentElement.classList.toggle('dark',theme==='dark');document.documentElement.dataset.theme=theme;document.cookie='${THEME_COOKIE}='+theme+'; path=/; max-age=31536000; samesite=lax'}catch(e){}})();`;
+  return `(function(){try{var theme=null;var explicit=false;try{explicit=window.localStorage.getItem(${JSON.stringify(THEME_CHOICE_STORAGE_KEY)})==='explicit';if(explicit){theme=window.localStorage.getItem(${JSON.stringify(THEME_STORAGE_KEY)})}}catch(e){}if(!explicit){explicit=/(?:^|; )${THEME_CHOICE_COOKIE}=explicit(?:;|$)/.test(document.cookie)}if(explicit&&theme!=='light'&&theme!=='dark'){var match=document.cookie.match(/(?:^|; )${THEME_COOKIE}=(light|dark)(?:;|$)/);theme=match?match[1]:null}if(explicit&&theme!=='light'&&theme!=='dark'){theme=${initialTheme ? JSON.stringify(initialTheme) : 'null'}}if(theme!=='light'&&theme!=='dark'){theme='light'}document.documentElement.classList.toggle('dark',theme==='dark');document.documentElement.dataset.theme=theme;document.cookie='${THEME_COOKIE}='+theme+'; path=/; max-age=31536000; samesite=lax'}catch(e){}})();`;
 }
 
 export default async function RootLayout({
@@ -37,7 +44,8 @@ export default async function RootLayout({
     getLocaleFromCookieValue(cookieStore.get(LOCALE_COOKIE)?.value) ??
     getLocaleFromCookieValue(cookieStore.get(LEGACY_LOCALE_COOKIE)?.value) ??
     DEFAULT_LOCALE;
-  const initialTheme = getThemeFromCookieValue(cookieStore.get(THEME_COOKIE)?.value);
+  const hasExplicitThemeChoice = cookieStore.get(THEME_CHOICE_COOKIE)?.value === 'explicit';
+  const initialTheme = hasExplicitThemeChoice ? getThemeFromCookieValue(cookieStore.get(THEME_COOKIE)?.value) : null;
   const initialDir = localeDirections[initialLocale];
 
   return (

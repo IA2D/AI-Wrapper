@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import ThemeToggle from './ThemeToggle';
+import { applyTheme, getPreferredTheme, persistTheme } from '@/lib/theme';
 
 type Period = 'day' | 'week' | 'month' | 'year';
 type CommandKind = 'curl' | 'javascript' | 'php' | 'python';
@@ -81,6 +83,7 @@ export default function UserApiConsole() {
   const [usageMode, setUsageMode] = useState<UsageMode>('text');
   const [copyState, setCopyState] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const origin = typeof window === 'undefined' ? 'http://localhost:3000' : window.location.origin;
 
   const selectedKey = apiKeys.find((key) => key.id === selectedKeyId) || apiKeys[0] || null;
@@ -96,6 +99,19 @@ export default function UserApiConsole() {
       })
       .catch((err) => setError(err instanceof Error ? err.message : 'Failed to load API keys'));
   }, []);
+
+  useEffect(() => {
+    const preferredTheme = getPreferredTheme();
+    setIsDarkMode(preferredTheme === 'dark');
+    applyTheme(preferredTheme);
+  }, []);
+
+  const handleThemeChange = (isDark: boolean) => {
+    setIsDarkMode(isDark);
+    const nextTheme = isDark ? 'dark' : 'light';
+    persistTheme(nextTheme);
+    applyTheme(nextTheme);
+  };
 
   useEffect(() => {
     if (!selectedKey) {
@@ -238,23 +254,26 @@ print(response.json())`;
   };
 
   return (
-    <main className="min-h-screen bg-slate-950 text-white">
-      <header className="border-b border-white/10 bg-slate-950/95 px-4 py-5">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4">
+    <main className="wadi-api-console min-h-screen bg-[#fbfbfa] text-[#050505] dark:bg-[#080d0d] dark:text-white">
+      <header className="wadi-api-header sticky top-0 z-30 px-4 py-4 sm:px-6">
+        <div className="mx-auto flex max-w-[1560px] flex-wrap items-center justify-between gap-4">
           <div>
-            <div className="text-xs font-semibold uppercase tracking-[0.24em] text-teal-200">Developer Console</div>
-            <h1 className="mt-1 text-2xl font-semibold">Your API Keys</h1>
+            <div>
+              <div className="text-[11px] font-black uppercase tracking-[0.24em] text-[#1C7178] dark:text-[#9be4e8]">Developer Console</div>
+              <h1 className="mt-1 text-2xl font-black">Your API Keys</h1>
+            </div>
           </div>
-          <div className="flex gap-2">
-            <a href="/docs/api" className="rounded-lg border border-white/10 px-3 py-2 text-sm text-slate-200 hover:bg-white/10">Docs</a>
-            <a href="/chat" className="rounded-lg bg-teal-300 px-3 py-2 text-sm font-semibold text-slate-950 hover:bg-teal-200">Chat</a>
+          <div className="flex items-center gap-2">
+            <a href="/docs/api" className="wadi-api-top-link">Docs</a>
+            <a href="/chat" className="wadi-api-primary">Chat</a>
+            <ThemeToggle isDark={isDarkMode} onChange={handleThemeChange} />
           </div>
         </div>
       </header>
 
-      <div className="mx-auto grid max-w-7xl gap-5 px-4 py-6 lg:grid-cols-[360px_minmax(0,1fr)]">
+      <div className="mx-auto grid max-w-[1560px] gap-5 px-4 py-6 sm:px-6 lg:grid-cols-[360px_minmax(0,1fr)] lg:py-8">
         {error && (
-          <div className="rounded-lg border border-red-400/30 bg-red-950/40 px-4 py-3 text-sm text-red-100 lg:col-span-2">
+          <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700 shadow-sm dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-200 lg:col-span-2">
             {error}
           </div>
         )}
@@ -263,23 +282,23 @@ print(response.json())`;
           <Panel title="Assigned Keys">
             <div className="space-y-3">
               {apiKeys.length === 0 ? (
-                <p className="text-sm leading-6 text-slate-400">No API keys are assigned to your account yet.</p>
+                <p className="text-sm font-bold leading-6 text-black/52 dark:text-white/58">No API keys are assigned to your account yet.</p>
               ) : apiKeys.map((key) => (
                 <button
                   key={key.id}
                   onClick={() => setSelectedKeyId(key.id)}
-                  className={`w-full rounded-lg border p-4 text-left transition ${
+                  className={`wadi-api-key-card ${
                     selectedKey?.id === key.id
-                      ? 'border-teal-300 bg-teal-300/10'
-                      : 'border-white/10 bg-slate-950 hover:border-white/25'
+                      ? 'is-active'
+                      : ''
                   }`}
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <div className="font-semibold">{key.name}</div>
-                      <div className="mt-1 text-xs text-slate-500">{key.keyPrefix}...</div>
+                      <div className="font-black">{key.name}</div>
+                      <div className="mt-1 text-xs font-bold text-black/44 dark:text-white/44">{key.keyPrefix}...</div>
                     </div>
-                    <span className={`rounded px-2 py-1 text-xs ${key.status === 'active' ? 'bg-emerald-400/15 text-emerald-200' : 'bg-slate-700 text-slate-300'}`}>
+                    <span className={`wadi-api-status ${key.status === 'active' ? 'is-active' : ''}`}>
                       {key.status}
                     </span>
                   </div>
@@ -316,7 +335,7 @@ print(response.json())`;
 
               <Panel title="Ready Commands">
                 {!selectedKey.token && (
-                  <div className="mb-4 rounded-lg border border-amber-300/30 bg-amber-950/30 px-4 py-3 text-sm text-amber-100">
+                  <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-bold text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-100">
                     This key was created before key reveal support. Ask an admin to create a new assigned key to enable one-click command copying.
                   </div>
                 )}
@@ -325,10 +344,10 @@ print(response.json())`;
                     <button
                       key={mode}
                       onClick={() => setUsageMode(mode as UsageMode)}
-                      className={`rounded-lg px-3 py-2 text-sm font-semibold capitalize ${
+                      className={`wadi-api-chip capitalize ${
                         usageMode === mode
-                          ? 'bg-emerald-300 text-slate-950'
-                          : 'bg-white/10 text-slate-200 hover:bg-white/15'
+                          ? 'is-active'
+                          : ''
                       }`}
                     >
                       {mode}
@@ -340,8 +359,8 @@ print(response.json())`;
                     <button
                       key={kind}
                       onClick={() => setCommandKind(kind)}
-                      className={`rounded-lg px-3 py-2 text-sm font-semibold capitalize ${
-                        commandKind === kind ? 'bg-teal-300 text-slate-950' : 'bg-white/10 text-slate-200 hover:bg-white/15'
+                      className={`wadi-api-chip capitalize ${
+                        commandKind === kind ? 'is-active' : ''
                       }`}
                     >
                       {kind}
@@ -349,25 +368,25 @@ print(response.json())`;
                   ))}
                   <button
                     onClick={() => copy(command, 'command')}
-                    className="ml-auto rounded-lg border border-white/10 px-3 py-2 text-sm text-teal-100 hover:bg-white/10"
+                    className="wadi-api-secondary ml-auto"
                   >
                     {copyState === 'command' ? 'Copied' : 'Copy command'}
                   </button>
                 </div>
-                <pre className="max-h-[440px] overflow-auto rounded-lg border border-white/10 bg-black p-4 text-xs leading-6 text-teal-50">
+                <pre className="wadi-api-code max-h-[440px] overflow-auto p-4 text-xs leading-6">
                   <code>{command}</code>
                 </pre>
               </Panel>
 
               <Panel title="API Key">
                 <div className="flex flex-col gap-3 md:flex-row md:items-center">
-                  <code className="min-w-0 flex-1 overflow-x-auto rounded-lg border border-white/10 bg-black px-3 py-3 text-xs text-teal-100">
+                  <code className="wadi-api-code min-w-0 flex-1 overflow-x-auto px-3 py-3 text-xs">
                     {selectedKey.token || `${selectedKey.keyPrefix}...`}
                   </code>
                   <button
                     disabled={!selectedKey.token}
                     onClick={() => selectedKey.token && copy(selectedKey.token, 'token')}
-                    className="rounded-lg bg-white px-4 py-3 text-sm font-semibold text-slate-950 hover:bg-teal-100 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="wadi-api-primary px-4 py-3 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {copyState === 'token' ? 'Copied' : 'Copy key'}
                   </button>
@@ -399,7 +418,7 @@ print(response.json())`;
             </>
           ) : (
             <Panel title="No API access yet">
-              <p className="text-sm leading-6 text-slate-300">
+              <p className="text-sm font-bold leading-6 text-black/56 dark:text-white/62">
                 When an admin assigns one or more API keys to your account, they will appear here with limits,
                 usage, allowed media types, and ready-to-copy commands.
               </p>
@@ -413,8 +432,8 @@ print(response.json())`;
 
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-lg border border-white/10 bg-slate-900 p-5 shadow-2xl shadow-black/20">
-      <h2 className="mb-4 text-base font-semibold">{title}</h2>
+    <section className="wadi-api-panel p-5">
+      <h2 className="mb-4 text-base font-black text-[#062c30] dark:text-[#e9fbfc]">{title}</h2>
       {children}
     </section>
   );
@@ -422,46 +441,46 @@ function Panel({ title, children }: { title: string; children: React.ReactNode }
 
 function Metric({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-lg border border-white/10 bg-slate-900 p-4">
-      <div className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</div>
-      <div className="mt-2 text-2xl font-semibold text-white">{value}</div>
+    <div className="wadi-api-metric p-4">
+      <div className="text-[11px] font-black uppercase tracking-[0.18em] text-black/44 dark:text-white/46">{label}</div>
+      <div className="mt-2 text-2xl font-black text-[#062c30] dark:text-[#e9fbfc]">{value}</div>
     </div>
   );
 }
 
 function LimitRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-center justify-between gap-4 rounded-lg bg-slate-950 px-3 py-2">
-      <span className="text-slate-500">{label}</span>
-      <span className="text-right font-medium text-slate-100">{value}</span>
+    <div className="wadi-api-limit-row">
+      <span>{label}</span>
+      <strong>{value}</strong>
     </div>
   );
 }
 
 function Pill({ children }: { children: React.ReactNode }) {
-  return <span className="rounded bg-white/10 px-2 py-1 text-xs text-teal-100">{children}</span>;
+  return <span className="wadi-api-pill">{children}</span>;
 }
 
 function DataTable({ headers, rows }: { headers: string[]; rows: React.ReactNode[][] }) {
   return (
-    <div className="max-h-80 overflow-auto">
+    <div className="wadi-api-table-wrap max-h-80 overflow-auto">
       <table className="w-full min-w-[420px] text-left text-sm">
-        <thead className="sticky top-0 bg-slate-900 text-xs uppercase tracking-wide text-slate-500">
+        <thead className="sticky top-0 text-[11px] uppercase tracking-[0.12em] text-black/46 dark:text-white/46">
           <tr>
             {headers.map((header) => (
-              <th key={header} className="border-b border-white/10 px-3 py-2 font-semibold">{header}</th>
+              <th key={header} className="border-b border-black/8 bg-white/80 px-3 py-3 font-black backdrop-blur dark:border-white/10 dark:bg-[#111817]/88">{header}</th>
             ))}
           </tr>
         </thead>
         <tbody>
           {rows.length === 0 ? (
             <tr>
-              <td colSpan={headers.length} className="px-3 py-8 text-center text-slate-500">No usage yet</td>
+              <td colSpan={headers.length} className="px-3 py-8 text-center font-bold text-black/42 dark:text-white/46">No usage yet</td>
             </tr>
           ) : rows.map((row, index) => (
-            <tr key={index} className="border-b border-white/10 last:border-0">
+            <tr key={index} className="border-b border-black/5 last:border-0 dark:border-white/8">
               {row.map((cell, cellIndex) => (
-                <td key={cellIndex} className="px-3 py-3 text-slate-300">{cell}</td>
+                <td key={cellIndex} className="px-3 py-3 font-bold text-black/72 dark:text-white/76">{cell}</td>
               ))}
             </tr>
           ))}

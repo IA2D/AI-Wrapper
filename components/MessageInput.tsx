@@ -24,6 +24,21 @@ interface MessageInputProps {
   onPDFRemove?: (docId: string) => void;
   isPDFUploading?: boolean;
   onVoiceError?: (message: string) => void;
+  thinkingMode: boolean;
+  onToggleThinkingMode: () => void;
+  labels: {
+    attachImages: string;
+    attachPdf: string;
+    voiceStart: string;
+    voiceStop: string;
+    send: string;
+    stop: string;
+    thinkingOn: string;
+    thinkingOff: string;
+    thinkingTitle: string;
+    processingPdf: string;
+    stopRecording: string;
+  };
 }
 
 function formatRecordingTime(seconds: number) {
@@ -49,6 +64,9 @@ export default function MessageInput({
   onPDFRemove,
   isPDFUploading = false,
   onVoiceError,
+  thinkingMode,
+  onToggleThinkingMode,
+  labels,
 }: MessageInputProps) {
   const [isRecordingVoice, setIsRecordingVoice] = useState(false);
   const [recordingSeconds, setRecordingSeconds] = useState(0);
@@ -63,6 +81,8 @@ export default function MessageInput({
   const recordingStartedAtRef = useRef(0);
   const recordingTimerRef = useRef<number | null>(null);
   const recordingTimeoutRef = useRef<number | null>(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const hasDraft = value.trim().length > 0;
 
   const clearVoiceTimers = () => {
     if (recordingTimerRef.current) {
@@ -278,6 +298,12 @@ export default function MessageInput({
     onChange(event.target.value);
   };
 
+  const handleComposerSurfaceClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    const target = event.target as HTMLElement;
+    if (target.closest('button, label, input, textarea')) return;
+    textareaRef.current?.focus();
+  };
+
   const handleSendClick = () => {
     if (isSubmitting) {
       onCancel?.();
@@ -321,7 +347,7 @@ export default function MessageInput({
               <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
-              <span>Processing PDF...</span>
+              <span>{labels.processingPdf}</span>
             </div>
           )}
           {selectedPDFs.map((pdf) => (
@@ -427,82 +453,94 @@ export default function MessageInput({
             onClick={stopVoiceRecording}
             className="rounded-full bg-red-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-red-700"
           >
-            Stop
+            {labels.stopRecording}
           </button>
         </div>
       )}
 
       {/* Input area */}
-      <div className="wadi-composer-surface flex items-end gap-2 rounded-[28px] p-2 transition-shadow">
-        {/* Attach button */}
-        <input
-          id="file-upload-input"
-          type="file"
-          multiple
-          onChange={handleFileInputChange}
-          className="hidden"
-          accept="image/*"
-        />
-        <label
-          htmlFor="file-upload-input"
-          className="wadi-composer-icon flex h-9 w-9 flex-shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors"
-          aria-label="Attach images"
-        >
-          <svg
-            className="w-5 h-5 text-gray-500 dark:text-gray-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
+      <div
+        className={`wadi-composer-surface flex items-center rounded-[28px] p-2 transition-shadow ${
+          hasDraft ? 'is-writing gap-2' : 'is-empty gap-2'
+        }`}
+        dir="ltr"
+        onClick={handleComposerSurfaceClick}
+      >
+        <div className="wadi-composer-tool-group flex flex-shrink-0 items-center gap-1">
+          {/* Attach button */}
+          <input
+            id="file-upload-input"
+            type="file"
+            multiple
+            onChange={handleFileInputChange}
+            className="hidden"
+            accept="image/*"
+          />
+          <label
+            htmlFor="file-upload-input"
+            className="wadi-composer-icon flex h-9 w-9 flex-shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors"
+            aria-label={labels.attachImages}
+            title={labels.attachImages}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-            />
-          </svg>
-        </label>
-
-        {/* PDF upload button */}
-        {onPDFSelect && (
-          <>
-            <input
-              id="pdf-upload-input"
-              type="file"
-              onChange={handlePDFInputChange}
-              className="hidden"
-              accept=".pdf,application/pdf"
-            />
-            <label
-              htmlFor="pdf-upload-input"
-              className="wadi-composer-icon flex h-9 w-9 flex-shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors"
-              aria-label="Upload PDF"
+            <svg
+              className="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
             >
-              <svg
-                className="w-5 h-5 text-gray-500 dark:text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
+            </svg>
+          </label>
+
+          {/* PDF upload button */}
+          {onPDFSelect && (
+            <>
+              <input
+                id="pdf-upload-input"
+                type="file"
+                onChange={handlePDFInputChange}
+                className="hidden"
+                accept=".pdf,application/pdf"
+              />
+              <label
+                htmlFor="pdf-upload-input"
+                className="wadi-composer-icon flex h-9 w-9 flex-shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors"
+                aria-label={labels.attachPdf}
+                title={labels.attachPdf}
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                />
-              </svg>
-            </label>
-          </>
-        )}
+                <svg
+                  className="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
+                </svg>
+              </label>
+            </>
+          )}
+        </div>
         
         <textarea
+          ref={textareaRef}
           value={value}
           onChange={handleChange}
           onKeyDown={handleKeyDown}
-          placeholder="Message..."
           rows={1}
-          dir={textDirection(value)}
-          className={`flex-1 resize-none border-0 bg-transparent px-2 py-2.5 text-base font-bold text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-0 dark:text-gray-100 dark:placeholder:text-gray-500 ${textAlignClass(value)}`}
+          dir={hasDraft ? textDirection(value) : 'auto'}
+          className={`wadi-composer-textarea resize-none border-0 bg-transparent px-2 py-2.5 text-base font-bold text-gray-950 placeholder:text-gray-500 focus:outline-none focus:ring-0 dark:text-white dark:placeholder:text-white/45 ${
+            hasDraft ? textAlignClass(value) : 'text-left'
+          }`}
           style={{
             minHeight: '2.5rem',
             maxHeight: '8rem',
@@ -514,6 +552,22 @@ export default function MessageInput({
           }}
         />
 
+        <div className="wadi-composer-action-group flex flex-shrink-0 items-center gap-1.5">
+        <button
+          type="button"
+          onClick={onToggleThinkingMode}
+          disabled={isSubmitting}
+          className={`wadi-thinking-composer-toggle flex h-9 flex-shrink-0 items-center gap-1.5 rounded-full px-3 text-xs font-black transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
+            thinkingMode ? 'is-active' : ''
+          }`}
+          aria-pressed={thinkingMode}
+          aria-label={labels.thinkingTitle}
+          title={labels.thinkingTitle}
+        >
+          <span className="h-2 w-2 rounded-full" aria-hidden="true" />
+          <span>{thinkingMode ? labels.thinkingOn : labels.thinkingOff}</span>
+        </button>
+
         <button
           type="button"
           onClick={handleVoiceClick}
@@ -521,10 +575,10 @@ export default function MessageInput({
           className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full transition-colors ${
             isRecordingVoice
               ? 'bg-red-600 text-white hover:bg-red-700'
-              : 'wadi-composer-icon text-gray-500 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-400'
+              : 'wadi-composer-icon disabled:cursor-not-allowed disabled:opacity-50'
           }`}
-          aria-label={isRecordingVoice ? 'Stop voice input' : 'Start voice input'}
-          title={isRecordingVoice ? `Recording ${recordingSeconds}s / 60s` : 'Voice input'}
+          aria-label={isRecordingVoice ? labels.voiceStop : labels.voiceStart}
+          title={isRecordingVoice ? `${recordingSeconds}s / 60s` : labels.voiceStart}
         >
           {isRecordingVoice ? (
             <span className="flex items-center gap-1 text-xs font-semibold">
@@ -543,6 +597,7 @@ export default function MessageInput({
         
         {/* Send button */}
         <button
+          type="button"
           onClick={handleSendClick}
           disabled={!isSubmitting && disabled}
           className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full transition-all duration-200 ${
@@ -550,7 +605,7 @@ export default function MessageInput({
               ? 'bg-red-600 hover:bg-red-700'
               : 'bg-[#1C7178] hover:bg-[#15565c] disabled:cursor-not-allowed disabled:bg-gray-200 dark:disabled:bg-white/10'
           }`}
-          aria-label={isSubmitting ? 'Stop response' : 'Send message'}
+          aria-label={isSubmitting ? labels.stop : labels.send}
         >
           {isSubmitting ? (
             <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 24 24">
@@ -572,6 +627,7 @@ export default function MessageInput({
             </svg>
           )}
         </button>
+        </div>
       </div>
     </div>
   );
