@@ -590,19 +590,19 @@ export default function ChatInterface({
 
   return (
     <div
-      className="relative flex flex-col bg-white dark:bg-gray-900"
+      className="wadi-chat-interface relative flex flex-col"
       style={{ height: '100%' }}
       onDragOver={handleChatDragOver}
       onDragLeave={handleChatDragLeave}
       onDrop={handleChatDrop}
     >
       {chatDragType && (
-        <div className="pointer-events-none absolute inset-4 z-20 flex items-center justify-center rounded-xl border-2 border-dashed border-blue-500 bg-blue-50/90 text-blue-900 shadow-lg dark:bg-blue-950/80 dark:text-blue-100">
+        <div className="pointer-events-none absolute inset-4 z-20 flex items-center justify-center rounded-lg border-2 border-dashed border-[#1C7178] bg-[#e7f5f6]/90 text-[#15565c] shadow-[0_28px_90px_rgba(28,113,120,0.18)] backdrop-blur-xl dark:bg-[#082f33]/88 dark:text-[#d3edef]">
           <div className="text-center">
-            <div className="text-lg font-semibold">
+            <div className="text-lg font-black">
               {chatDragType === 'image' ? 'Drop images to attach' : chatDragType === 'pdf' ? 'Drop PDF to attach' : 'Drop files to attach'}
             </div>
-            <div className="mt-1 text-sm">
+            <div className="mt-1 text-sm font-bold opacity-70">
               {chatDragType === 'image'
                 ? 'Images will be added to your next message.'
                 : chatDragType === 'pdf'
@@ -614,8 +614,8 @@ export default function ChatInterface({
       )}
       {/* Error banner */}
       {error && (
-        <div className="bg-red-50 dark:bg-red-900/20 border-b border-red-200 dark:border-red-800 px-4 py-3">
-          <div className="max-w-3xl mx-auto flex items-center justify-between">
+        <div className="px-4 py-3">
+          <div className="mx-auto flex max-w-4xl items-center justify-between rounded-lg border border-red-200 bg-red-50/90 px-4 py-3 shadow-sm backdrop-blur-xl dark:border-red-900/60 dark:bg-red-950/35">
             <div className="flex items-center gap-2">
               <svg className="w-5 h-5 text-red-600 dark:text-red-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -645,73 +645,156 @@ export default function ChatInterface({
         </div>
       )}
 
-      {/* Message list area */}
-      <MessageList 
-        messages={session.messages} 
-        isStreaming={showSessionStreaming}
-        streamingContent={showSessionStreaming ? streamingContent : ''}
-        streamingThinkingContent={showSessionStreaming ? streamingThinkingContent : ''}
-        showThinking={thinkingMode}
-        onOpenMemories={onOpenMemories}
-        processingLabel={processingLabel}
-      />
-
-      {/* Input area */}
-      <div className="border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 px-4 py-4 md:px-6 md:py-6">
-        <div className="max-w-3xl mx-auto">
-          {canContinueLastMessage && !isBusyInCurrentSession && (
-            <div className="mb-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-center text-sm text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-100">
-              <div className="font-medium">The response stopped before it finished.</div>
-              <div className="mt-2 flex justify-center">
-                <button
-                  onClick={handleContinueResponse}
-                  className="rounded-full bg-amber-600 px-4 py-1.5 text-sm font-medium text-white transition-colors hover:bg-amber-500"
-                >
-                  Continue where it stopped
-                </button>
-              </div>
-            </div>
-          )}
-          {availableModels.length > 0 && (
-            <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-900">
-              <span className="font-medium text-gray-700 dark:text-gray-200">Model</span>
-              <select
-                value={modelSelection}
-                onChange={(event) => setModelSelection(event.target.value)}
-                disabled={isBusyInCurrentSession}
-                className="min-w-[220px] rounded-md border border-gray-300 bg-white px-2.5 py-1.5 text-sm text-gray-800 outline-none dark:border-gray-700 dark:bg-gray-950 dark:text-gray-100"
-              >
-                <option value="default">Default</option>
-                {adaptiveAvailable && <option value="adaptive">Adaptive</option>}
-                {availableModels.map((model) => (
-                  <option key={model.id} value={model.id}>
-                    {model.label}{model.isDefault ? ' (default)' : ''} - {model.provider}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
-          <MessageInput
-            value={currentInput}
-            onChange={handleInputChange}
-            onSubmit={handleSendMessage}
-            onCancel={handleCancelMessage}
-            disabled={isSubmitDisabled}
-            isSubmitting={isBusyInCurrentSession}
-            onFileSelect={handleFileSelect}
-            selectedFiles={selectedImages}
-            onFileRemove={handleFileRemove}
-            selectedAudio={selectedAudio}
-            onVoiceSelect={handleVoiceSelect}
-            onVoiceRemove={handleVoiceRemove}
-            onVoiceError={setError}
-            onPDFSelect={handlePDFSelect}
-            selectedPDFs={attachedPDFs}
-            onPDFRemove={handlePDFRemove}
-            isPDFUploading={isPDFUploading}
+      <div className="wadi-chat-workbench flex min-h-0 flex-1">
+        <section className="flex min-w-0 flex-1 flex-col">
+          {/* Message list area */}
+          <MessageList
+            messages={session.messages}
+            isStreaming={showSessionStreaming}
+            streamingContent={showSessionStreaming ? streamingContent : ''}
+            streamingThinkingContent={showSessionStreaming ? streamingThinkingContent : ''}
+            showThinking={thinkingMode}
+            onOpenMemories={onOpenMemories}
+            processingLabel={processingLabel}
           />
-        </div>
+
+          {/* Input area */}
+          <div className="wadi-chat-composer-wrap px-4 py-4 md:px-6 md:py-5">
+            <div className="mx-auto max-w-4xl">
+              {session.messages.length === 0 && !currentInput && (
+                <div className="mb-3 flex flex-wrap justify-center gap-2">
+                  {[
+                    'Summarize this PDF',
+                    'Draft an Arabic reply',
+                    'Create a proposal outline',
+                    'Turn notes into action items',
+                  ].map((prompt) => (
+                    <button
+                      key={prompt}
+                      type="button"
+                      onClick={() => setCurrentInput(prompt)}
+                      className="wadi-starter-chip"
+                    >
+                      {prompt}
+                    </button>
+                  ))}
+                </div>
+              )}
+              {canContinueLastMessage && !isBusyInCurrentSession && (
+                <div className="mb-3 rounded-lg border border-amber-200 bg-amber-50/90 px-4 py-3 text-center text-sm font-bold text-amber-900 shadow-sm backdrop-blur-xl dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-100">
+                  <div className="font-black">The response stopped before it finished.</div>
+                  <div className="mt-2 flex justify-center">
+                    <button
+                      onClick={handleContinueResponse}
+                      className="rounded-full bg-amber-600 px-4 py-1.5 text-sm font-black text-white transition-colors hover:bg-amber-500"
+                    >
+                      Continue where it stopped
+                    </button>
+                  </div>
+                </div>
+              )}
+              {availableModels.length > 0 && (
+                <div className="wadi-model-selector mb-3 flex flex-wrap items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm">
+                  <span className="font-black text-black/62 dark:text-white/62">Model</span>
+                  <select
+                    value={modelSelection}
+                    onChange={(event) => setModelSelection(event.target.value)}
+                    disabled={isBusyInCurrentSession}
+                    className="min-w-[220px] rounded-full border border-black/10 bg-white/80 px-3 py-1.5 text-sm font-bold text-gray-800 outline-none focus:border-[#1C7178] dark:border-white/10 dark:bg-white/8 dark:text-gray-100"
+                  >
+                    <option value="default">Default</option>
+                    {adaptiveAvailable && <option value="adaptive">Adaptive</option>}
+                    {availableModels.map((model) => (
+                      <option key={model.id} value={model.id}>
+                        {model.label}{model.isDefault ? ' (default)' : ''} - {model.provider}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+              <MessageInput
+                value={currentInput}
+                onChange={handleInputChange}
+                onSubmit={handleSendMessage}
+                onCancel={handleCancelMessage}
+                disabled={isSubmitDisabled}
+                isSubmitting={isBusyInCurrentSession}
+                onFileSelect={handleFileSelect}
+                selectedFiles={selectedImages}
+                onFileRemove={handleFileRemove}
+                selectedAudio={selectedAudio}
+                onVoiceSelect={handleVoiceSelect}
+                onVoiceRemove={handleVoiceRemove}
+                onVoiceError={setError}
+                onPDFSelect={handlePDFSelect}
+                selectedPDFs={attachedPDFs}
+                onPDFRemove={handlePDFRemove}
+                isPDFUploading={isPDFUploading}
+              />
+            </div>
+          </div>
+        </section>
+
+        <aside className="wadi-context-rail hidden w-[320px] shrink-0 flex-col gap-3 p-4 xl:flex">
+          <div className="wadi-context-card">
+            <div className="text-[11px] font-black uppercase tracking-[0.18em] text-[#1C7178] dark:text-[#8fcfd3]">Session</div>
+            <div className="mt-3 grid grid-cols-3 gap-2">
+              <ContextStat label="Messages" value={String(session.messages.length)} />
+              <ContextStat label="PDFs" value={String(attachedPDFs.length)} />
+              <ContextStat label="Media" value={String(selectedImages.length + selectedAudio.length)} />
+            </div>
+          </div>
+
+          <div className="wadi-context-card">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <div className="text-[11px] font-black uppercase tracking-[0.18em] text-[#1C7178] dark:text-[#8fcfd3]">Memory</div>
+                <p className="mt-2 text-sm font-bold leading-6 text-black/58 dark:text-white/52">
+                  Keep important facts attached to the workspace.
+                </p>
+              </div>
+              <button type="button" onClick={onOpenMemories} className="wadi-context-action">
+                Open
+              </button>
+            </div>
+          </div>
+
+          <div className="wadi-context-card">
+            <div className="text-[11px] font-black uppercase tracking-[0.18em] text-[#1C7178] dark:text-[#8fcfd3]">Context</div>
+            <div className="mt-3 space-y-2">
+              {attachedPDFs.length > 0 ? (
+                attachedPDFs.slice(0, 4).map((pdf) => (
+                  <div key={pdf.docId} className="wadi-context-row">
+                    <span className="min-w-0 truncate">{pdf.name}</span>
+                    <strong>{pdf.pageCount}p</strong>
+                  </div>
+                ))
+              ) : (
+                <div className="rounded-lg border border-dashed border-black/10 px-3 py-5 text-center text-sm font-bold text-black/42 dark:border-white/10 dark:text-white/36">
+                  Drop a PDF into the chat to add context.
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="wadi-context-card mt-auto">
+            <div className="text-[11px] font-black uppercase tracking-[0.18em] text-[#1C7178] dark:text-[#8fcfd3]">Mode</div>
+            <div className="mt-3 flex items-center justify-between gap-3 rounded-lg bg-[#e7f5f6] px-3 py-2 text-sm font-black text-[#15565c] dark:bg-white/8 dark:text-[#d3edef]">
+              <span>{thinkingMode ? 'Thinking enabled' : 'Direct answer'}</span>
+              <span className={`h-2.5 w-2.5 rounded-full ${thinkingMode ? 'bg-[#1C7178]' : 'bg-black/20 dark:bg-white/24'}`} />
+            </div>
+          </div>
+        </aside>
       </div>
+    </div>
+  );
+}
+
+function ContextStat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-lg bg-[#e7f5f6] px-3 py-3 text-center dark:bg-white/8">
+      <div className="text-lg font-black text-[#15565c] dark:text-[#d3edef]">{value}</div>
+      <div className="mt-0.5 text-[10px] font-black uppercase tracking-wide text-black/42 dark:text-white/36">{label}</div>
     </div>
   );
 }

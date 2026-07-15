@@ -131,8 +131,8 @@ export default function SettingsPanel({
           {/* Content */}
           <div className="p-6 space-y-4">
             {/* Info message */}
-            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-              <p className="text-sm text-blue-800 dark:text-blue-300">
+            <div className="bg-teal-50 dark:bg-teal-900/20 border border-teal-200 dark:border-teal-800 rounded-lg p-4">
+              <p className="text-sm text-teal-800 dark:text-teal-300">
                 API configuration is managed through environment variables. To change the API endpoint or key, update your .env file and restart the application.
               </p>
             </div>
@@ -155,7 +155,7 @@ export default function SettingsPanel({
                   bg-white dark:bg-gray-700
                   border border-gray-300 dark:border-gray-600
                   text-gray-900 dark:text-white
-                  focus:outline-none focus:ring-2 focus:ring-blue-500
+                  focus:outline-none focus:ring-2 focus:ring-teal-500
                   transition-colors
                 "
                 placeholder="Qwen/Qwen3.5-9B"
@@ -169,7 +169,7 @@ export default function SettingsPanel({
                 disabled={testStatus === 'testing'}
                 className="
                   w-full px-4 py-2 rounded-lg
-                  bg-blue-600 hover:bg-blue-700
+                  bg-teal-600 hover:bg-teal-700
                   disabled:bg-gray-400 disabled:cursor-not-allowed
                   text-white font-medium
                   transition-colors
@@ -255,7 +255,7 @@ export default function SettingsPanel({
               onClick={handleSave}
               className="
                 px-4 py-2 rounded-lg
-                bg-blue-600 hover:bg-blue-700
+                bg-teal-600 hover:bg-teal-700
                 text-white font-medium
                 transition-colors
               "

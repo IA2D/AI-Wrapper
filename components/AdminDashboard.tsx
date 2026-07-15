@@ -506,7 +506,7 @@ export default function AdminDashboard({ admin }: { admin: AdminUser }) {
               onClick={() => setTab(id as Tab)}
               className={`rounded-lg px-3 py-2 text-sm font-medium ${
                 tab === id
-                  ? 'bg-blue-600 text-white'
+                  ? 'bg-teal-600 text-white'
                   : 'bg-white text-gray-700 hover:bg-gray-100 dark:bg-gray-900 dark:text-gray-300 dark:hover:bg-gray-800'
               }`}
             >
@@ -525,7 +525,7 @@ export default function AdminDashboard({ admin }: { admin: AdminUser }) {
                   <DataTable
                     headers={['Name', 'Role', 'Keys', 'Requests', 'Tokens', 'Actions']}
                     rows={summary.users.map((user) => [
-                      <button key="name" onClick={() => setSelectedUserId(user.id)} className="text-left font-medium text-blue-600 hover:underline dark:text-blue-300">
+                      <button key="name" onClick={() => setSelectedUserId(user.id)} className="text-left font-medium text-teal-600 hover:underline dark:text-teal-300">
                         {user.name}<span className="block text-xs font-normal text-gray-500">{user.email}</span>
                       </button>,
                       user.role,
@@ -533,7 +533,7 @@ export default function AdminDashboard({ admin }: { admin: AdminUser }) {
                       numberFormat(user.requests),
                       numberFormat(user.tokens),
                       <div key="actions" className="flex flex-wrap gap-2">
-                        <button onClick={() => setSelectedUserId(user.id)} className="rounded bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-200">Edit</button>
+                        <button onClick={() => setSelectedUserId(user.id)} className="rounded bg-teal-50 px-2 py-1 text-xs font-medium text-teal-700 dark:bg-teal-950 dark:text-teal-200">Edit</button>
                         {user.id !== admin.id && (
                           <button onClick={() => deleteUser(user.id)} className="rounded bg-red-50 px-2 py-1 text-xs font-medium text-red-700 dark:bg-red-950 dark:text-red-200">Delete</button>
                         )}
@@ -582,7 +582,7 @@ export default function AdminDashboard({ admin }: { admin: AdminUser }) {
                             placeholder="New password, optional"
                           />
                           <div className="flex gap-2">
-                            <button onClick={updateUser} className="rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-500">Save account</button>
+                            <button onClick={updateUser} className="rounded-lg bg-teal-600 px-3 py-2 text-sm font-medium text-white hover:bg-teal-500">Save account</button>
                             {userDetail.user.id !== admin.id && (
                               <button onClick={() => deleteUser(userDetail.user.id)} className="rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-500">Delete</button>
                             )}
@@ -696,7 +696,7 @@ export default function AdminDashboard({ admin }: { admin: AdminUser }) {
                     <div className="rounded-lg border border-gray-200 p-3 dark:border-gray-800">
                       <div className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">Limitation Type</div>
                       <div className="grid grid-cols-2 gap-2">
-                        <label className={`flex cursor-pointer items-center gap-2 rounded-lg border p-2 transition-colors ${keyForm.limitMode === 'unlimited' ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-950/30' : 'border-gray-200 dark:border-gray-700'}`}>
+                        <label className={`flex cursor-pointer items-center gap-2 rounded-lg border p-2 transition-colors ${keyForm.limitMode === 'unlimited' ? 'border-teal-500 bg-teal-50 dark:border-teal-400 dark:bg-teal-950/30' : 'border-gray-200 dark:border-gray-700'}`}>
                           <input
                             type="radio"
                             name="limitMode"
@@ -707,7 +707,7 @@ export default function AdminDashboard({ admin }: { admin: AdminUser }) {
                           />
                           <span className="text-sm">Unlimited</span>
                         </label>
-                        <label className={`flex cursor-pointer items-center gap-2 rounded-lg border p-2 transition-colors ${keyForm.limitMode === 'requests' ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-950/30' : 'border-gray-200 dark:border-gray-700'}`}>
+                        <label className={`flex cursor-pointer items-center gap-2 rounded-lg border p-2 transition-colors ${keyForm.limitMode === 'requests' ? 'border-teal-500 bg-teal-50 dark:border-teal-400 dark:bg-teal-950/30' : 'border-gray-200 dark:border-gray-700'}`}>
                           <input
                             type="radio"
                             name="limitMode"
@@ -718,7 +718,7 @@ export default function AdminDashboard({ admin }: { admin: AdminUser }) {
                           />
                           <span className="text-sm">By Requests</span>
                         </label>
-                        <label className={`flex cursor-pointer items-center gap-2 rounded-lg border p-2 transition-colors ${keyForm.limitMode === 'tokens' ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-950/30' : 'border-gray-200 dark:border-gray-700'}`}>
+                        <label className={`flex cursor-pointer items-center gap-2 rounded-lg border p-2 transition-colors ${keyForm.limitMode === 'tokens' ? 'border-teal-500 bg-teal-50 dark:border-teal-400 dark:bg-teal-950/30' : 'border-gray-200 dark:border-gray-700'}`}>
                           <input
                             type="radio"
                             name="limitMode"
@@ -729,7 +729,7 @@ export default function AdminDashboard({ admin }: { admin: AdminUser }) {
                           />
                           <span className="text-sm">By Tokens</span>
                         </label>
-                        <label className={`flex cursor-pointer items-center gap-2 rounded-lg border p-2 transition-colors ${keyForm.limitMode === 'date' ? 'border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-950/30' : 'border-gray-200 dark:border-gray-700'}`}>
+                        <label className={`flex cursor-pointer items-center gap-2 rounded-lg border p-2 transition-colors ${keyForm.limitMode === 'date' ? 'border-teal-500 bg-teal-50 dark:border-teal-400 dark:bg-teal-950/30' : 'border-gray-200 dark:border-gray-700'}`}>
                           <input
                             type="radio"
                             name="limitMode"
@@ -798,7 +798,7 @@ export default function AdminDashboard({ admin }: { admin: AdminUser }) {
                         </label>
                       )}
                     </div>
-                    <button className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-500">
+                    <button className="w-full rounded-lg bg-teal-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-teal-500">
                       Create Key
                     </button>
                   </form>
@@ -947,7 +947,7 @@ export default function AdminDashboard({ admin }: { admin: AdminUser }) {
                       <span>Use as default model</span>
                     </label>
                     <ModelCapabilityChecks value={modelForm} onChange={(patch) => setModelForm({ ...modelForm, ...patch })} />
-                    <button className="w-full rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-500">
+                    <button className="w-full rounded-lg bg-teal-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-teal-500">
                       Add Model
                     </button>
                   </form>
@@ -1116,7 +1116,7 @@ function ModelConfigCard({
         <div>
           <div className="flex flex-wrap items-center gap-2">
             <div className="font-medium">{model.label}</div>
-            {model.isDefault && <span className="rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 dark:bg-blue-950 dark:text-blue-200">Default</span>}
+            {model.isDefault && <span className="rounded-full bg-teal-50 px-2 py-0.5 text-xs font-medium text-teal-700 dark:bg-teal-950 dark:text-teal-200">Default</span>}
           </div>
           <div className="mt-1 text-xs text-gray-500">{model.provider} - {model.model}</div>
           <div className="mt-1 max-w-xl truncate text-xs text-gray-500">{model.endpoint}</div>
@@ -1221,7 +1221,7 @@ function ModelConfigCard({
               setTokenLimit('');
             }}
             disabled={!limitUserId}
-            className="rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white disabled:opacity-50"
+            className="rounded-lg bg-teal-600 px-3 py-2 text-sm font-medium text-white disabled:opacity-50"
           >
             Save Limit
           </button>
@@ -1360,7 +1360,7 @@ function KeyLimitEditor({ apiKey, onUpdate }: { apiKey: ApiKey; onUpdate: (patch
           </div>
           <button
             onClick={startEditing}
-            className="rounded bg-blue-100 px-2 py-1 text-xs font-medium text-blue-700 hover:bg-blue-200 dark:bg-blue-950 dark:text-blue-200"
+            className="rounded bg-teal-100 px-2 py-1 text-xs font-medium text-teal-700 hover:bg-teal-200 dark:bg-teal-950 dark:text-teal-200"
           >
             Change
           </button>
@@ -1370,11 +1370,11 @@ function KeyLimitEditor({ apiKey, onUpdate }: { apiKey: ApiKey; onUpdate: (patch
   }
 
   return (
-    <div className="block rounded-lg bg-blue-50 p-2 dark:bg-blue-950/30">
+    <div className="block rounded-lg bg-teal-50 p-2 dark:bg-teal-950/30">
       <div className="mb-2 text-xs font-medium text-gray-600 dark:text-gray-300">Limit Type</div>
       <div className="mb-2 grid grid-cols-2 gap-1">
         {(['unlimited', 'requests', 'tokens', 'date'] as LimitMode[]).map((mode) => (
-          <label key={mode} className={`flex cursor-pointer items-center gap-1 rounded border p-1 text-xs ${editMode === mode ? 'border-blue-500 bg-blue-100 dark:border-blue-400 dark:bg-blue-900' : 'border-gray-200 dark:border-gray-700'}`}>
+          <label key={mode} className={`flex cursor-pointer items-center gap-1 rounded border p-1 text-xs ${editMode === mode ? 'border-teal-500 bg-teal-100 dark:border-teal-400 dark:bg-teal-900' : 'border-gray-200 dark:border-gray-700'}`}>
             <input
               type="radio"
               name={`limitMode-${apiKey.id}`}
@@ -1422,7 +1422,7 @@ function KeyLimitEditor({ apiKey, onUpdate }: { apiKey: ApiKey; onUpdate: (patch
       )}
 
       <div className="flex gap-1">
-        <button onClick={save} className="flex-1 rounded bg-blue-600 px-2 py-1 text-xs font-medium text-white hover:bg-blue-500">Save</button>
+        <button onClick={save} className="flex-1 rounded bg-teal-600 px-2 py-1 text-xs font-medium text-white hover:bg-teal-500">Save</button>
         <button onClick={cancel} className="flex-1 rounded bg-gray-200 px-2 py-1 text-xs font-medium text-gray-700 hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-200">Cancel</button>
       </div>
     </div>

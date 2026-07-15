@@ -937,7 +937,7 @@ function drawPdfSourcesSection(
         y: doc.y,
         fontSize: Math.max(style.bodyFontSize - 0.5, 10),
         lineGap: style.lineGap,
-        color: '#2563EB',
+        color: '#1C7178',
         underline: true,
         link: group.url,
       });

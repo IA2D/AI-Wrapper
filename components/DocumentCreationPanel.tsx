@@ -447,7 +447,7 @@ export default function DocumentCreationPanel({ thinkingMode }: { thinkingMode: 
         <div className="mb-5 rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
           <div className="mb-3 flex items-center justify-between">
             <h3 className="text-sm font-semibold">Saved jobs</h3>
-            <button onClick={loadJobs} className="text-xs font-medium text-blue-600 dark:text-blue-300">Refresh</button>
+            <button onClick={loadJobs} className="text-xs font-medium text-teal-600 dark:text-teal-300">Refresh</button>
           </div>
           <div className="grid gap-2 md:grid-cols-2">
             {savedJobs.slice(0, 6).map((job) => (
@@ -455,7 +455,7 @@ export default function DocumentCreationPanel({ thinkingMode }: { thinkingMode: 
                 key={job.id}
                 className={`rounded-lg border px-3 py-2 text-left transition-colors ${
                   job.id === jobId
-                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30'
+                    ? 'border-teal-500 bg-teal-50 dark:bg-teal-950/30'
                     : 'border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700'
                 }`}
               >
@@ -506,7 +506,7 @@ export default function DocumentCreationPanel({ thinkingMode }: { thinkingMode: 
                   onClick={() => setTemplateId(template.id)}
                   className={`rounded-lg border px-3 py-2 text-left transition-colors ${
                     templateId === template.id
-                      ? 'border-blue-500 bg-blue-50 text-blue-900 dark:bg-blue-950/40 dark:text-blue-100'
+                      ? 'border-teal-500 bg-teal-50 text-teal-900 dark:bg-teal-950/40 dark:text-teal-100'
                       : 'border-gray-200 bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800'
                   }`}
                 >
@@ -568,7 +568,7 @@ export default function DocumentCreationPanel({ thinkingMode }: { thinkingMode: 
 
           {error && <div className="rounded-lg bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-200">{error}</div>}
 
-          <button onClick={requestOutline} disabled={!prompt.trim() || isBusy} className="rounded-lg bg-blue-600 px-4 py-2.5 font-medium text-white hover:bg-blue-500 disabled:opacity-60">
+          <button onClick={requestOutline} disabled={!prompt.trim() || isBusy} className="rounded-lg bg-teal-600 px-4 py-2.5 font-medium text-white hover:bg-teal-500 disabled:opacity-60">
             {isBusy ? 'Planning...' : 'Create section plan'}
           </button>
         </div>
@@ -662,7 +662,7 @@ export default function DocumentCreationPanel({ thinkingMode }: { thinkingMode: 
           <div className="flex flex-wrap gap-2">
             <button onClick={() => setPhase('setup')} className="rounded-lg border border-gray-300 px-4 py-2.5 font-medium dark:border-gray-600">Back</button>
             <button onClick={saveCurrentJob} className="rounded-lg border border-gray-300 px-4 py-2.5 font-medium dark:border-gray-600">Save plan</button>
-            <button onClick={generateSections} disabled={includedSections.length === 0} className="rounded-lg bg-blue-600 px-4 py-2.5 font-medium text-white hover:bg-blue-500 disabled:opacity-60">
+            <button onClick={generateSections} disabled={includedSections.length === 0} className="rounded-lg bg-teal-600 px-4 py-2.5 font-medium text-white hover:bg-teal-500 disabled:opacity-60">
               {hasSavedGeneratedSections ? 'Resume generation' : 'Confirm and generate'}
             </button>
           </div>
@@ -676,7 +676,7 @@ export default function DocumentCreationPanel({ thinkingMode }: { thinkingMode: 
               <span>{activeSectionId ? `Generating ${outline?.sections.find((section) => section.id === activeSectionId)?.heading}` : enableSearch ? 'Searching sources...' : 'Finalizing'}</span>
               <span>{progress}%</span>
             </div>
-            <div className="h-2 rounded-full bg-gray-200 dark:bg-gray-700"><div className="h-full rounded-full bg-blue-600 transition-all" style={{ width: `${progress}%` }} /></div>
+            <div className="h-2 rounded-full bg-gray-200 dark:bg-gray-700"><div className="h-full rounded-full bg-teal-600 transition-all" style={{ width: `${progress}%` }} /></div>
             {activeSectionDraft && (
               <div className="mt-3 max-h-48 overflow-auto rounded-lg bg-gray-50 p-3 text-xs text-gray-600 dark:bg-gray-900 dark:text-gray-300">
                 <div className="mb-1 font-medium text-gray-800 dark:text-gray-100">Live stream</div>
@@ -684,7 +684,7 @@ export default function DocumentCreationPanel({ thinkingMode }: { thinkingMode: 
               </div>
             )}
             {!activeSectionId && (
-              <button onClick={generateSections} className="mt-3 rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-500">
+              <button onClick={generateSections} className="mt-3 rounded-lg bg-teal-600 px-3 py-2 text-sm font-medium text-white hover:bg-teal-500">
                 Resume generation
               </button>
             )}
@@ -927,7 +927,7 @@ function DocumentSectionPreview({
           ),
           th: ({ children }) => <th dir="auto" className={`border border-gray-200 bg-gray-100 px-3 py-2 align-top [overflow-wrap:anywhere] dark:border-gray-700 dark:bg-gray-700 ${markdownIsRtl ? 'text-right' : 'text-left'}`}>{children}</th>,
           td: ({ children }) => <td dir="auto" className={`border border-gray-200 px-3 py-2 align-top [overflow-wrap:anywhere] dark:border-gray-700 ${markdownIsRtl ? 'text-right' : 'text-left'}`}>{children}</td>,
-          a: ({ href, children }) => <a href={href} target="_blank" rel="noreferrer" className="break-all text-blue-600 underline [overflow-wrap:anywhere] dark:text-blue-400">{children}</a>,
+          a: ({ href, children }) => <a href={href} target="_blank" rel="noreferrer" className="break-all text-teal-600 underline [overflow-wrap:anywhere] dark:text-teal-400">{children}</a>,
         }}
       >
         {markdownText}
@@ -1019,7 +1019,7 @@ function SourcesSectionPreview({ sources }: { sources: SearchSource[] }) {
                 target="_blank"
                 rel="noreferrer"
                 dir="ltr"
-                className="shrink-0 rounded-md bg-blue-50 px-2.5 py-1 text-sm font-medium text-blue-700 underline underline-offset-2 dark:bg-blue-950/40 dark:text-blue-300"
+                className="shrink-0 rounded-md bg-teal-50 px-2.5 py-1 text-sm font-medium text-teal-700 underline underline-offset-2 dark:bg-teal-950/40 dark:text-teal-300"
               >
                 {normalizeSourcePreviewUrl(source)}
               </a>

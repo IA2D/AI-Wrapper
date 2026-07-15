@@ -11,7 +11,7 @@ import ThemeToggle from './ThemeToggle';
 import AuthScreen from './AuthScreen';
 import ToolWorkspace, { ToolMode } from './ToolWorkspace';
 import MemoryPanel from './MemoryPanel';
-import SiteFooter from './SiteFooter';
+import WadiLogo from './WadiLogo';
 
 // Default API configuration from environment variables
 const DEFAULT_API_CONFIG: APIConfiguration = {
@@ -208,10 +208,13 @@ export default function MainLayout() {
   // Show loading state
   if (isAuthLoading || (user && sessionsLoading)) {
     return (
-      <div className="flex items-center justify-center h-screen bg-white dark:bg-gray-900">
+      <div className="wadi-chat-loading flex h-screen items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
+          <WadiLogo showText={false} className="mx-auto mb-5 scale-150" />
+          <div className="mx-auto mb-4 h-1.5 w-36 overflow-hidden rounded-full bg-[#d3edef]">
+            <span className="block h-full w-1/2 rounded-full bg-[#1C7178] animate-[landing-meter-pulse_1.6s_ease-in-out_infinite]" />
+          </div>
+          <p className="text-sm font-black text-black/54">Preparing your workspace...</p>
         </div>
       </div>
     );
@@ -229,7 +232,8 @@ export default function MainLayout() {
   }
 
   return (
-    <div className="flex h-screen bg-white dark:bg-gray-900 overflow-hidden">
+    <div className="wadi-chat-shell flex h-screen overflow-hidden">
+      <div className="wadi-chat-bg" aria-hidden="true" />
       {/* Sidebar */}
       <Sidebar
         sessions={sessions}
@@ -245,14 +249,14 @@ export default function MainLayout() {
       />
 
       {/* Main content area */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="wadi-chat-main flex min-w-0 flex-1 flex-col">
         {/* Header */}
-        <header id="header" className="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 px-3 py-3 md:px-4 flex-shrink-0">
-          <div className="max-w-3xl mx-auto flex items-center justify-between gap-4">
+        <header id="header" className="wadi-chat-header flex-shrink-0 px-3 py-3 md:px-4">
+          <div className="mx-auto flex max-w-6xl items-center justify-between gap-4">
             {/* Left: Menu button (mobile) */}
             <button
               onClick={handleToggleSidebar}
-              className="md:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors flex-shrink-0"
+              className="wadi-chat-icon-button flex-shrink-0 md:hidden"
               aria-label="Toggle sidebar"
             >
               <svg
@@ -271,16 +275,26 @@ export default function MainLayout() {
             </button>
 
             {/* Center: Title */}
-            <h1 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white truncate">
-              {activeTool ? 'Tools' : 'Ai Chat'}
-            </h1>
+            <div className="min-w-0 flex-1">
+              <div className="flex min-w-0 items-center gap-3">
+                <WadiLogo showText={false} className="hidden shrink-0 sm:inline-flex" />
+                <div className="min-w-0">
+                  <h1 className="truncate text-sm font-black text-black md:text-base dark:text-white">
+                    {activeTool ? 'Wadi tools' : currentSession?.title && currentSession.title !== 'New Chat' ? currentSession.title : 'Wadi chat'}
+                  </h1>
+                  <p className="hidden text-xs font-bold text-black/45 sm:block dark:text-white/45">
+                    Chat, files, memory, and API context.
+                  </p>
+                </div>
+              </div>
+            </div>
 
             {/* Right: Controls */}
             <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
               {user.role === 'admin' && (
                 <a
                   href="/admin"
-                  className="hidden md:flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors"
+                  className="wadi-chat-pill hidden md:flex"
                 >
                   Admin
                 </a>
@@ -288,14 +302,14 @@ export default function MainLayout() {
               {hasApiKeys && (
                 <a
                   href="/api-console"
-                  className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-cyan-700 dark:text-cyan-200 bg-cyan-50 dark:bg-cyan-950/50 hover:bg-cyan-100 dark:hover:bg-cyan-900 rounded-lg transition-colors"
+                  className="wadi-chat-pill wadi-chat-pill-primary flex"
                 >
                   API Console
                 </a>
               )}
               <button
                 onClick={() => setIsMemoryOpen(true)}
-                className="flex items-center justify-center rounded-lg bg-gray-100 p-2 text-gray-700 transition-colors hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+                className="wadi-chat-icon-button"
                 aria-label="Open memory"
                 title="Memory"
               >
@@ -306,7 +320,7 @@ export default function MainLayout() {
               </button>
               <button
                 onClick={handleLogout}
-                className="hidden md:flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors"
+                className="wadi-chat-pill hidden md:flex"
               >
                 Logout
               </button>
@@ -325,7 +339,7 @@ export default function MainLayout() {
         <div className="flex min-h-0 flex-1 flex-col">
           {/* Main content */}
           {activeTool ? (
-            <div className="flex-1 overflow-auto bg-gray-50 dark:bg-gray-900">
+            <div className="wadi-chat-tool-area flex-1 overflow-auto">
               <ToolWorkspace activeTool={activeTool} thinkingMode={thinkingMode} />
             </div>
           ) : (
@@ -339,12 +353,13 @@ export default function MainLayout() {
                 onOpenMemories={() => setIsMemoryOpen(true)}
               />
             ) : (
-              <div className="flex-1 flex items-center justify-center bg-white dark:bg-gray-900">
-                <div className="text-center">
-                  <p className="text-gray-500 dark:text-gray-400 mb-4">No session selected</p>
+              <div className="flex flex-1 items-center justify-center">
+                <div className="wadi-chat-empty-panel text-center">
+                  <WadiLogo showText={false} className="mx-auto mb-4 scale-125" />
+                  <p className="mb-4 text-sm font-black text-black/58 dark:text-white/58">No session selected</p>
                   <button
                     onClick={handleNewChat}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    className="rounded-full bg-[#1C7178] px-5 py-3 text-sm font-black text-white transition hover:bg-[#15565c]"
                   >
                     Start New Chat
                   </button>
@@ -352,9 +367,6 @@ export default function MainLayout() {
               </div>
             )
           )}
-          <div className="border-t border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
-            <SiteFooter compact />
-          </div>
         </div>
       </div>
       <MemoryPanel isOpen={isMemoryOpen} onClose={() => setIsMemoryOpen(false)} />

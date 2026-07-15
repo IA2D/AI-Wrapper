@@ -102,7 +102,7 @@ export default function MemoryPanel({ isOpen, onClose }: MemoryPanelProps) {
       <aside className="flex h-full w-full max-w-md flex-col border-l border-gray-200 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-900">
         <div className="flex items-center justify-between border-b border-gray-200 px-5 py-4 dark:border-gray-700">
           <div className="flex items-center gap-3">
-            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-200">
+            <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-teal-50 text-teal-700 dark:bg-teal-950 dark:text-teal-200">
               <MemoryIcon />
             </span>
             <div>
@@ -144,7 +144,7 @@ export default function MemoryPanel({ isOpen, onClose }: MemoryPanelProps) {
                         value={draftContent}
                         onChange={(event) => setDraftContent(event.target.value)}
                         maxLength={500}
-                        className="min-h-24 w-full resize-y rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none focus:border-blue-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white"
+                        className="min-h-24 w-full resize-y rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 outline-none focus:border-teal-500 dark:border-gray-600 dark:bg-gray-900 dark:text-white"
                       />
                       <div className="grid grid-cols-2 gap-2">
                         <select
@@ -166,7 +166,7 @@ export default function MemoryPanel({ isOpen, onClose }: MemoryPanelProps) {
                         <button onClick={cancelEditing} className="rounded-lg px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-200 dark:text-gray-300 dark:hover:bg-gray-700">
                           Cancel
                         </button>
-                        <button onClick={() => saveEdit(memory.id)} className="rounded-lg bg-blue-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-blue-700">
+                        <button onClick={() => saveEdit(memory.id)} className="rounded-lg bg-teal-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-teal-700">
                           Save
                         </button>
                       </div>
@@ -174,7 +174,7 @@ export default function MemoryPanel({ isOpen, onClose }: MemoryPanelProps) {
                   ) : (
                     <>
                       <div className="mb-2 flex items-center justify-between gap-2">
-                        <span className="rounded-full bg-white px-2 py-0.5 text-xs font-medium capitalize text-blue-700 dark:bg-gray-900 dark:text-blue-200">
+                        <span className="rounded-full bg-white px-2 py-0.5 text-xs font-medium capitalize text-teal-700 dark:bg-gray-900 dark:text-teal-200">
                           {memory.kind}
                         </span>
                         <span className="text-xs text-gray-500 dark:text-gray-400">Importance {memory.importance}</span>

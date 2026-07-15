@@ -312,12 +312,12 @@ export default function MessageInput({
   };
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="wadi-message-input flex flex-col gap-2">
       {/* PDF chips */}
       {(selectedPDFs.length > 0 || isPDFUploading) && (
-        <div className="flex flex-wrap gap-2 mb-2">
+        <div className="mb-2 flex flex-wrap gap-2">
           {isPDFUploading && (
-            <div className="flex items-center gap-2 px-3 py-1.5 bg-amber-50 border border-amber-200 rounded-full text-sm text-amber-700 animate-pulse">
+            <div className="flex animate-pulse items-center gap-2 rounded-full border border-amber-200 bg-amber-50/90 px-3 py-1.5 text-sm font-bold text-amber-700">
               <svg className="w-4 h-4 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
               </svg>
@@ -327,18 +327,18 @@ export default function MessageInput({
           {selectedPDFs.map((pdf) => (
             <div
               key={pdf.docId}
-              className="flex items-center gap-2 px-3 py-1.5 bg-blue-50 border border-blue-200 rounded-full text-sm text-blue-800 group"
+              className="group flex items-center gap-2 rounded-full border border-[#8fcfd3]/70 bg-[#e7f5f6]/90 px-3 py-1.5 text-sm font-bold text-[#15565c]"
               title={`${pdf.name} (${pdf.pageCount} pages)`}
             >
               <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
               <span className="max-w-[120px] truncate">{pdf.name}</span>
-              <span className="text-xs text-blue-600">({pdf.pageCount}p)</span>
+              <span className="text-xs text-teal-600">({pdf.pageCount}p)</span>
               {onPDFRemove && (
                 <button
                   onClick={() => onPDFRemove(pdf.docId)}
-                  className="ml-1 p-0.5 rounded-full hover:bg-blue-200 transition-colors"
+                  className="ml-1 rounded-full p-0.5 transition-colors hover:bg-[#8fcfd3]/45"
                   aria-label={`Remove ${pdf.name}`}
                 >
                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -357,7 +357,7 @@ export default function MessageInput({
           {selectedFiles.map((file) => (
             <div
               key={file.id}
-              className="relative group w-20 h-20 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-800"
+              className="group relative h-20 w-20 overflow-hidden rounded-lg border border-black/10 bg-white/70 shadow-sm dark:border-white/10 dark:bg-white/8"
             >
               <img
                 src={file.url}
@@ -433,7 +433,7 @@ export default function MessageInput({
       )}
 
       {/* Input area */}
-      <div className="flex items-end gap-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-3xl shadow-sm hover:shadow-md transition-shadow focus-within:border-gray-400 dark:focus-within:border-gray-500 focus-within:shadow-md p-2">
+      <div className="wadi-composer-surface flex items-end gap-2 rounded-[28px] p-2 transition-shadow">
         {/* Attach button */}
         <input
           id="file-upload-input"
@@ -445,7 +445,7 @@ export default function MessageInput({
         />
         <label
           htmlFor="file-upload-input"
-          className="flex-shrink-0 w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer transition-colors"
+          className="wadi-composer-icon flex h-9 w-9 flex-shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors"
           aria-label="Attach images"
         >
           <svg
@@ -475,7 +475,7 @@ export default function MessageInput({
             />
             <label
               htmlFor="pdf-upload-input"
-              className="flex-shrink-0 w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer transition-colors"
+              className="wadi-composer-icon flex h-9 w-9 flex-shrink-0 cursor-pointer items-center justify-center rounded-full transition-colors"
               aria-label="Upload PDF"
             >
               <svg
@@ -502,7 +502,7 @@ export default function MessageInput({
           placeholder="Message..."
           rows={1}
           dir={textDirection(value)}
-          className={`flex-1 px-2 py-2.5 text-base resize-none bg-transparent border-0 focus:outline-none focus:ring-0 placeholder:text-gray-400 dark:placeholder:text-gray-500 text-gray-900 dark:text-gray-100 ${textAlignClass(value)}`}
+          className={`flex-1 resize-none border-0 bg-transparent px-2 py-2.5 text-base font-bold text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-0 dark:text-gray-100 dark:placeholder:text-gray-500 ${textAlignClass(value)}`}
           style={{
             minHeight: '2.5rem',
             maxHeight: '8rem',
@@ -518,10 +518,10 @@ export default function MessageInput({
           type="button"
           onClick={handleVoiceClick}
           disabled={isSubmitting}
-          className={`flex-shrink-0 w-9 h-9 flex items-center justify-center rounded-full transition-colors ${
+          className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full transition-colors ${
             isRecordingVoice
               ? 'bg-red-600 text-white hover:bg-red-700'
-              : 'hover:bg-gray-100 text-gray-500 dark:text-gray-400 dark:hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-50'
+              : 'wadi-composer-icon text-gray-500 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-400'
           }`}
           aria-label={isRecordingVoice ? 'Stop voice input' : 'Start voice input'}
           title={isRecordingVoice ? `Recording ${recordingSeconds}s / 60s` : 'Voice input'}
@@ -545,10 +545,10 @@ export default function MessageInput({
         <button
           onClick={handleSendClick}
           disabled={!isSubmitting && disabled}
-          className={`flex-shrink-0 w-9 h-9 flex items-center justify-center rounded-full transition-all duration-200 ${
+          className={`flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full transition-all duration-200 ${
             isSubmitting
               ? 'bg-red-600 hover:bg-red-700'
-              : 'bg-black dark:bg-gray-700 hover:bg-gray-800 dark:hover:bg-gray-600 disabled:bg-gray-200 dark:disabled:bg-gray-700 disabled:cursor-not-allowed'
+              : 'bg-[#1C7178] hover:bg-[#15565c] disabled:cursor-not-allowed disabled:bg-gray-200 dark:disabled:bg-white/10'
           }`}
           aria-label={isSubmitting ? 'Stop response' : 'Send message'}
         >

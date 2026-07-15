@@ -28,9 +28,9 @@ export default function FileAttachment({ attachment }: FileAttachmentProps) {
   // Video: Show video icon with filename
   if (type === 'video') {
     return (
-      <div className="flex items-center gap-2 px-3 py-2 bg-blue-50 border border-blue-200 rounded-lg max-w-xs">
+      <div className="flex items-center gap-2 px-3 py-2 bg-teal-50 border border-teal-200 rounded-lg max-w-xs">
         <svg
-          className="w-6 h-6 text-blue-600 flex-shrink-0"
+          className="w-6 h-6 text-teal-600 flex-shrink-0"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -43,7 +43,7 @@ export default function FileAttachment({ attachment }: FileAttachmentProps) {
             d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
           />
         </svg>
-        <span className="text-sm text-blue-900 truncate">{name}</span>
+        <span className="text-sm text-teal-900 truncate">{name}</span>
       </div>
     );
   }

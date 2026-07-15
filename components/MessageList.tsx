@@ -109,12 +109,22 @@ export default function MessageList({
   };
 
   return (
-    <div ref={containerRef} onScroll={handleScroll} className="flex-1 overflow-y-auto bg-white dark:bg-gray-900">
+    <div ref={containerRef} onScroll={handleScroll} className="wadi-message-list flex-1 overflow-y-auto">
       {messages.length === 0 && !isStreaming ? (
-        <div className="flex h-full items-center justify-center px-4 text-center text-gray-500 dark:text-gray-400">
-          <div>
-            <div className="text-lg font-medium text-gray-700 dark:text-gray-200">Start a conversation</div>
-            <div className="mt-1 text-sm">Ask anything, attach images, or drag a PDF into the chat.</div>
+        <div className="flex h-full items-center justify-center px-4 text-center">
+          <div className="wadi-chat-empty-panel max-w-xl">
+            <div className="mx-auto mb-5 grid h-14 w-14 place-items-center rounded-full bg-[#1C7178] text-sm font-black text-white shadow-[0_18px_46px_rgba(28,113,120,0.24)]">
+              AI
+            </div>
+            <div className="text-2xl font-black text-gray-900 dark:text-white">Start with a question, file, or voice note.</div>
+            <div className="mx-auto mt-3 max-w-md text-sm font-bold leading-6 text-black/54 dark:text-white/50">
+              Wadi can read context, remember useful details, and turn messy work into clean answers.
+            </div>
+            <div className="mt-6 flex flex-wrap justify-center gap-2 text-xs font-black text-[#15565c] dark:text-[#d3edef]">
+              <span className="rounded-full bg-[#e7f5f6] px-3 py-1.5 dark:bg-white/8">Attach PDF</span>
+              <span className="rounded-full bg-[#e7f5f6] px-3 py-1.5 dark:bg-white/8">Ask in Arabic or English</span>
+              <span className="rounded-full bg-[#e7f5f6] px-3 py-1.5 dark:bg-white/8">Generate files</span>
+            </div>
           </div>
         </div>
       ) : (
@@ -135,12 +145,12 @@ export default function MessageList({
 
       {isStreaming && !streamingContent && (!showThinking || !streamingThinkingContent) && (
         <div className="w-full px-4 py-3">
-          <div className="mx-auto flex max-w-4xl justify-start">
+          <div className="mx-auto flex max-w-5xl justify-start">
             <div className="flex max-w-[88%] items-start gap-2 sm:max-w-[78%]">
-              <div className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-200 text-xs font-semibold text-gray-800 dark:bg-gray-700 dark:text-gray-100">
+              <div className="wadi-assistant-avatar mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-black">
                 AI
               </div>
-              <div className="min-w-0 rounded-2xl rounded-tl-md border border-gray-200 bg-gray-50 px-4 py-3 text-gray-700 shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200">
+              <div className="wadi-assistant-bubble min-w-0 rounded-2xl rounded-tl-md px-4 py-3 text-gray-700 dark:text-gray-200">
                 <div className="flex items-center gap-2 text-sm">
                   <span>{processingLabel}</span>
                   <span className="flex items-center gap-1" aria-hidden="true">
@@ -157,13 +167,13 @@ export default function MessageList({
 
       {isStreaming && (streamingContent || (showThinking && streamingThinkingContent)) && (
         <div className="w-full px-4 py-3">
-          <div className="mx-auto flex max-w-4xl justify-start">
+          <div className="mx-auto flex max-w-5xl justify-start">
             <div className="flex max-w-[88%] items-start gap-2 sm:max-w-[78%]">
-              <div className="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gray-200 text-xs font-semibold text-gray-800 dark:bg-gray-700 dark:text-gray-100">
+              <div className="wadi-assistant-avatar mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-black">
                 AI
               </div>
               <div
-                className={`min-w-0 max-w-full rounded-2xl rounded-tl-md border border-gray-200 bg-gray-50 px-4 py-3 text-gray-900 shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 ${textAlignClass(streamingContent)}`}
+                className={`wadi-assistant-bubble min-w-0 max-w-full rounded-2xl rounded-tl-md px-4 py-3 text-gray-900 dark:text-gray-100 ${textAlignClass(streamingContent)}`}
                 dir={textDirection(streamingContent)}
               >
                 {showThinking && streamingThinkingContent && (

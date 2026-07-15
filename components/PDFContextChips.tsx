@@ -27,19 +27,19 @@ export default function PDFContextChips({ pdfs, onRemove, isLoading }: PDFContex
       {pdfs.map((pdf) => (
         <div
           key={pdf.docId}
-          className="flex items-center gap-2 px-3 py-1.5 bg-blue-50 border border-blue-200 rounded-full text-sm text-blue-800 group"
+          className="flex items-center gap-2 px-3 py-1.5 bg-teal-50 border border-teal-200 rounded-full text-sm text-teal-800 group"
           title={`${pdf.name} (${pdf.pageCount} pages, ${pdf.chunkCount} chunks)`}
         >
           <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
           </svg>
           <span className="max-w-[150px] truncate">{pdf.name}</span>
-          <span className="text-xs text-blue-600">({pdf.pageCount}p)</span>
+          <span className="text-xs text-teal-600">({pdf.pageCount}p)</span>
           
           {onRemove && (
             <button
               onClick={() => onRemove(pdf.docId)}
-              className="ml-1 p-0.5 rounded-full hover:bg-blue-200 opacity-0 group-hover:opacity-100 transition-opacity"
+              className="ml-1 p-0.5 rounded-full hover:bg-teal-200 opacity-0 group-hover:opacity-100 transition-opacity"
               aria-label={`Remove ${pdf.name}`}
             >
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">

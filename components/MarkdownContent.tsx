@@ -60,7 +60,7 @@ export default function MarkdownContent({
               href={href}
               target="_blank"
               rel="noreferrer"
-              className="break-all text-blue-600 underline decoration-blue-300 underline-offset-2 [overflow-wrap:anywhere] dark:text-blue-400"
+              className="break-all text-teal-600 underline decoration-teal-300 underline-offset-2 [overflow-wrap:anywhere] dark:text-teal-400"
             >
               {children}
             </a>
@@ -164,7 +164,7 @@ function InlineFlowDiagram({
         <svg id={flow.id} width={flow.width} height={flow.height} viewBox={`0 0 ${flow.width} ${flow.height}`} xmlns="http://www.w3.org/2000/svg" role="img" aria-label={title}>
           <defs>
             <marker id={`${flow.id}-arrow`} markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
-              <path d="M0,0 L0,6 L9,3 z" fill="#2563eb" />
+              <path d="M0,0 L0,6 L9,3 z" fill="#1c7178" />
             </marker>
             <pattern id={`${flow.id}-grid`} width="24" height="24" patternUnits="userSpaceOnUse">
               <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#e2e8f0" strokeWidth="0.8" />
@@ -187,7 +187,7 @@ function InlineFlowDiagram({
                 <path
                   d={route.path}
                   fill="none"
-                  stroke="#2563eb"
+                  stroke="#1c7178"
                   strokeWidth="2.2"
                   strokeLinecap="round"
                   strokeLinejoin="round"

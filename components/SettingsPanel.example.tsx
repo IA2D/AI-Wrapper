@@ -78,7 +78,7 @@ export default function SettingsPanelExample() {
           onClick={() => setIsSettingsOpen(true)}
           className="
             px-4 py-2 rounded-lg
-            bg-blue-600 hover:bg-blue-700
+            bg-teal-600 hover:bg-teal-700
             text-white font-medium
             transition-colors
             flex items-center gap-2

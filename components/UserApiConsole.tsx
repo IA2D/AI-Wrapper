@@ -242,12 +242,12 @@ print(response.json())`;
       <header className="border-b border-white/10 bg-slate-950/95 px-4 py-5">
         <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4">
           <div>
-            <div className="text-xs font-semibold uppercase tracking-[0.24em] text-cyan-200">Developer Console</div>
+            <div className="text-xs font-semibold uppercase tracking-[0.24em] text-teal-200">Developer Console</div>
             <h1 className="mt-1 text-2xl font-semibold">Your API Keys</h1>
           </div>
           <div className="flex gap-2">
             <a href="/docs/api" className="rounded-lg border border-white/10 px-3 py-2 text-sm text-slate-200 hover:bg-white/10">Docs</a>
-            <a href="/chat" className="rounded-lg bg-cyan-300 px-3 py-2 text-sm font-semibold text-slate-950 hover:bg-cyan-200">Chat</a>
+            <a href="/chat" className="rounded-lg bg-teal-300 px-3 py-2 text-sm font-semibold text-slate-950 hover:bg-teal-200">Chat</a>
           </div>
         </div>
       </header>
@@ -270,7 +270,7 @@ print(response.json())`;
                   onClick={() => setSelectedKeyId(key.id)}
                   className={`w-full rounded-lg border p-4 text-left transition ${
                     selectedKey?.id === key.id
-                      ? 'border-cyan-300 bg-cyan-300/10'
+                      ? 'border-teal-300 bg-teal-300/10'
                       : 'border-white/10 bg-slate-950 hover:border-white/25'
                   }`}
                 >
@@ -341,7 +341,7 @@ print(response.json())`;
                       key={kind}
                       onClick={() => setCommandKind(kind)}
                       className={`rounded-lg px-3 py-2 text-sm font-semibold capitalize ${
-                        commandKind === kind ? 'bg-cyan-300 text-slate-950' : 'bg-white/10 text-slate-200 hover:bg-white/15'
+                        commandKind === kind ? 'bg-teal-300 text-slate-950' : 'bg-white/10 text-slate-200 hover:bg-white/15'
                       }`}
                     >
                       {kind}
@@ -349,25 +349,25 @@ print(response.json())`;
                   ))}
                   <button
                     onClick={() => copy(command, 'command')}
-                    className="ml-auto rounded-lg border border-white/10 px-3 py-2 text-sm text-cyan-100 hover:bg-white/10"
+                    className="ml-auto rounded-lg border border-white/10 px-3 py-2 text-sm text-teal-100 hover:bg-white/10"
                   >
                     {copyState === 'command' ? 'Copied' : 'Copy command'}
                   </button>
                 </div>
-                <pre className="max-h-[440px] overflow-auto rounded-lg border border-white/10 bg-black p-4 text-xs leading-6 text-cyan-50">
+                <pre className="max-h-[440px] overflow-auto rounded-lg border border-white/10 bg-black p-4 text-xs leading-6 text-teal-50">
                   <code>{command}</code>
                 </pre>
               </Panel>
 
               <Panel title="API Key">
                 <div className="flex flex-col gap-3 md:flex-row md:items-center">
-                  <code className="min-w-0 flex-1 overflow-x-auto rounded-lg border border-white/10 bg-black px-3 py-3 text-xs text-cyan-100">
+                  <code className="min-w-0 flex-1 overflow-x-auto rounded-lg border border-white/10 bg-black px-3 py-3 text-xs text-teal-100">
                     {selectedKey.token || `${selectedKey.keyPrefix}...`}
                   </code>
                   <button
                     disabled={!selectedKey.token}
                     onClick={() => selectedKey.token && copy(selectedKey.token, 'token')}
-                    className="rounded-lg bg-white px-4 py-3 text-sm font-semibold text-slate-950 hover:bg-cyan-100 disabled:cursor-not-allowed disabled:opacity-50"
+                    className="rounded-lg bg-white px-4 py-3 text-sm font-semibold text-slate-950 hover:bg-teal-100 disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {copyState === 'token' ? 'Copied' : 'Copy key'}
                   </button>
@@ -439,7 +439,7 @@ function LimitRow({ label, value }: { label: string; value: string }) {
 }
 
 function Pill({ children }: { children: React.ReactNode }) {
-  return <span className="rounded bg-white/10 px-2 py-1 text-xs text-cyan-100">{children}</span>;
+  return <span className="rounded bg-white/10 px-2 py-1 text-xs text-teal-100">{children}</span>;
 }
 
 function DataTable({ headers, rows }: { headers: string[]; rows: React.ReactNode[][] }) {

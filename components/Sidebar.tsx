@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { ChatSession } from '@/types';
 import { ToolMode } from './ToolWorkspace';
+import WadiLogo from './WadiLogo';
 
 interface SidebarProps {
   sessions: ChatSession[];
@@ -130,7 +131,7 @@ export default function Sidebar({
       {/* Mobile overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm md:hidden"
           onClick={onToggle}
         />
       )}
@@ -139,19 +140,25 @@ export default function Sidebar({
       <aside
         className={`
           fixed md:relative top-0 left-0 h-full
-          w-64 lg:w-72 bg-gray-900 text-white
+          w-72
           flex flex-col
           transition-transform duration-300 ease-in-out
           z-50 md:z-auto
-          border-r border-gray-800
+          wadi-chat-sidebar
           ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
         `}
       >
         {/* Header with New Chat button */}
-        <div className="p-3 border-b border-gray-800">
+        <div className="border-b border-black/10 p-4">
+          <a href="/" className="mb-4 flex items-center justify-between gap-3 rounded-lg px-1">
+            <WadiLogo />
+            <span className="rounded-full border border-black/10 bg-white/70 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-[#1C7178]">
+              Workspace
+            </span>
+          </a>
           <button
             onClick={onNewChat}
-            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg bg-transparent border border-gray-700 hover:bg-gray-800 transition-colors text-sm font-medium"
+            className="wadi-sidebar-new-chat flex w-full items-center gap-3 rounded-lg px-3 py-3 text-sm font-black transition-colors"
           >
             <svg
               className="w-4 h-4"
@@ -170,17 +177,17 @@ export default function Sidebar({
           </button>
         </div>
 
-        <div className="border-b border-gray-800 px-3 py-3">
-          <div className="px-1 pb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">Tools</div>
+        <div className="border-b border-black/10 px-3 py-4">
+          <div className="px-1 pb-2 text-xs font-black uppercase tracking-[0.18em] text-black/38">Tools</div>
           <div className="space-y-1">
             {tools.map((tool) => (
               <button
                 key={tool.id}
                 onClick={() => onToolSelect(tool.id)}
-                className={`w-full rounded-lg px-3 py-2 text-left transition-colors ${
+                className={`wadi-sidebar-tool w-full rounded-lg px-3 py-2.5 text-left transition-colors ${
                   activeTool === tool.id
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-300 hover:bg-gray-800'
+                    ? 'is-active text-white'
+                    : 'text-black/62 hover:bg-black/[0.035]'
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -190,8 +197,8 @@ export default function Sidebar({
                     {tool.id === 'quiz' && <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 9a3 3 0 116 0c0 2-3 2-3 5m0 4h.01M5 4h14v16H5z" />}
                   </svg>
                   <div className="min-w-0">
-                    <div className="truncate text-sm font-medium">{tool.label}</div>
-                    <div className={`truncate text-xs ${activeTool === tool.id ? 'text-blue-100' : 'text-gray-500'}`}>{tool.detail}</div>
+                    <div className="truncate text-sm font-black">{tool.label}</div>
+                    <div className={`truncate text-xs font-bold ${activeTool === tool.id ? 'text-[#15565c]/70' : 'text-black/34'}`}>{tool.detail}</div>
                   </div>
                 </div>
               </button>
@@ -200,9 +207,9 @@ export default function Sidebar({
         </div>
 
         {/* Session list */}
-        <div className="flex-1 overflow-y-auto py-2 scrollbar-thin">
+        <div className="flex-1 overflow-y-auto py-3 scrollbar-thin">
           {sortedSessions.length === 0 ? (
-            <div className="px-3 py-8 text-center text-gray-500 text-sm">
+            <div className="mx-3 rounded-lg border border-black/10 bg-white/62 px-3 py-8 text-center text-sm font-bold text-black/38">
               No chat history yet
             </div>
           ) : (
@@ -221,18 +228,18 @@ export default function Sidebar({
                 >
                   {isDeleting ? (
                     // Delete confirmation
-                    <div className="px-3 py-2 bg-red-900/20 rounded-lg">
+                    <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-red-900">
                       <p className="text-sm mb-2">Delete this chat?</p>
                       <div className="flex gap-2">
                         <button
                           onClick={() => handleDeleteConfirm(session.id)}
-                          className="flex-1 px-2 py-1 text-xs bg-red-600 hover:bg-red-700 rounded transition-colors"
+                          className="flex-1 rounded bg-red-600 px-2 py-1 text-xs font-bold transition-colors hover:bg-red-700"
                         >
                           Delete
                         </button>
                         <button
                           onClick={handleDeleteCancel}
-                          className="flex-1 px-2 py-1 text-xs bg-gray-700 hover:bg-gray-600 rounded transition-colors"
+                          className="flex-1 rounded bg-black/10 px-2 py-1 text-xs font-bold transition-colors hover:bg-black/15"
                         >
                           Cancel
                         </button>
@@ -240,7 +247,7 @@ export default function Sidebar({
                     </div>
                   ) : isEditing ? (
                     // Rename input
-                    <div className="px-3 py-2 bg-gray-800 rounded-lg">
+                    <div className="rounded-lg border border-black/10 bg-white/70 px-3 py-2">
                       <input
                         type="text"
                         value={editTitle}
@@ -253,7 +260,7 @@ export default function Sidebar({
                           }
                         }}
                         onBlur={() => handleRenameSave(session.id)}
-                        className="w-full px-2 py-1 text-sm bg-gray-700 border border-gray-600 rounded focus:outline-none focus:border-blue-500"
+                        className="w-full rounded border border-black/10 bg-white px-2 py-1 text-sm text-black outline-none focus:border-[#1C7178]"
                         autoFocus
                       />
                     </div>
@@ -261,11 +268,11 @@ export default function Sidebar({
                     // Session item
                     <div
                       className={`
-                        w-full px-3 py-2 rounded-lg
-                        transition-colors relative
+                        w-full px-3 py-2.5 rounded-lg
+                        transition-colors relative wadi-sidebar-session
                         ${isActive 
-                          ? 'bg-gray-800 text-white' 
-                          : 'hover:bg-gray-800/50 text-gray-300'
+                          ? 'is-active text-white' 
+                          : 'text-black/62 hover:bg-black/[0.035]'
                         }
                       `}
                     >
@@ -274,10 +281,10 @@ export default function Sidebar({
                           onClick={() => onSessionSelect(session.id)}
                           className="flex-1 min-w-0 text-left"
                         >
-                          <div className="text-sm font-medium truncate">
+                          <div className="truncate text-sm font-black">
                             {getSessionTitle(session)}
                           </div>
-                          <div className="text-xs text-gray-400 mt-0.5">
+                          <div className="mt-0.5 text-xs font-bold text-black/34">
                             {formatDate(session.updatedAt)}
                           </div>
                         </button>
@@ -287,7 +294,7 @@ export default function Sidebar({
                           <div className="flex gap-1 flex-shrink-0">
                             <button
                               onClick={() => handleRenameStart(session)}
-                              className="p-1 hover:bg-gray-700 rounded transition-colors"
+                              className="rounded p-1 transition-colors hover:bg-black/5"
                               aria-label="Rename chat"
                             >
                               <svg
@@ -306,7 +313,7 @@ export default function Sidebar({
                             </button>
                             <button
                               onClick={() => handleDeleteClick(session.id)}
-                              className="p-1 hover:bg-red-600/20 rounded transition-colors"
+                              className="rounded p-1 transition-colors hover:bg-red-600/20"
                               aria-label="Delete chat"
                             >
                               <svg
@@ -337,7 +344,7 @@ export default function Sidebar({
         {/* Mobile close button */}
         <button
           onClick={onToggle}
-          className="md:hidden p-3 border-t border-gray-700 hover:bg-gray-800 transition-colors"
+          className="border-t border-black/10 p-3 transition-colors hover:bg-black/5 md:hidden"
         >
           <svg
             className="w-5 h-5 mx-auto"

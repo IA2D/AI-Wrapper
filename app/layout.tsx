@@ -2,10 +2,11 @@ import type { Metadata } from 'next';
 import 'katex/dist/katex.min.css';
 import '@xyflow/react/dist/style.css';
 import './globals.css';
+import { LanguageProvider } from '@/components/LanguageProvider';
 
 export const metadata: Metadata = {
-  title: 'AI Chat API Platform',
-  description: 'Governed multimodal AI chat, public API access, and admin usage controls.',
+  title: 'Wadi AI',
+  description: 'Bilingual AI chat, documents, and developer API endpoints powered by accessible models.',
 };
 
 export default function RootLayout({
@@ -14,8 +15,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="en" dir="ltr" suppressHydrationWarning>
+      <body>
+        <LanguageProvider>{children}</LanguageProvider>
+      </body>
     </html>
   );
 }

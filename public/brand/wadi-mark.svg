@@ -1,0 +1,21 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="wadi-ribbon-a" x1="78" y1="116" x2="424" y2="404" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2FC5C6"/>
+      <stop offset="0.42" stop-color="#0F8494"/>
+      <stop offset="1" stop-color="#033A58"/>
+    </linearGradient>
+    <linearGradient id="wadi-ribbon-b" x1="162" y1="408" x2="350" y2="106" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#04324D"/>
+      <stop offset="0.52" stop-color="#28B9BD"/>
+      <stop offset="1" stop-color="#60E2DC"/>
+    </linearGradient>
+    <filter id="wadi-shadow" x="48" y="92" width="416" height="328" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="20" stdDeviation="18" flood-color="#021827" flood-opacity="0.32"/>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="#08121A"/>
+  <path d="M87 143C129 143 166 150 194 171C221 191 239 223 251 267L261 304C267 328 279 341 297 343C316 345 329 334 338 310L401 143H452L384 319C367 363 338 386 297 386C255 386 228 363 214 318L203 280C193 246 181 224 165 211L123 348H77L137 188C122 174 105 162 87 153V143Z" fill="url(#wadi-ribbon-a)" filter="url(#wadi-shadow)"/>
+  <path d="M207 330C191 372 164 392 126 386L203 185C217 147 243 126 279 126C318 126 343 148 357 192L384 319C367 363 338 386 297 386C255 386 228 363 214 318L207 330ZM248 259L262 306C268 329 280 341 298 343C317 345 330 333 338 310L311 207C305 184 293 172 276 171C259 170 247 181 240 204L207 330H248Z" fill="url(#wadi-ribbon-b)" opacity="0.94"/>
+  <path d="M88 143C128 143 165 150 194 171L179 211C154 170 124 150 88 150V143Z" fill="#65E7DF" opacity="0.75"/>
+</svg>

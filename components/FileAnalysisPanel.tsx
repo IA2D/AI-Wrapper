@@ -146,7 +146,7 @@ export default function FileAnalysisPanel({ thinkingMode }: FileAnalysisPanelPro
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-          dragActive ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20' : 'border-gray-300 dark:border-gray-600'
+          dragActive ? 'border-teal-500 bg-teal-50 dark:bg-teal-900/20' : 'border-gray-300 dark:border-gray-600'
         }`}
       >
         <input
@@ -171,7 +171,7 @@ export default function FileAnalysisPanel({ thinkingMode }: FileAnalysisPanelPro
         <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <svg className="h-8 w-8 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="h-8 w-8 text-teal-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
               </svg>
               <div>
@@ -201,7 +201,7 @@ export default function FileAnalysisPanel({ thinkingMode }: FileAnalysisPanelPro
       <button
         onClick={handleAnalyze}
         disabled={!selectedFile || isAnalyzing}
-        className="w-full bg-blue-600 text-white py-3 rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="w-full bg-teal-600 text-white py-3 rounded-lg font-medium hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
         {isAnalyzing ? 'Analyzing...' : 'Analyze File'}
       </button>
@@ -223,7 +223,7 @@ export default function FileAnalysisPanel({ thinkingMode }: FileAnalysisPanelPro
           </div>
           {analysisResult.originalText && (
             <details className="text-sm">
-              <summary className="cursor-pointer text-blue-600 hover:text-blue-800">View original text (first 1000 chars)</summary>
+              <summary className="cursor-pointer text-teal-600 hover:text-teal-800">View original text (first 1000 chars)</summary>
               <div className="mt-2 p-3 bg-gray-100 dark:bg-gray-700 rounded text-gray-600 dark:text-gray-400 whitespace-pre-wrap">
                 {analysisResult.originalText}
               </div>
@@ -432,7 +432,7 @@ export default function FileAnalysisPanel({ thinkingMode }: FileAnalysisPanelPro
           onClick={() => { setActiveTab('analyze'); setSelectedFile(null); resetResults(); }}
           className={`flex-1 py-4 px-6 text-center font-medium transition-colors ${
             activeTab === 'analyze'
-              ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50 dark:bg-blue-900/20'
+              ? 'text-teal-600 border-b-2 border-teal-600 bg-teal-50 dark:bg-teal-900/20'
               : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
           }`}
         >

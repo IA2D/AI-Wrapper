@@ -49,7 +49,7 @@ function VisualNode({ data }: NodeProps) {
   }
 
   return (
-    <div className="min-w-[190px] max-w-[240px] rounded-xl border border-blue-500 bg-white px-4 py-3 text-center text-sm font-semibold leading-snug text-slate-900 shadow-[0_12px_30px_rgba(37,99,235,0.14)]">
+    <div className="min-w-[190px] max-w-[240px] rounded-xl border border-teal-500 bg-white px-4 py-3 text-center text-sm font-semibold leading-snug text-slate-900 shadow-[0_12px_30px_rgba(28,113,120,0.14)]">
       <Handle id="target-top" type="target" position={Position.Top} className={handleClass} />
       <Handle id="source-top" type="source" position={Position.Top} className={handleClass} />
       <Handle id="target-right" type="target" position={Position.Right} className={handleClass} />
@@ -104,14 +104,14 @@ function VisualEdge({
         d={path}
         markerEnd={markerEnd}
         fill="none"
-        stroke="#2563eb"
+        stroke="#1c7178"
         strokeWidth={2.5}
         strokeLinecap="round"
       />
       {labelText ? (
         <EdgeLabelRenderer>
           <div
-            className="pointer-events-none absolute rounded-full border border-blue-100 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 shadow-sm"
+            className="pointer-events-none absolute rounded-full border border-teal-100 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 shadow-sm"
             dir={hasArabicText(labelText) ? 'rtl' : 'ltr'}
             style={{
               transform: `translate(-50%, -50%) translate(${labelX}px, ${labelY}px)`,
@@ -239,7 +239,7 @@ export default function FlowChartPanel() {
         type: 'visualEdge',
         label: edge.label,
         markerEnd: { type: MarkerType.ArrowClosed },
-        style: { stroke: '#2563eb', strokeWidth: 2 },
+        style: { stroke: '#1c7178', strokeWidth: 2 },
       };
     });
   }, [displayContent, nodes]);
@@ -287,7 +287,7 @@ export default function FlowChartPanel() {
       id: `edge-${Date.now()}`,
       type: 'visualEdge',
       markerEnd: { type: MarkerType.ArrowClosed },
-      style: { stroke: '#2563eb', strokeWidth: 2 },
+      style: { stroke: '#1c7178', strokeWidth: 2 },
     }, current));
   }, []);
 
@@ -503,7 +503,7 @@ export default function FlowChartPanel() {
         <div className="mb-5 rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800">
           <div className="mb-3 flex items-center justify-between">
             <h3 className="text-sm font-semibold">Saved flow jobs</h3>
-            <button onClick={loadJobs} className="text-xs font-medium text-blue-600 dark:text-blue-300">Refresh</button>
+            <button onClick={loadJobs} className="text-xs font-medium text-teal-600 dark:text-teal-300">Refresh</button>
           </div>
           <div className="grid gap-2 md:grid-cols-3">
             {jobs.slice(0, 9).map((job) => (
@@ -543,7 +543,7 @@ export default function FlowChartPanel() {
             <span className="text-sm font-medium">Flow description</span>
             <textarea value={prompt} onChange={(event) => setPrompt(event.target.value)} className="mt-1 h-40 w-full resize-none rounded-lg border border-gray-300 bg-white px-3 py-2 dark:border-gray-600 dark:bg-gray-900" />
           </label>
-          <button onClick={generate} disabled={!prompt.trim() || isGenerating} className="w-full rounded-lg bg-blue-600 px-4 py-2.5 font-medium text-white hover:bg-blue-500 disabled:opacity-60">
+          <button onClick={generate} disabled={!prompt.trim() || isGenerating} className="w-full rounded-lg bg-teal-600 px-4 py-2.5 font-medium text-white hover:bg-teal-500 disabled:opacity-60">
             {isGenerating ? 'Generating...' : status === 'failed' ? 'Retry generation' : displayContent ? 'Regenerate flow' : 'Generate flow'}
           </button>
           <div>
@@ -552,7 +552,7 @@ export default function FlowChartPanel() {
               <span>{progress.percent}%</span>
             </div>
             <div className="h-2 rounded-full bg-gray-200 dark:bg-gray-700">
-              <div className="h-full rounded-full bg-blue-600 transition-all" style={{ width: `${progress.percent}%` }} />
+              <div className="h-full rounded-full bg-teal-600 transition-all" style={{ width: `${progress.percent}%` }} />
             </div>
           </div>
           {status === 'failed' && (

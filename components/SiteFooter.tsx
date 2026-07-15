@@ -7,8 +7,8 @@ export default function SiteFooter({ variant = 'light', compact = false }: SiteF
   const isDark = variant === 'dark';
   const textClass = isDark ? 'text-slate-300' : 'text-gray-600 dark:text-gray-400';
   const linkClass = isDark
-    ? 'text-white hover:text-cyan-200'
-    : 'text-gray-900 hover:text-blue-600 dark:text-white dark:hover:text-blue-300';
+    ? 'text-white hover:text-teal-200'
+    : 'text-gray-900 hover:text-teal-600 dark:text-white dark:hover:text-teal-300';
 
   return (
     <footer className={`${compact ? 'px-4 py-3 text-xs' : 'px-4 py-8 text-sm'} ${textClass}`}>
