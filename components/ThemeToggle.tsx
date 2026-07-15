@@ -3,13 +3,14 @@
 interface ThemeToggleProps {
   isDark: boolean;
   onChange: (isDark: boolean) => void;
+  className?: string;
 }
 
-export default function ThemeToggle({ isDark, onChange }: ThemeToggleProps) {
+export default function ThemeToggle({ isDark, onChange, className }: ThemeToggleProps) {
   return (
     <button
       onClick={() => onChange(!isDark)}
-      className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+      className={className || 'rounded-lg p-2 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700'}
       aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
     >
       {isDark ? (

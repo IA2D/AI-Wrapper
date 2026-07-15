@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import ThemeToggle from './ThemeToggle';
+import { applyTheme, getPreferredTheme, persistTheme } from '@/lib/theme';
 
 type Tab = 'users' | 'apiUsage' | 'apiKeys' | 'models' | 'docs';
 type Period = 'day' | 'week' | 'month' | 'year';
@@ -263,22 +264,17 @@ export default function AdminDashboard({ admin }: { admin: AdminUser }) {
   }, []);
 
   useEffect(() => {
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    setIsDarkMode(prefersDark);
-    if (prefersDark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    const preferredTheme = getPreferredTheme();
+    setIsDarkMode(preferredTheme === 'dark');
+    applyTheme(preferredTheme);
   }, []);
 
   const handleThemeChange = (isDark: boolean) => {
     setIsDarkMode(isDark);
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+
+    const nextTheme = isDark ? 'dark' : 'light';
+    persistTheme(nextTheme);
+    applyTheme(nextTheme);
   };
 
   useEffect(() => {

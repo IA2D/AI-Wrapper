@@ -1,9 +1,11 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { FiArrowRight } from 'react-icons/fi';
 import { landingCopy, nextLocale, type Locale } from '@/lib/i18n';
+import { applyTheme, getPreferredTheme, persistTheme } from '@/lib/theme';
 import { useLanguage } from './LanguageProvider';
+import ThemeToggle from './ThemeToggle';
 import WadiLogo from './WadiLogo';
 
 const featureLabels = ['Chat', 'Files', 'API', 'Models'];
@@ -66,6 +68,7 @@ export default function LandingPage() {
   const [activeSection, setActiveSection] = useState<SectionId>('hero');
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   const navItems = useMemo(
     () => [
@@ -76,6 +79,19 @@ export default function LandingPage() {
     ],
     [copy.nav.about, copy.nav.home, copy.nav.plans, copy.nav.resources]
   );
+
+  useEffect(() => {
+    const preferredTheme = getPreferredTheme();
+    setIsDarkMode(preferredTheme === 'dark');
+    applyTheme(preferredTheme);
+  }, []);
+
+  const handleThemeChange = useCallback((isDark: boolean) => {
+    const nextTheme = isDark ? 'dark' : 'light';
+    setIsDarkMode(isDark);
+    persistTheme(nextTheme);
+    applyTheme(nextTheme);
+  }, []);
 
   useEffect(() => {
     const revealItems = Array.from(document.querySelectorAll<HTMLElement>('.minds-reveal'));
@@ -139,7 +155,7 @@ export default function LandingPage() {
   }, [menuOpen]);
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#fbfbfa] text-[#050505]" dir={dir}>
+    <main className="minds-landing relative min-h-screen overflow-hidden bg-[#fbfbfa] text-[#050505] dark:bg-[#070908] dark:text-white" dir={dir}>
       <ParticleField />
       <header className={`minds-nav fixed inset-x-0 top-0 z-50 ${scrolled || menuOpen ? 'is-solid' : ''}`}>
         <div className="minds-nav-shell flex items-center justify-between gap-3 px-4 py-4 sm:px-6">
@@ -174,6 +190,11 @@ export default function LandingPage() {
             >
               {copy.nav.language}
             </button>
+            <ThemeToggle
+              isDark={isDarkMode}
+              onChange={handleThemeChange}
+              className="minds-action-pill minds-theme-toggle hidden sm:inline-flex"
+            />
             <a href="/chat" className="minds-action-pill minds-action-primary hidden min-[520px]:inline-flex">
               <span aria-hidden="true" className="minds-arrow"><FiArrowRight /></span>
               {copy.nav.launch}
@@ -191,21 +212,21 @@ export default function LandingPage() {
         </div>
 
         <div className={`minds-mobile-menu lg:hidden ${menuOpen ? 'is-open' : ''}`}>
-          <nav className="mx-4 rounded-[28px] border border-black/10 bg-white/92 p-2 shadow-[0_24px_80px_rgba(0,0,0,0.16)] backdrop-blur-2xl">
+          <nav className="mx-4 rounded-[28px] border border-black/10 bg-white/92 p-2 shadow-[0_24px_80px_rgba(0,0,0,0.16)] backdrop-blur-2xl dark:border-white/10 dark:bg-[#101413]/94">
             {navItems.map((item) => (
               <a
                 key={item.id}
                 href={item.href}
                 onClick={() => setMenuOpen(false)}
                 className={`block rounded-full px-5 py-3 text-base font-black ${
-                  activeSection === item.id ? 'bg-black text-white' : 'text-black hover:bg-black/5'
+                  activeSection === item.id ? 'bg-black text-white dark:bg-white dark:text-black' : 'text-black hover:bg-black/5 dark:text-white dark:hover:bg-white/8'
                 }`}
               >
                 {item.label}
               </a>
             ))}
           <div className="mt-2 grid grid-cols-2 gap-2">
-              <a href="/chat" onClick={() => setMenuOpen(false)} className="rounded-full bg-black/[0.04] px-5 py-3 text-center text-base font-black">
+              <a href="/chat" onClick={() => setMenuOpen(false)} className="rounded-full bg-black/[0.04] px-5 py-3 text-center text-base font-black dark:bg-white/8 dark:text-white">
                 {copy.nav.signIn}
               </a>
               <button
@@ -214,11 +235,16 @@ export default function LandingPage() {
                   setLocale(nextLocale(locale));
                   setMenuOpen(false);
                 }}
-                className="rounded-full bg-black/[0.04] px-5 py-3 text-center text-base font-black"
+                className="rounded-full bg-black/[0.04] px-5 py-3 text-center text-base font-black dark:bg-white/8 dark:text-white"
                 dir="auto"
               >
                 {copy.nav.language}
               </button>
+              <ThemeToggle
+                isDark={isDarkMode}
+                onChange={handleThemeChange}
+                className="flex min-h-[48px] items-center justify-center rounded-full bg-black/[0.04] px-5 py-3 text-center text-base font-black dark:bg-white/8 dark:text-white"
+              />
               <a href="/chat" onClick={() => setMenuOpen(false)} className="rounded-full bg-[#1C7178] px-5 py-3 text-center text-base font-black text-white">
                 {copy.nav.launch}
               </a>
@@ -230,12 +256,12 @@ export default function LandingPage() {
       <section id="hero" className="minds-hero relative z-10 min-h-screen overflow-hidden px-4 pt-24 sm:px-6">
         <div className="relative z-10 mx-auto flex min-h-[calc(100vh-6rem)] max-w-[1800px] items-center">
           <div className="minds-reveal is-visible w-full max-w-[900px] pb-16 pt-16 lg:ms-[5vw] lg:pb-24 lg:pt-24">
-            <h1 className="max-w-[820px] text-balance text-3xl font-black leading-tight tracking-normal text-black min-[430px]:text-4xl sm:text-5xl lg:text-[4rem] 2xl:text-[4.75rem]">
+            <h1 className="max-w-[820px] text-balance text-3xl font-black leading-tight tracking-normal text-black min-[430px]:text-4xl sm:text-5xl lg:text-[4rem] 2xl:text-[4.75rem] dark:text-white">
               {copy.hero.title}
             </h1>
 
-            <div className="mt-7 max-w-[680px] border-s border-black ps-6">
-              <p className="text-pretty text-sm font-bold leading-7 text-black sm:text-base">
+            <div className="mt-7 max-w-[680px] border-s border-black ps-6 dark:border-white">
+              <p className="text-pretty text-sm font-bold leading-7 text-black sm:text-base dark:text-white/72">
                 {copy.hero.subtitle}
               </p>
               <div className="mt-6 flex flex-wrap gap-3">
@@ -295,9 +321,9 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <footer className="border-t border-black/10 bg-[#fbfbfa] px-4 py-8 text-sm text-black/58 sm:px-6">
+      <footer className="border-t border-black/10 bg-[#fbfbfa] px-4 py-8 text-sm text-black/58 sm:px-6 dark:border-white/10 dark:bg-[#070908] dark:text-white/58">
         <div className="mx-auto flex max-w-[1720px] flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex items-center gap-2 font-black text-black">
+          <div className="flex items-center gap-2 font-black text-black dark:text-white">
             <WadiLogo />
           </div>
           <nav className="flex flex-wrap gap-x-5 gap-y-2">
@@ -305,7 +331,7 @@ export default function LandingPage() {
               <a
                 key={item}
                 href={['#features', '/chat', '#cta', '/docs/api'][index]}
-                className="font-black transition hover:text-[#1C7178]"
+                className="font-black transition hover:text-[#1C7178] dark:hover:text-[#8fcfd3]"
               >
                 {item}
               </a>
@@ -700,7 +726,7 @@ function SectionIntro({ eyebrow, title, body }: { eyebrow: string; title: string
       <h2 className="mt-5 max-w-3xl text-balance text-3xl font-black leading-tight sm:text-4xl lg:text-[3.5rem]">
         {title}
       </h2>
-      <p className="mt-5 max-w-2xl text-sm font-bold leading-7 text-black/62 sm:text-base">{body}</p>
+      <p className="mt-5 max-w-2xl text-sm font-bold leading-7 text-black/62 sm:text-base dark:text-white/64">{body}</p>
     </div>
   );
 }

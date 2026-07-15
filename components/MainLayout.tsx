@@ -12,6 +12,7 @@ import AuthScreen from './AuthScreen';
 import ToolWorkspace, { ToolMode } from './ToolWorkspace';
 import MemoryPanel from './MemoryPanel';
 import WadiLogo from './WadiLogo';
+import { applyTheme, getPreferredTheme, persistTheme } from '@/lib/theme';
 
 // Default API configuration from environment variables
 const DEFAULT_API_CONFIG: APIConfiguration = {
@@ -81,16 +82,9 @@ export default function MainLayout() {
         const savedThinkingMode = await StorageService.loadThinkingMode();
         setThinkingMode(savedThinkingMode);
 
-        // Use system theme preference without browser persistence.
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        setIsDarkMode(prefersDark);
-        
-        // Apply theme to document
-        if (prefersDark) {
-          document.documentElement.classList.add('dark');
-        } else {
-          document.documentElement.classList.remove('dark');
-        }
+        const preferredTheme = getPreferredTheme();
+        setIsDarkMode(preferredTheme === 'dark');
+        applyTheme(preferredTheme);
 
         // Load current session ID
         const savedSessionId = await StorageService.getCurrentSessionId();
@@ -167,12 +161,10 @@ export default function MainLayout() {
   // Settings management
   const handleThemeChange = useCallback((isDark: boolean) => {
     setIsDarkMode(isDark);
-    
-    if (isDark) {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+
+    const nextTheme = isDark ? 'dark' : 'light';
+    persistTheme(nextTheme);
+    applyTheme(nextTheme);
   }, []);
 
 

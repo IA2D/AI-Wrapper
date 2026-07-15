@@ -1,5 +1,9 @@
 export type Locale = 'en' | 'ar';
 
+export const DEFAULT_LOCALE: Locale = 'en';
+export const LOCALE_COOKIE = 'wadi-locale';
+export const LEGACY_LOCALE_COOKIE = 'aicrab-locale';
+
 export const locales: Locale[] = ['en', 'ar'];
 
 export const localeLabels: Record<Locale, string> = {
@@ -16,12 +20,16 @@ export function isLocale(value: string | null | undefined): value is Locale {
   return value === 'en' || value === 'ar';
 }
 
+export function getLocaleFromCookieValue(value: string | null | undefined): Locale | null {
+  return isLocale(value) ? value : null;
+}
+
 export function nextLocale(locale: Locale): Locale {
   return locale === 'en' ? 'ar' : 'en';
 }
 
 export function getBrowserLocale(): Locale {
-  if (typeof window === 'undefined') return 'en';
+  if (typeof window === 'undefined') return DEFAULT_LOCALE;
 
   const stored = window.localStorage.getItem('wadi-locale') || window.localStorage.getItem('aicrab-locale');
   if (isLocale(stored)) return stored;
