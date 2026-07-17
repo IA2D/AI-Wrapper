@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { nextLocale } from '@/lib/i18n';
+import { landingCopy } from '@/lib/i18n';
 import { useLanguage } from './LanguageProvider';
+import LandingNav from './LandingNav';
 import WadiLogo from './WadiLogo';
 
 interface AuthUser {
@@ -60,8 +61,9 @@ const authCopy = {
 } as const;
 
 export default function AuthScreen({ onAuthenticated }: AuthScreenProps) {
-  const { locale, dir, setLocale } = useLanguage();
+  const { locale, dir } = useLanguage();
   const copy = authCopy[locale];
+  const footerCopy = landingCopy[locale].footer;
   const [mode, setMode] = useState<'login' | 'signup'>('login');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -95,35 +97,28 @@ export default function AuthScreen({ onAuthenticated }: AuthScreenProps) {
   };
 
   return (
-    <div className="relative flex min-h-screen flex-col overflow-hidden bg-[#fbfbfa] text-[#050505]" dir={dir}>
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_48%,rgba(231,245,246,0.9),transparent_34%),radial-gradient(circle_at_18%_22%,rgba(143,207,211,0.12),transparent_30%)]" />
-      <div className="pointer-events-none absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(28,113,120,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(28,113,120,0.035)_1px,transparent_1px)] [background-size:52px_52px]" />
+    <div className="minds-landing relative flex min-h-screen flex-col overflow-hidden bg-[#fbfbfa] text-[#050505] dark:bg-[#070908] dark:text-white" dir={dir}>
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_48%,rgba(231,245,246,0.9),transparent_34%),radial-gradient(circle_at_18%_22%,rgba(143,207,211,0.12),transparent_30%)] dark:bg-[radial-gradient(circle_at_50%_42%,rgba(28,113,120,0.22),transparent_38%),radial-gradient(circle_at_18%_22%,rgba(143,207,211,0.11),transparent_30%)]" />
+      <div className="pointer-events-none absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(28,113,120,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(28,113,120,0.035)_1px,transparent_1px)] [background-size:52px_52px] dark:opacity-25 dark:[background-image:linear-gradient(rgba(255,255,255,0.045)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.035)_1px,transparent_1px)]" />
 
-      <header className="absolute inset-x-0 top-0 z-20 flex justify-end px-4 py-5 sm:px-6">
-        <button
-          type="button"
-          onClick={() => setLocale(nextLocale(locale))}
-          className="rounded-full border border-black/10 bg-white/70 px-4 py-2 text-sm font-black text-[#1C7178] shadow-sm backdrop-blur-xl transition hover:bg-white"
-          dir="auto"
-        >
-          {copy.switchLanguage}
-        </button>
-      </header>
+      <LandingNav />
 
-      <main className="relative z-10 grid min-h-screen place-items-center px-4 py-16">
-        <section className="flex min-h-[720px] w-full max-w-[450px] flex-col justify-center rounded-[22px] border border-black bg-white/74 px-4 py-8 shadow-[0_28px_100px_rgba(28,113,120,0.1)] backdrop-blur-xl sm:px-5">
+      <main className="relative z-10 grid min-h-screen flex-1 place-items-center px-4 pb-16 pt-28 sm:pt-32">
+        <section className="flex min-h-[720px] w-full max-w-[450px] flex-col justify-center rounded-[22px] border border-black bg-white/74 px-4 py-8 shadow-[0_28px_100px_rgba(28,113,120,0.1)] backdrop-blur-xl dark:border-white/14 dark:bg-white/[0.07] dark:shadow-[0_28px_100px_rgba(0,0,0,0.38)] sm:px-5">
           <div className="flex flex-col items-center text-center">
             <WadiLogo className="auth-logo" showText={false} />
-            <h1 className="mt-8 text-3xl font-black leading-tight sm:text-4xl">{copy.title}</h1>
+            <h1 className="mt-8 text-3xl font-black leading-tight text-black dark:text-white sm:text-4xl">{copy.title}</h1>
           </div>
 
-          <div className="mt-6 rounded-full bg-black/[0.04] p-1">
+          <div className="mt-6 rounded-full bg-black/[0.04] p-1 dark:bg-white/8">
             <div className="grid grid-cols-2 gap-1">
               <button
                 type="button"
                 onClick={() => setMode('login')}
                 className={`rounded-full px-4 py-2.5 text-sm font-black transition ${
-                  mode === 'login' ? 'border border-black bg-white shadow-sm' : 'text-black/70 hover:bg-white/60'
+                  mode === 'login'
+                    ? 'border border-black bg-white text-black shadow-sm dark:border-[#8fcfd3]/60 dark:bg-[#8fcfd3] dark:text-[#071011] dark:shadow-[0_10px_28px_rgba(143,207,211,0.16)]'
+                    : 'text-black/70 hover:bg-white/60 dark:text-white/62 dark:hover:bg-white/10'
                 }`}
               >
                 {copy.login}
@@ -132,7 +127,9 @@ export default function AuthScreen({ onAuthenticated }: AuthScreenProps) {
                 type="button"
                 onClick={() => setMode('signup')}
                 className={`rounded-full px-4 py-2.5 text-sm font-black transition ${
-                  mode === 'signup' ? 'border border-black bg-white shadow-sm' : 'text-black/70 hover:bg-white/60'
+                  mode === 'signup'
+                    ? 'border border-black bg-white text-black shadow-sm dark:border-[#8fcfd3]/60 dark:bg-[#8fcfd3] dark:text-[#071011] dark:shadow-[0_10px_28px_rgba(143,207,211,0.16)]'
+                    : 'text-black/70 hover:bg-white/60 dark:text-white/62 dark:hover:bg-white/10'
                 }`}
               >
                 {copy.signup}
@@ -142,7 +139,7 @@ export default function AuthScreen({ onAuthenticated }: AuthScreenProps) {
 
           <button
             type="button"
-            className="mt-6 flex w-full items-center justify-center gap-3 rounded-full border border-black bg-white/80 px-4 py-3 text-sm font-black text-black transition hover:bg-white"
+            className="auth-google-button mt-6 flex w-full items-center justify-center gap-3 rounded-full border border-black bg-white/80 px-4 py-3 text-sm font-black text-black transition hover:bg-white dark:border-[#8fcfd3]/20 dark:text-white"
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -153,62 +150,62 @@ export default function AuthScreen({ onAuthenticated }: AuthScreenProps) {
             {copy.google}
           </button>
 
-          <div className="mt-6 flex items-center gap-3 text-xs font-bold text-black/58">
-            <span className="h-px flex-1 bg-black/30" />
+          <div className="mt-6 flex items-center gap-3 text-xs font-bold text-black/58 dark:text-white/58">
+            <span className="h-px flex-1 bg-black/30 dark:bg-white/20" />
             <span>{copy.divider}</span>
-            <span className="h-px flex-1 bg-black/30" />
+            <span className="h-px flex-1 bg-black/30 dark:bg-white/20" />
           </div>
 
           <form onSubmit={submit} className="mt-6">
             <div className="space-y-5">
               {mode === 'signup' && (
                 <label className="block">
-                  <span className="text-sm font-black text-black">{copy.name}</span>
+                  <span className="text-sm font-black text-black dark:text-white">{copy.name}</span>
                   <input
                     value={name}
                     onChange={(event) => setName(event.target.value)}
                     placeholder={copy.namePlaceholder}
-                    className="auth-input mt-1.5 w-full rounded-full border border-black bg-white/90 px-4 py-3 outline-none transition focus:ring-4 focus:ring-[#1C7178]/10"
+                    className="auth-input mt-1.5 w-full rounded-full border border-black bg-white/90 px-4 py-3 outline-none transition focus:ring-4 focus:ring-[#1C7178]/10 dark:border-white/16 dark:bg-white/8 dark:focus:ring-[#8fcfd3]/12"
                     autoComplete="name"
                   />
                 </label>
               )}
 
               <label className="block">
-                <span className="text-sm font-black text-black">{copy.email}</span>
+                <span className="text-sm font-black text-black dark:text-white">{copy.email}</span>
                 <input
                   type="email"
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
                   placeholder={copy.emailPlaceholder}
-                  className="auth-input mt-1.5 w-full rounded-full border border-black bg-white/90 px-4 py-3 outline-none transition focus:ring-4 focus:ring-[#1C7178]/10"
+                  className="auth-input mt-1.5 w-full rounded-full border border-black bg-white/90 px-4 py-3 outline-none transition focus:ring-4 focus:ring-[#1C7178]/10 dark:border-white/16 dark:bg-white/8 dark:focus:ring-[#8fcfd3]/12"
                   autoComplete="email"
                 />
               </label>
 
               <label className="block">
-                <span className="flex items-center justify-between gap-3 text-sm font-black text-black">
+                <span className="flex items-center justify-between gap-3 text-sm font-black text-black dark:text-white">
                   {copy.password}
-                  {mode === 'login' && <span className="text-xs font-bold text-black/48">{copy.forgot}</span>}
+                  {mode === 'login' && <span className="text-xs font-bold text-black/48 dark:text-white/44">{copy.forgot}</span>}
                 </span>
                 <input
                   type="password"
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
                   placeholder={copy.passwordPlaceholder}
-                  className="auth-input mt-1.5 w-full rounded-full border border-black bg-white/90 px-4 py-3 outline-none transition focus:ring-4 focus:ring-[#1C7178]/10"
+                  className="auth-input mt-1.5 w-full rounded-full border border-black bg-white/90 px-4 py-3 outline-none transition focus:ring-4 focus:ring-[#1C7178]/10 dark:border-white/16 dark:bg-white/8 dark:focus:ring-[#8fcfd3]/12"
                   autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
                 />
               </label>
 
-              {error && <div className="rounded-lg bg-red-50 px-3 py-2 text-sm font-bold text-red-700">{error}</div>}
+              {error && <div className="rounded-lg bg-red-50 px-3 py-2 text-sm font-bold text-red-700 dark:bg-red-950/50 dark:text-red-200">{error}</div>}
             </div>
 
-            <div className="mt-8 border-t border-black pt-5">
+            <div className="mt-8 border-t border-black/16 pt-5 dark:border-[#8fcfd3]/18">
               <div className="flex items-center justify-between gap-3">
                 <a
                   href="/"
-                  className="rounded-full bg-black/[0.04] px-5 py-2.5 text-sm font-black text-black transition hover:bg-black/[0.08]"
+                  className="rounded-full bg-black/[0.04] px-5 py-2.5 text-sm font-black text-black transition hover:bg-black/[0.08] dark:bg-white/8 dark:text-white dark:hover:bg-white/12"
                 >
                   {copy.cancel}
                 </a>
@@ -224,6 +221,25 @@ export default function AuthScreen({ onAuthenticated }: AuthScreenProps) {
           </form>
         </section>
       </main>
+
+      <footer className="relative z-10 border-t border-black/10 bg-[#fbfbfa]/86 px-4 py-8 text-sm text-black/58 backdrop-blur-xl dark:border-white/10 dark:bg-[#070908]/86 dark:text-white/58 sm:px-6">
+        <div className="mx-auto flex max-w-[1720px] flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-2 font-black text-black dark:text-white">
+            <WadiLogo />
+          </div>
+          <nav className="flex flex-wrap gap-x-5 gap-y-2">
+            {footerCopy.map((item, index) => (
+              <a
+                key={item}
+                href={['/#features', '/chat', '/#cta', '/docs/api'][index]}
+                className="font-black transition hover:text-[#1C7178] dark:hover:text-[#8fcfd3]"
+              >
+                {item}
+              </a>
+            ))}
+          </nav>
+        </div>
+      </footer>
     </div>
   );
 }

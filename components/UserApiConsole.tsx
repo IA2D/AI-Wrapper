@@ -421,10 +421,10 @@ function DataTable({ headers, rows, noUsage }: { headers: string[]; rows: React.
   return (
     <div className="wadi-api-table-wrap max-h-80 overflow-auto">
       <table className="w-full min-w-[420px] text-start text-sm">
-        <thead className="sticky top-0 text-[11px] uppercase tracking-[0.12em] text-black/46 dark:text-white/46">
+        <thead className="sticky top-0 text-[11px] uppercase tracking-[0.12em]">
           <tr>
             {headers.map((header) => (
-              <th key={header} className="border-b border-black/8 bg-white/80 px-3 py-3 font-black backdrop-blur dark:border-white/10 dark:bg-[#111817]/88">
+              <th key={header} className="wadi-api-table-head px-3 py-3 font-black backdrop-blur">
                 {header}
               </th>
             ))}
@@ -433,14 +433,14 @@ function DataTable({ headers, rows, noUsage }: { headers: string[]; rows: React.
         <tbody>
           {rows.length === 0 ? (
             <tr>
-              <td colSpan={headers.length} className="px-3 py-8 text-center font-bold text-black/42 dark:text-white/46">
+              <td colSpan={headers.length} className="wadi-api-table-empty px-3 py-8 text-center font-bold">
                 {noUsage}
               </td>
             </tr>
           ) : rows.map((row, index) => (
-            <tr key={index} className="border-b border-black/5 last:border-0 dark:border-white/8">
+            <tr key={index} className="wadi-api-table-row">
               {row.map((cell, cellIndex) => (
-                <td key={cellIndex} className="px-3 py-3 font-bold text-black/72 dark:text-white/76">{cell}</td>
+                <td key={cellIndex} className="wadi-api-table-cell px-3 py-3 font-bold">{cell}</td>
               ))}
             </tr>
           ))}
