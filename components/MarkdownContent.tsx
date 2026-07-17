@@ -33,7 +33,7 @@ export default function MarkdownContent({
             <div className="my-3 overflow-x-auto">
               <table
                 dir={direction}
-                className={`min-w-full border-collapse text-sm ${isRtl ? 'text-right [direction:rtl]' : 'text-left [direction:ltr]'}`}
+                className="min-w-full border-collapse text-sm text-start"
               >
                 {children}
               </table>
@@ -42,7 +42,7 @@ export default function MarkdownContent({
           th: ({ children }) => (
             <th
               dir="auto"
-              className={`border border-gray-300 bg-gray-100 px-3 py-2 align-top [overflow-wrap:anywhere] dark:border-gray-600 dark:bg-gray-700 ${isRtl ? 'text-right' : 'text-left'}`}
+              className="border border-gray-300 bg-gray-100 px-3 py-2 align-top text-start [overflow-wrap:anywhere] dark:border-gray-600 dark:bg-gray-700"
             >
               {children}
             </th>
@@ -50,7 +50,7 @@ export default function MarkdownContent({
           td: ({ children }) => (
             <td
               dir="auto"
-              className={`border border-gray-300 px-3 py-2 align-top [overflow-wrap:anywhere] dark:border-gray-600 ${isRtl ? 'text-right' : 'text-left'}`}
+              className="border border-gray-300 px-3 py-2 align-top text-start [overflow-wrap:anywhere] dark:border-gray-600"
             >
               {children}
             </td>
@@ -116,7 +116,7 @@ function CodeBlock({ children }: { children: ReactNode }) {
         <button
           type="button"
           onClick={copyCode}
-          className="sticky right-4 top-3 z-10 float-right mr-3 mt-3 rounded-md border border-white/10 bg-gray-800/95 px-2.5 py-1 text-xs font-medium text-gray-100 shadow-sm hover:bg-gray-700"
+          className="sticky end-4 top-3 z-10 float-end me-3 mt-3 rounded-md border border-white/10 bg-gray-800/95 px-2.5 py-1 text-xs font-medium text-gray-100 shadow-sm hover:bg-gray-700"
         >
           {copied ? 'Copied' : 'Copy'}
         </button>

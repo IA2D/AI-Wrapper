@@ -39,7 +39,7 @@ export default function PDFContextChips({ pdfs, onRemove, isLoading }: PDFContex
           {onRemove && (
             <button
               onClick={() => onRemove(pdf.docId)}
-              className="ml-1 p-0.5 rounded-full hover:bg-teal-200 opacity-0 group-hover:opacity-100 transition-opacity"
+              className="ms-1 p-0.5 rounded-full hover:bg-teal-200 opacity-0 group-hover:opacity-100 transition-opacity"
               aria-label={`Remove ${pdf.name}`}
             >
               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">

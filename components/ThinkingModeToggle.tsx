@@ -53,7 +53,7 @@ export default function ThinkingModeToggle({
         ">
           <div className="relative">
             {/* Tooltip arrow */}
-            <div className="absolute -top-5 left-4 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-gray-900" />
+            <div className="absolute -top-5 start-4 w-0 h-0 border-l-4 border-r-4 border-b-4 border-transparent border-b-gray-900" />
             
             <p className="font-medium mb-1">What is Thinking Mode?</p>
             <p className="text-gray-300">

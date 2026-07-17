@@ -27,5 +27,5 @@ export function textDirection(text: unknown): 'rtl' | 'ltr' {
 }
 
 export function textAlignClass(text: unknown) {
-  return textDirection(text) === 'rtl' ? 'text-right' : 'text-left';
+  return textDirection(text) === 'rtl' ? 'text-end' : 'text-start';
 }

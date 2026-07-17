@@ -24,7 +24,7 @@ const DEFAULT_API_CONFIG: APIConfiguration = {
 };
 
 export default function MainLayout() {
-  const { locale, setLocale } = useLanguage();
+  const { locale, dir, setLocale } = useLanguage();
   const copy = chatCopy[locale];
   // Session management
   const {
@@ -223,7 +223,7 @@ export default function MainLayout() {
   }
 
   return (
-    <div className="wadi-chat-shell flex h-screen overflow-hidden" dir="ltr">
+    <div className="wadi-chat-shell flex h-screen overflow-hidden" dir={dir}>
       <div className="wadi-chat-bg" aria-hidden="true" />
       {/* Sidebar */}
       <Sidebar

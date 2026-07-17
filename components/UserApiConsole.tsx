@@ -1,8 +1,10 @@
 'use client';
 
+import type React from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import ThemeToggle from './ThemeToggle';
-import { applyTheme, getPreferredTheme, persistTheme } from '@/lib/theme';
+import { useLanguage } from './LanguageProvider';
+import LandingNav from './LandingNav';
+import { apiConsoleCopy } from '@/lib/i18n';
 
 type Period = 'day' | 'week' | 'month' | 'year';
 type CommandKind = 'curl' | 'javascript' | 'php' | 'python';
@@ -56,8 +58,8 @@ function formatNumber(value: number) {
   return new Intl.NumberFormat('en-US').format(value || 0);
 }
 
-function formatDate(value: string | null) {
-  if (!value) return 'Never';
+function formatDate(value: string | null, never: string) {
+  if (!value) return never;
   return new Intl.DateTimeFormat('en-US', {
     month: 'short',
     day: 'numeric',
@@ -76,6 +78,9 @@ function keyModes(key: ApiKey) {
 }
 
 export default function UserApiConsole() {
+  const { locale, dir } = useLanguage();
+  const t = apiConsoleCopy[locale];
+
   const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
   const [selectedKeyId, setSelectedKeyId] = useState<string | null>(null);
   const [usage, setUsage] = useState<Usage | null>(null);
@@ -83,7 +88,6 @@ export default function UserApiConsole() {
   const [usageMode, setUsageMode] = useState<UsageMode>('text');
   const [copyState, setCopyState] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const origin = typeof window === 'undefined' ? 'http://localhost:3000' : window.location.origin;
 
   const selectedKey = apiKeys.find((key) => key.id === selectedKeyId) || apiKeys[0] || null;
@@ -101,24 +105,7 @@ export default function UserApiConsole() {
   }, []);
 
   useEffect(() => {
-    const preferredTheme = getPreferredTheme();
-    setIsDarkMode(preferredTheme === 'dark');
-    applyTheme(preferredTheme);
-  }, []);
-
-  const handleThemeChange = (isDark: boolean) => {
-    setIsDarkMode(isDark);
-    const nextTheme = isDark ? 'dark' : 'light';
-    persistTheme(nextTheme);
-    applyTheme(nextTheme);
-  };
-
-  useEffect(() => {
-    if (!selectedKey) {
-      setUsage(null);
-      return;
-    }
-
+    if (!selectedKey) { setUsage(null); return; }
     fetch(`/api/me/api-keys/${selectedKey.id}/usage`)
       .then(async (response) => {
         const data = await response.json().catch(() => ({}));
@@ -131,14 +118,11 @@ export default function UserApiConsole() {
   useEffect(() => {
     if (!selectedKey) return;
     const allowed = keyModes(selectedKey) as UsageMode[];
-    if (!allowed.includes(usageMode) && allowed[0]) {
-      setUsageMode(allowed[0]);
-    }
+    if (!allowed.includes(usageMode) && allowed[0]) setUsageMode(allowed[0]);
   }, [selectedKey, usageMode]);
 
   const payloadJson = useMemo(() => {
-    if (usageMode === 'image') {
-      return `{
+    if (usageMode === 'image') return `{
   "messages": [
     {
       "role": "user",
@@ -150,10 +134,7 @@ export default function UserApiConsole() {
   ],
   "temperature": 0.4
 }`;
-    }
-
-    if (usageMode === 'voice') {
-      return `{
+    if (usageMode === 'voice') return `{
   "messages": [
     {
       "role": "user",
@@ -164,10 +145,7 @@ export default function UserApiConsole() {
     }
   ]
 }`;
-    }
-
-    if (usageMode === 'video') {
-      return `{
+    if (usageMode === 'video') return `{
   "messages": [
     {
       "role": "user",
@@ -178,8 +156,6 @@ export default function UserApiConsole() {
     }
   ]
 }`;
-    }
-
     return `{
   "messages": [
     { "role": "user", "content": "Write a concise launch message." }
@@ -190,9 +166,7 @@ export default function UserApiConsole() {
 
   const command = useMemo(() => {
     const endpoint = `${origin}/api/v1/chat`;
-
-    if (commandKind === 'javascript') {
-      return `const response = await fetch("${endpoint}", {
+    if (commandKind === 'javascript') return `const response = await fetch("${endpoint}", {
   method: "POST",
   headers: {
     "Authorization": "Bearer ${token}",
@@ -203,10 +177,7 @@ export default function UserApiConsole() {
 
 const data = await response.json();
 console.log(data);`;
-    }
-
-    if (commandKind === 'php') {
-      return `$payload = <<<'JSON'
+    if (commandKind === 'php') return `$payload = <<<'JSON'
 ${payloadJson}
 JSON;
 
@@ -224,10 +195,7 @@ curl_setopt_array($ch, [
 $response = curl_exec($ch);
 curl_close($ch);
 echo $response;`;
-    }
-
-    if (commandKind === 'python') {
-      return `import requests
+    if (commandKind === 'python') return `import requests
 
 response = requests.post(
     "${endpoint}",
@@ -239,39 +207,23 @@ response = requests.post(
 )
 
 print(response.json())`;
-    }
-
     return `curl ${endpoint} \\
   -H "Authorization: Bearer ${token}" \\
   -H "Content-Type: application/json" \\
   -d '${payloadJson}'`;
   }, [commandKind, origin, payloadJson, token]);
 
-  const copy = async (value: string, label: string) => {
+  const copyToClipboard = async (value: string, label: string) => {
     await navigator.clipboard.writeText(value);
     setCopyState(label);
     window.setTimeout(() => setCopyState(null), 1400);
   };
 
   return (
-    <main className="wadi-api-console min-h-screen bg-[#fbfbfa] text-[#050505] dark:bg-[#080d0d] dark:text-white">
-      <header className="wadi-api-header sticky top-0 z-30 px-4 py-4 sm:px-6">
-        <div className="mx-auto flex max-w-[1560px] flex-wrap items-center justify-between gap-4">
-          <div>
-            <div>
-              <div className="text-[11px] font-black uppercase tracking-[0.24em] text-[#1C7178] dark:text-[#9be4e8]">Developer Console</div>
-              <h1 className="mt-1 text-2xl font-black">Your API Keys</h1>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <a href="/docs/api" className="wadi-api-top-link">Docs</a>
-            <a href="/chat" className="wadi-api-primary">Chat</a>
-            <ThemeToggle isDark={isDarkMode} onChange={handleThemeChange} />
-          </div>
-        </div>
-      </header>
+    <main className="wadi-api-console min-h-screen bg-[#fbfbfa] text-[#050505] dark:bg-[#080d0d] dark:text-white" dir={dir}>
+      <LandingNav />
 
-      <div className="mx-auto grid max-w-[1560px] gap-5 px-4 py-6 sm:px-6 lg:grid-cols-[360px_minmax(0,1fr)] lg:py-8">
+      <div className="mx-auto grid max-w-[1560px] gap-5 px-4 pt-24 pb-6 sm:px-6 lg:grid-cols-[360px_minmax(0,1fr)] lg:pt-28 lg:pb-8">
         {error && (
           <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm font-bold text-red-700 shadow-sm dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-200 lg:col-span-2">
             {error}
@@ -279,24 +231,20 @@ print(response.json())`;
         )}
 
         <aside className="space-y-4">
-          <Panel title="Assigned Keys">
+          <Panel title={t.assignedKeys}>
             <div className="space-y-3">
               {apiKeys.length === 0 ? (
-                <p className="text-sm font-bold leading-6 text-black/52 dark:text-white/58">No API keys are assigned to your account yet.</p>
+                <p className="text-sm font-bold leading-6 text-black/52 dark:text-white/58">{t.noKeys}</p>
               ) : apiKeys.map((key) => (
                 <button
                   key={key.id}
                   onClick={() => setSelectedKeyId(key.id)}
-                  className={`wadi-api-key-card ${
-                    selectedKey?.id === key.id
-                      ? 'is-active'
-                      : ''
-                  }`}
+                  className={`wadi-api-key-card ${selectedKey?.id === key.id ? 'is-active' : ''}`}
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <div className="font-black">{key.name}</div>
-                      <div className="mt-1 text-xs font-bold text-black/44 dark:text-white/44">{key.keyPrefix}...</div>
+                      <div className="mt-1 text-xs font-bold text-black/44 dark:text-white/44" dir="ltr">{key.keyPrefix}...</div>
                     </div>
                     <span className={`wadi-api-status ${key.status === 'active' ? 'is-active' : ''}`}>
                       {key.status}
@@ -311,13 +259,26 @@ print(response.json())`;
           </Panel>
 
           {selectedKey && (
-            <Panel title="Limits">
-              <div className="space-y-3 text-sm text-slate-300">
-                <LimitRow label="Period" value={selectedKey.limitPeriod} />
-                <LimitRow label="Requests" value={selectedKey.requestLimit ? `${formatNumber(selectedKey.requestLimit)} / ${selectedKey.limitPeriod}` : 'Unlimited'} />
-                <LimitRow label="Tokens" value={selectedKey.tokenLimit ? `${formatNumber(selectedKey.tokenLimit)} / ${selectedKey.limitPeriod}` : 'Unlimited'} />
-                <LimitRow label="Unlimited until" value={selectedKey.unlimitedUntil ? formatDate(selectedKey.unlimitedUntil) : 'Not set'} />
-                <LimitRow label="Last used" value={formatDate(selectedKey.lastUsedAt)} />
+            <Panel title={t.limits}>
+              <div className="space-y-3 text-sm">
+                <LimitRow label={t.period} value={selectedKey.limitPeriod} />
+                <LimitRow
+                  label={t.requests}
+                  value={selectedKey.requestLimit
+                    ? `${formatNumber(selectedKey.requestLimit)} / ${selectedKey.limitPeriod}`
+                    : t.unlimited}
+                />
+                <LimitRow
+                  label={t.tokens}
+                  value={selectedKey.tokenLimit
+                    ? `${formatNumber(selectedKey.tokenLimit)} / ${selectedKey.limitPeriod}`
+                    : t.unlimited}
+                />
+                <LimitRow
+                  label={t.unlimitedUntil}
+                  value={selectedKey.unlimitedUntil ? formatDate(selectedKey.unlimitedUntil, t.never) : t.notSet}
+                />
+                <LimitRow label={t.lastUsed} value={formatDate(selectedKey.lastUsedAt, t.never)} />
               </div>
             </Panel>
           )}
@@ -327,16 +288,16 @@ print(response.json())`;
           {selectedKey ? (
             <>
               <div className="grid gap-3 md:grid-cols-4">
-                <Metric label="Requests" value={formatNumber(usage?.totals.requests || 0)} />
-                <Metric label="Tokens" value={formatNumber(usage?.totals.tokens || 0)} />
-                <Metric label="Input" value={formatNumber(usage?.totals.inputTokens || 0)} />
-                <Metric label="Output" value={formatNumber(usage?.totals.outputTokens || 0)} />
+                <Metric label={t.requestsMetric} value={formatNumber(usage?.totals.requests || 0)} />
+                <Metric label={t.tokensMetric}   value={formatNumber(usage?.totals.tokens || 0)} />
+                <Metric label={t.inputMetric}    value={formatNumber(usage?.totals.inputTokens || 0)} />
+                <Metric label={t.outputMetric}   value={formatNumber(usage?.totals.outputTokens || 0)} />
               </div>
 
-              <Panel title="Ready Commands">
+              <Panel title={t.readyCommands}>
                 {!selectedKey.token && (
                   <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-bold text-amber-900 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-100">
-                    This key was created before key reveal support. Ask an admin to create a new assigned key to enable one-click command copying.
+                    {t.noRevealWarning}
                   </div>
                 )}
                 <div className="mb-4 flex flex-wrap gap-2">
@@ -344,11 +305,7 @@ print(response.json())`;
                     <button
                       key={mode}
                       onClick={() => setUsageMode(mode as UsageMode)}
-                      className={`wadi-api-chip capitalize ${
-                        usageMode === mode
-                          ? 'is-active'
-                          : ''
-                      }`}
+                      className={`wadi-api-chip capitalize ${usageMode === mode ? 'is-active' : ''}`}
                     >
                       {mode}
                     </button>
@@ -359,68 +316,67 @@ print(response.json())`;
                     <button
                       key={kind}
                       onClick={() => setCommandKind(kind)}
-                      className={`wadi-api-chip capitalize ${
-                        commandKind === kind ? 'is-active' : ''
-                      }`}
+                      className={`wadi-api-chip capitalize ${commandKind === kind ? 'is-active' : ''}`}
                     >
                       {kind}
                     </button>
                   ))}
                   <button
-                    onClick={() => copy(command, 'command')}
-                    className="wadi-api-secondary ml-auto"
+                    onClick={() => copyToClipboard(command, 'command')}
+                    className="wadi-api-secondary ms-auto"
                   >
-                    {copyState === 'command' ? 'Copied' : 'Copy command'}
+                    {copyState === 'command' ? t.copied : t.copyCommand}
                   </button>
                 </div>
-                <pre className="wadi-api-code max-h-[440px] overflow-auto p-4 text-xs leading-6">
+                <pre className="wadi-api-code max-h-[440px] overflow-auto p-4 text-xs leading-6" dir="ltr">
                   <code>{command}</code>
                 </pre>
               </Panel>
 
-              <Panel title="API Key">
+              <Panel title={t.apiKey}>
                 <div className="flex flex-col gap-3 md:flex-row md:items-center">
-                  <code className="wadi-api-code min-w-0 flex-1 overflow-x-auto px-3 py-3 text-xs">
+                  <code className="wadi-api-code min-w-0 flex-1 overflow-x-auto px-3 py-3 text-xs" dir="ltr">
                     {selectedKey.token || `${selectedKey.keyPrefix}...`}
                   </code>
                   <button
                     disabled={!selectedKey.token}
-                    onClick={() => selectedKey.token && copy(selectedKey.token, 'token')}
+                    onClick={() => selectedKey.token && copyToClipboard(selectedKey.token, 'token')}
                     className="wadi-api-primary px-4 py-3 disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    {copyState === 'token' ? 'Copied' : 'Copy key'}
+                    {copyState === 'token' ? t.copied : t.copyKey}
                   </button>
                 </div>
               </Panel>
 
               <div className="grid gap-5 xl:grid-cols-2">
-                <Panel title="Daily Usage">
+                <Panel title={t.dailyUsage}>
                   <DataTable
-                    headers={['Day', 'Requests', 'Tokens']}
+                    headers={[t.tableDay, t.tableRequests, t.tableTokens]}
                     rows={(usage?.daily || []).map((row) => [
                       row.day,
                       formatNumber(row.requests),
                       formatNumber(row.tokens),
                     ])}
+                    noUsage={t.noUsage}
                   />
                 </Panel>
-                <Panel title="Recent Requests">
+                <Panel title={t.recentRequests}>
                   <DataTable
-                    headers={['When', 'Mode', 'Tokens']}
+                    headers={[t.tableWhen, t.tableMode, t.tableTokens]}
                     rows={(usage?.events || []).map((event) => [
-                      formatDate(event.createdAt),
+                      formatDate(event.createdAt, t.never),
                       event.capability,
                       formatNumber(event.totalTokens),
                     ])}
+                    noUsage={t.noUsage}
                   />
                 </Panel>
               </div>
             </>
           ) : (
-            <Panel title="No API access yet">
+            <Panel title={t.noAccess}>
               <p className="text-sm font-bold leading-6 text-black/56 dark:text-white/62">
-                When an admin assigns one or more API keys to your account, they will appear here with limits,
-                usage, allowed media types, and ready-to-copy commands.
+                {t.noAccessBody}
               </p>
             </Panel>
           )}
@@ -443,7 +399,7 @@ function Metric({ label, value }: { label: string; value: string }) {
   return (
     <div className="wadi-api-metric p-4">
       <div className="text-[11px] font-black uppercase tracking-[0.18em] text-black/44 dark:text-white/46">{label}</div>
-      <div className="mt-2 text-2xl font-black text-[#062c30] dark:text-[#e9fbfc]">{value}</div>
+      <div className="mt-2 text-2xl font-black text-[#062c30] dark:text-[#e9fbfc]" dir="ltr">{value}</div>
     </div>
   );
 }
@@ -452,7 +408,7 @@ function LimitRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="wadi-api-limit-row">
       <span>{label}</span>
-      <strong>{value}</strong>
+      <strong dir="ltr">{value}</strong>
     </div>
   );
 }
@@ -461,21 +417,25 @@ function Pill({ children }: { children: React.ReactNode }) {
   return <span className="wadi-api-pill">{children}</span>;
 }
 
-function DataTable({ headers, rows }: { headers: string[]; rows: React.ReactNode[][] }) {
+function DataTable({ headers, rows, noUsage }: { headers: string[]; rows: React.ReactNode[][]; noUsage: string }) {
   return (
     <div className="wadi-api-table-wrap max-h-80 overflow-auto">
-      <table className="w-full min-w-[420px] text-left text-sm">
+      <table className="w-full min-w-[420px] text-start text-sm">
         <thead className="sticky top-0 text-[11px] uppercase tracking-[0.12em] text-black/46 dark:text-white/46">
           <tr>
             {headers.map((header) => (
-              <th key={header} className="border-b border-black/8 bg-white/80 px-3 py-3 font-black backdrop-blur dark:border-white/10 dark:bg-[#111817]/88">{header}</th>
+              <th key={header} className="border-b border-black/8 bg-white/80 px-3 py-3 font-black backdrop-blur dark:border-white/10 dark:bg-[#111817]/88">
+                {header}
+              </th>
             ))}
           </tr>
         </thead>
         <tbody>
           {rows.length === 0 ? (
             <tr>
-              <td colSpan={headers.length} className="px-3 py-8 text-center font-bold text-black/42 dark:text-white/46">No usage yet</td>
+              <td colSpan={headers.length} className="px-3 py-8 text-center font-bold text-black/42 dark:text-white/46">
+                {noUsage}
+              </td>
             </tr>
           ) : rows.map((row, index) => (
             <tr key={index} className="border-b border-black/5 last:border-0 dark:border-white/8">

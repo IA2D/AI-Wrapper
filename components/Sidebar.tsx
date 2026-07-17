@@ -143,15 +143,14 @@ export default function Sidebar({
 
       {/* Sidebar */}
       <aside
-        dir="ltr"
         className={`
-          fixed md:relative top-0 left-0 h-full
+          fixed md:relative top-0 start-0 h-full
           w-72
           flex flex-col
           transition-transform duration-300 ease-in-out
           z-50 md:z-auto
           wadi-chat-sidebar
-          ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+          ${isOpen ? 'translate-x-0' : '-translate-x-full rtl:translate-x-full md:translate-x-0'}
         `}
       >
         {/* Header with New Chat button */}
@@ -192,7 +191,7 @@ export default function Sidebar({
                 type="button"
                 key={tool.id}
                 onClick={() => onToolSelect(tool.id)}
-                className={`wadi-sidebar-tool w-full rounded-lg px-3 py-2.5 text-left transition-colors ${
+                className={`wadi-sidebar-tool w-full rounded-lg px-3 py-2.5 text-start transition-colors ${
                   activeTool === tool.id
                     ? 'is-active text-white'
                     : 'text-black/62 hover:bg-black/[0.035]'

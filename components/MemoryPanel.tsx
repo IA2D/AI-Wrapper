@@ -99,7 +99,7 @@ export default function MemoryPanel({ isOpen, onClose }: MemoryPanelProps) {
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-black/30">
       <button className="flex-1 cursor-default" aria-label="Close memory panel" onClick={onClose} />
-      <aside className="flex h-full w-full max-w-md flex-col border-l border-gray-200 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-900">
+      <aside className="flex h-full w-full max-w-md flex-col border-s border-gray-200 bg-white shadow-xl dark:border-gray-700 dark:bg-gray-900">
         <div className="flex items-center justify-between border-b border-gray-200 px-5 py-4 dark:border-gray-700">
           <div className="flex items-center gap-3">
             <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-teal-50 text-teal-700 dark:bg-teal-950 dark:text-teal-200">

@@ -525,7 +525,7 @@ export default function AdminDashboard({ admin }: { admin: AdminUser }) {
                   <DataTable
                     headers={['Name', 'Role', 'Keys', 'Requests', 'Tokens', 'Actions']}
                     rows={summary.users.map((user) => [
-                      <button key="name" onClick={() => setSelectedUserId(user.id)} className="text-left font-black text-[#15565c] hover:underline dark:text-[#d3edef]">
+                      <button key="name" onClick={() => setSelectedUserId(user.id)} className="text-start font-black text-[#15565c] hover:underline dark:text-[#d3edef]">
                         {user.name}<span className="block text-xs font-bold text-black/46 dark:text-white/46">{user.email}</span>
                       </button>,
                       user.role,
@@ -1005,7 +1005,7 @@ function Panel({ title, children }: { title: string; children: React.ReactNode }
 function DataTable({ headers, rows }: { headers: string[]; rows: React.ReactNode[][] }) {
   return (
     <div className="wadi-admin-table-wrap overflow-x-auto">
-      <table className="w-full min-w-[560px] text-left text-sm">
+      <table className="w-full min-w-[560px] text-start text-sm">
         <thead className="text-[11px] uppercase tracking-[0.12em] text-black/48 dark:text-white/48">
           <tr>
             {headers.map((header) => (

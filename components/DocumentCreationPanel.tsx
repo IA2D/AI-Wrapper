@@ -453,13 +453,13 @@ export default function DocumentCreationPanel({ thinkingMode }: { thinkingMode: 
             {savedJobs.slice(0, 6).map((job) => (
               <div
                 key={job.id}
-                className={`rounded-lg border px-3 py-2 text-left transition-colors ${
+                className={`rounded-lg border px-3 py-2 text-start transition-colors ${
                   job.id === jobId
                     ? 'border-teal-500 bg-teal-50 dark:bg-teal-950/30'
                     : 'border-gray-200 hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700'
                 }`}
               >
-                <button type="button" onClick={() => loadJob(job)} className="w-full text-left">
+                <button type="button" onClick={() => loadJob(job)} className="w-full text-start">
                   <div className="truncate text-sm font-medium">{job.title}</div>
                   <div className="mt-1 flex items-center justify-between gap-2 text-xs text-gray-500 dark:text-gray-400">
                     <span>{job.status}</span>
@@ -504,7 +504,7 @@ export default function DocumentCreationPanel({ thinkingMode }: { thinkingMode: 
                   key={template.id}
                   type="button"
                   onClick={() => setTemplateId(template.id)}
-                  className={`rounded-lg border px-3 py-2 text-left transition-colors ${
+                  className={`rounded-lg border px-3 py-2 text-start transition-colors ${
                     templateId === template.id
                       ? 'border-teal-500 bg-teal-50 text-teal-900 dark:bg-teal-950/40 dark:text-teal-100'
                       : 'border-gray-200 bg-white hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-900 dark:hover:bg-gray-800'
@@ -892,7 +892,7 @@ function DocumentSectionPreview({
 
   if (section.type === 'list' && section.items?.length) {
     return (
-      <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-gray-700 dark:text-gray-300">
+      <ul className="mt-2 list-disc space-y-1 ps-5 text-sm text-gray-700 dark:text-gray-300">
         {section.items.map((item, index) => <li key={index}>{valueToText(item)}</li>)}
       </ul>
     );
@@ -911,22 +911,22 @@ function DocumentSectionPreview({
           h2: ({ children }) => <h2 className="mb-2 text-lg font-semibold text-gray-900 dark:text-gray-100">{children}</h2>,
           h3: ({ children }) => <h3 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">{children}</h3>,
           p: ({ children }) => <p className="mb-3 leading-6">{children}</p>,
-          ul: ({ children }) => <ul className="mb-3 list-disc space-y-1 pl-5">{children}</ul>,
-          ol: ({ children }) => <ol className="mb-3 list-decimal space-y-1 pl-5">{children}</ol>,
+          ul: ({ children }) => <ul className="mb-3 list-disc space-y-1 ps-5">{children}</ul>,
+          ol: ({ children }) => <ol className="mb-3 list-decimal space-y-1 ps-5">{children}</ol>,
           strong: ({ children }) => <strong className="font-semibold text-gray-900 dark:text-gray-100">{children}</strong>,
           code: ({ children }) => <code className="rounded bg-gray-100 px-1 py-0.5 text-xs dark:bg-gray-700">{children}</code>,
           table: ({ children }) => (
             <div className="overflow-x-auto">
               <table
                 dir={markdownDirection}
-                className={`min-w-full border-collapse ${markdownIsRtl ? 'text-right [direction:rtl]' : 'text-left [direction:ltr]'}`}
+                className="min-w-full border-collapse text-start"
               >
                 {children}
               </table>
             </div>
           ),
-          th: ({ children }) => <th dir="auto" className={`border border-gray-200 bg-gray-100 px-3 py-2 align-top [overflow-wrap:anywhere] dark:border-gray-700 dark:bg-gray-700 ${markdownIsRtl ? 'text-right' : 'text-left'}`}>{children}</th>,
-          td: ({ children }) => <td dir="auto" className={`border border-gray-200 px-3 py-2 align-top [overflow-wrap:anywhere] dark:border-gray-700 ${markdownIsRtl ? 'text-right' : 'text-left'}`}>{children}</td>,
+          th: ({ children }) => <th dir="auto" className="border border-gray-200 bg-gray-100 px-3 py-2 align-top text-start [overflow-wrap:anywhere] dark:border-gray-700 dark:bg-gray-700">{children}</th>,
+          td: ({ children }) => <td dir="auto" className="border border-gray-200 px-3 py-2 align-top text-start [overflow-wrap:anywhere] dark:border-gray-700">{children}</td>,
           a: ({ href, children }) => <a href={href} target="_blank" rel="noreferrer" className="break-all text-teal-600 underline [overflow-wrap:anywhere] dark:text-teal-400">{children}</a>,
         }}
       >
@@ -1050,7 +1050,7 @@ function TablePreview({ rows }: { rows: string[][] }) {
             <tr key={rowIndex} className={rowIndex === 0 ? 'bg-gray-100 dark:bg-gray-700' : 'bg-white dark:bg-gray-800'}>
               {row.map((cell, cellIndex) => {
                 const cellValue = valueToText(cell);
-                const cellClass = `border-b border-r border-gray-200 px-3 py-2 align-top last:border-r-0 [overflow-wrap:anywhere] dark:border-gray-700 ${textAlignClass(cellValue)}`;
+                const cellClass = `border-b border-e border-gray-200 px-3 py-2 align-top last:border-e-0 [overflow-wrap:anywhere] dark:border-gray-700 ${textAlignClass(cellValue)}`;
 
                 return rowIndex === 0 ? (
                   <th key={cellIndex} dir={textDirection(cellValue)} className={cellClass}>{cellValue}</th>
@@ -1095,7 +1095,7 @@ function EditableTable({
                 const cellValue = valueToText(cell);
 
                 return (
-                  <td key={cellIndex} className="border-b border-r border-gray-200 p-0 last:border-r-0 dark:border-gray-700">
+                  <td key={cellIndex} className="border-b border-e border-gray-200 p-0 last:border-e-0 dark:border-gray-700">
                     <textarea
                       value={cellValue}
                       onChange={(event) => updateCell(rowIndex, cellIndex, event.target.value)}

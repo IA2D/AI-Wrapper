@@ -739,7 +739,7 @@ function AgentDemoSection({ locale }: { locale: Locale }) {
                 <span>{copy.input}</span>
                 <button type="button" onClick={runAgent} className="minds-agent-run" disabled={isRunning}>
                   {isRunning ? copy.running : copy.button}
-                  <FiArrowRight aria-hidden="true" />
+                  <span aria-hidden="true" className="minds-icon-rtl-flip"><FiArrowRight /></span>
                 </button>
               </div>
             </div>
@@ -752,7 +752,7 @@ function AgentDemoSection({ locale }: { locale: Locale }) {
           <p>{copy.body}</p>
           <a href="/docs/api">
             {copy.link}
-            <FiArrowRight aria-hidden="true" />
+            <span aria-hidden="true" className="minds-icon-rtl-flip"><FiArrowRight /></span>
           </a>
         </div>
       </div>

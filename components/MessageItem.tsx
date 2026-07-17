@@ -138,7 +138,7 @@ export default function MessageItem({ message, onMeasure, showThinking = false, 
                     </svg>
                     {sources.length} source{sources.length === 1 ? '' : 's'}
                   </button>
-                  <div className="pointer-events-none absolute bottom-10 left-3 z-20 hidden w-80 rounded-xl border border-gray-200 bg-white p-3 text-left text-xs text-gray-700 opacity-0 shadow-xl transition-opacity group-hover:block group-hover:opacity-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200">
+                  <div className="pointer-events-none absolute bottom-10 start-3 z-20 hidden w-80 rounded-xl border border-gray-200 bg-white p-3 text-start text-xs text-gray-700 opacity-0 shadow-xl transition-opacity group-hover:block group-hover:opacity-100 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-200">
                     <div className="mb-2 font-semibold text-gray-900 dark:text-white">Sources used</div>
                     <div className="space-y-2">
                       {sources.slice(0, 5).map((source, index) => (
@@ -154,7 +154,7 @@ export default function MessageItem({ message, onMeasure, showThinking = false, 
             </div>
           )}
           {!isUser && (modelLabel || tokenUsage) && (
-            <div className={`mt-2 text-[11px] text-gray-500 dark:text-gray-400 ${dir === 'rtl' ? 'text-left' : 'text-right'}`}>
+            <div className={`mt-2 text-[11px] text-gray-500 dark:text-gray-400 text-end`}>
               {tokenUsage ? `${tokenUsage.totalTokens.toLocaleString()} tokens` : 'Tokens unavailable'}
               {modelLabel ? ` - ${modelLabel}` : ''}
             </div>
@@ -164,7 +164,7 @@ export default function MessageItem({ message, onMeasure, showThinking = false, 
       </div>
       {showSources && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4" onClick={() => setShowSources(false)}>
-          <div className="max-h-[82vh] w-full max-w-2xl overflow-y-auto rounded-xl border border-gray-200 bg-white p-5 text-left shadow-xl dark:border-gray-700 dark:bg-gray-900" onClick={(event) => event.stopPropagation()}>
+          <div className="max-h-[82vh] w-full max-w-2xl overflow-y-auto rounded-xl border border-gray-200 bg-white p-5 text-start shadow-xl dark:border-gray-700 dark:bg-gray-900" onClick={(event) => event.stopPropagation()}>
             <div className="mb-4 flex items-center justify-between gap-3">
               <h3 className="text-base font-semibold text-gray-900 dark:text-white">Sources used</h3>
               <button onClick={() => setShowSources(false)} className="rounded-lg p-2 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800" aria-label="Close sources">

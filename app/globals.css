@@ -922,10 +922,15 @@
   .wadi-admin-metric::after {
     content: "";
     position: absolute;
-    inset: auto 1rem 0 1rem;
+    inset-inline: 1rem;
+    bottom: 0;
     height: 3px;
     border-radius: 999px 999px 0 0;
-    background: linear-gradient(90deg, #1c7178, rgba(143, 207, 211, 0.24));
+    background: linear-gradient(to end, #1c7178, rgba(143, 207, 211, 0.24));
+  }
+
+  html[dir="rtl"] .wadi-admin-metric::after {
+    background: linear-gradient(to start, #1c7178, rgba(143, 207, 211, 0.24));
   }
 
   .wadi-admin-subpanel {
@@ -936,13 +941,13 @@
   .dark .wadi-admin-panel,
   .dark .wadi-admin-metric,
   .dark .wadi-admin-subpanel {
-    border-color: rgba(143, 207, 211, 0.16);
-    background: rgba(255, 255, 255, 0.075);
+    border-color: rgba(143, 207, 211, 0.18);
+    background: rgba(255, 255, 255, 0.10);
     box-shadow: 0 20px 70px rgba(0, 0, 0, 0.22);
   }
 
   .dark .wadi-admin-subpanel {
-    background: rgba(255, 255, 255, 0.055);
+    background: rgba(255, 255, 255, 0.07);
     box-shadow: none;
   }
 
@@ -1003,8 +1008,8 @@
   }
 
   .dark .wadi-admin-inline-field {
-    border-color: rgba(143, 207, 211, 0.14);
-    background: rgba(255, 255, 255, 0.055);
+    border-color: rgba(143, 207, 211, 0.16);
+    background: rgba(255, 255, 255, 0.08);
   }
 
   .wadi-admin-badge,
@@ -1155,16 +1160,21 @@
   .wadi-api-metric::after {
     content: "";
     position: absolute;
-    inset: auto 1rem 0 1rem;
+    inset-inline: 1rem;
+    bottom: 0;
     height: 3px;
     border-radius: 999px 999px 0 0;
-    background: linear-gradient(90deg, #1c7178, rgba(143, 207, 211, 0.24));
+    background: linear-gradient(to end, #1c7178, rgba(143, 207, 211, 0.24));
+  }
+
+  html[dir="rtl"] .wadi-api-metric::after {
+    background: linear-gradient(to start, #1c7178, rgba(143, 207, 211, 0.24));
   }
 
   .wadi-api-key-card {
     width: 100%;
     padding: 1rem;
-    text-align: left;
+    text-align: start;
     transition:
       transform 180ms ease,
       border-color 180ms ease,
@@ -1181,8 +1191,8 @@
   .dark .wadi-api-panel,
   .dark .wadi-api-metric,
   .dark .wadi-api-key-card {
-    border-color: rgba(143, 207, 211, 0.16);
-    background: rgba(255, 255, 255, 0.075);
+    border-color: rgba(143, 207, 211, 0.18);
+    background: rgba(255, 255, 255, 0.10);
     box-shadow: 0 20px 70px rgba(0, 0, 0, 0.22);
   }
 
@@ -1243,12 +1253,12 @@
   .wadi-api-limit-row strong {
     color: rgba(5, 5, 5, 0.86);
     font-weight: 950;
-    text-align: right;
+    text-align: end;
   }
 
   .dark .wadi-api-limit-row {
-    border-color: rgba(143, 207, 211, 0.14);
-    background: rgba(255, 255, 255, 0.055);
+    border-color: rgba(143, 207, 211, 0.16);
+    background: rgba(255, 255, 255, 0.08);
   }
 
   .dark .wadi-api-limit-row span {
@@ -1268,8 +1278,8 @@
   }
 
   .dark .wadi-api-code {
-    border-color: rgba(143, 207, 211, 0.16);
-    background: #020606;
+    border-color: rgba(143, 207, 211, 0.18);
+    background: #0a1414;
     color: #e9fbfc;
   }
 
@@ -1423,7 +1433,7 @@
   .minds-menu-line::after {
     content: "";
     position: absolute;
-    left: 0;
+    inset-inline-start: 0;
     width: 20px;
     height: 2px;
     border-radius: 999px;
@@ -1759,6 +1769,15 @@
   }
 
   html[dir="rtl"] .minds-arrow {
+    transform: rotate(180deg);
+  }
+
+  .minds-icon-rtl-flip {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  html[dir="rtl"] .minds-icon-rtl-flip {
     transform: rotate(180deg);
   }
 
@@ -3145,7 +3164,7 @@
   .wadi-menu-line::after {
     content: "";
     position: absolute;
-    left: 0;
+    inset-inline-start: 0;
     width: 18px;
     height: 2px;
     border-radius: 999px;

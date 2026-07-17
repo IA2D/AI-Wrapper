@@ -509,9 +509,9 @@ export default function FlowChartPanel() {
             {jobs.slice(0, 9).map((job) => (
               <div
                 key={job.id}
-                className="rounded-lg border border-gray-200 px-3 py-2 text-left transition-colors hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700"
+                className="rounded-lg border border-gray-200 px-3 py-2 text-start transition-colors hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-700"
               >
-                <button type="button" onClick={() => loadJob(job)} className="w-full text-left">
+                <button type="button" onClick={() => loadJob(job)} className="w-full text-start">
                   <div className="truncate text-sm font-medium">{job.title}</div>
                   <div className="mt-1 flex justify-between text-xs text-gray-500 dark:text-gray-400">
                     <span>{job.status}</span>

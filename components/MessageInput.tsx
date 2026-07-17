@@ -364,7 +364,7 @@ export default function MessageInput({
               {onPDFRemove && (
                 <button
                   onClick={() => onPDFRemove(pdf.docId)}
-                  className="ml-1 rounded-full p-0.5 transition-colors hover:bg-[#8fcfd3]/45"
+                  className="ms-1 rounded-full p-0.5 transition-colors hover:bg-[#8fcfd3]/45"
                   aria-label={`Remove ${pdf.name}`}
                 >
                   <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -539,7 +539,7 @@ export default function MessageInput({
           rows={1}
           dir={hasDraft ? textDirection(value) : 'auto'}
           className={`wadi-composer-textarea resize-none border-0 bg-transparent px-2 py-2.5 text-base font-bold text-gray-950 placeholder:text-gray-500 focus:outline-none focus:ring-0 dark:text-white dark:placeholder:text-white/45 ${
-            hasDraft ? textAlignClass(value) : 'text-left'
+            hasDraft ? textAlignClass(value) : 'text-start'
           }`}
           style={{
             minHeight: '2.5rem',
