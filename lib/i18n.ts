@@ -61,6 +61,11 @@ export const landingCopy = {
       developers: 'Developers',
       language: 'العربية',
       launch: 'Open Wadi',
+      userChat: 'Chat',
+      userApiConsole: 'API Console',
+      userAdmin: 'Admin',
+      userDocs: 'API Docs',
+      userLogout: 'Sign Out',
     },
     hero: {
       eyebrow: 'AI chat, documents, and APIs',
@@ -153,6 +158,11 @@ export const landingCopy = {
       developers: 'للمطورين',
       language: 'English',
       launch: 'افتح Wadi',
+      userChat: 'المحادثة',
+      userApiConsole: 'API Console',
+      userAdmin: 'الإدارة',
+      userDocs: 'توثيق API',
+      userLogout: 'تسجيل الخروج',
     },
     hero: {
       eyebrow: 'محادثة وملفات وواجهات API',
