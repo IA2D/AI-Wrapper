@@ -33,7 +33,7 @@ export default function Sidebar({
   isOpen,
   onToggle,
 }: SidebarProps) {
-  const { locale } = useLanguage();
+  const { locale, dir } = useLanguage();
   const copy = chatCopy[locale];
   const [hoveredSessionId, setHoveredSessionId] = useState<string | null>(null);
   const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
@@ -143,6 +143,7 @@ export default function Sidebar({
 
       {/* Sidebar */}
       <aside
+        dir={dir}
         className={`
           fixed md:relative top-0 start-0 h-full
           w-72
