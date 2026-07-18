@@ -120,12 +120,21 @@ export default function MainLayout() {
 
   // Session management actions
   const handleNewChat = useCallback(async () => {
+    // If there's already an empty session, just switch to it — don't create another
+    const emptySession = sessions.find(s => !s.messages || s.messages.length === 0);
+    if (emptySession) {
+      setCurrentSessionId(emptySession.id);
+      setActiveTool(null);
+      await StorageService.setCurrentSessionId(emptySession.id);
+      return;
+    }
+
     const newSession = createNewSession();
     await addSession(newSession);
     setCurrentSessionId(newSession.id);
     setActiveTool(null);
     await StorageService.setCurrentSessionId(newSession.id);
-  }, [createNewSession, addSession]);
+  }, [sessions, createNewSession, addSession]);
 
   const handleSessionSelect = useCallback(async (sessionId: string) => {
     setCurrentSessionId(sessionId);
@@ -237,6 +246,7 @@ export default function MainLayout() {
         onToolSelect={handleToolSelect}
         isOpen={isSidebarOpen}
         onToggle={handleToggleSidebar}
+        hasEmptySession={sessions.some(s => !s.messages || s.messages.length === 0)}
       />
 
       {/* Main content area */}

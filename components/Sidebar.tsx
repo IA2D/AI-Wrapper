@@ -19,6 +19,7 @@ interface SidebarProps {
   onToolSelect: (tool: ToolMode) => void;
   isOpen: boolean;
   onToggle: () => void;
+  hasEmptySession?: boolean;
 }
 
 export default function Sidebar({
@@ -32,6 +33,7 @@ export default function Sidebar({
   onToolSelect,
   isOpen,
   onToggle,
+  hasEmptySession = false,
 }: SidebarProps) {
   const { locale, dir } = useLanguage();
   const copy = chatCopy[locale];
@@ -164,8 +166,12 @@ export default function Sidebar({
           </a>
           <button
             type="button"
-            onClick={onNewChat}
-            className="wadi-sidebar-new-chat flex w-full items-center justify-between gap-3 rounded-lg px-3 py-3 text-sm font-black transition-colors"
+            onClick={hasEmptySession ? undefined : onNewChat}
+            disabled={hasEmptySession}
+            title={hasEmptySession ? copy.sidebar.newChatDisabled : undefined}
+            className={`wadi-sidebar-new-chat flex w-full items-center justify-between gap-3 rounded-lg px-3 py-3 text-sm font-black transition-colors ${
+              hasEmptySession ? 'cursor-not-allowed opacity-40' : ''
+            }`}
           >
             <span>{copy.sidebar.newChat}</span>
             <svg

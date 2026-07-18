@@ -17,6 +17,7 @@ export const chatCopy: Record<Locale, {
   sidebar: {
     workspace: string;
     newChat: string;
+    newChatDisabled: string;
     tools: string;
     noHistory: string;
     today: string;
@@ -96,6 +97,7 @@ export const chatCopy: Record<Locale, {
     sidebar: {
       workspace: 'Workspace',
       newChat: 'New Chat',
+      newChatDisabled: 'Finish your current chat before starting a new one',
       tools: 'Tools',
       noHistory: 'No chat history yet',
       today: 'Today',
@@ -175,6 +177,7 @@ export const chatCopy: Record<Locale, {
     sidebar: {
       workspace: 'مساحة العمل',
       newChat: 'محادثة جديدة',
+      newChatDisabled: 'أنهِ محادثتك الحالية قبل بدء محادثة جديدة',
       tools: 'الأدوات',
       noHistory: 'لا يوجد سجل محادثات بعد',
       today: 'اليوم',
