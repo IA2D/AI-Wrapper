@@ -669,16 +669,16 @@ export default function ChatInterface({
           />
 
           {/* Input area */}
-          <div className="wadi-chat-composer-wrap px-4 py-4 md:px-6 md:py-5">
+          <div className="wadi-chat-composer-wrap px-4 py-4 pb-[calc(1rem+env(safe-area-inset-bottom))] md:px-6 md:py-5 md:pb-[calc(1.25rem+env(safe-area-inset-bottom))]">
             <div className="mx-auto max-w-4xl">
               {session.messages.length === 0 && !currentInput && (
-                <div className="mb-3 flex flex-wrap justify-center gap-2">
+                <div className="mb-3 flex flex-nowrap justify-start gap-2 overflow-x-auto pb-1 sm:flex-wrap sm:justify-center scrollbar-thin">
                   {copy.chat.starters.map((prompt) => (
                     <button
                       key={prompt}
                       type="button"
                       onClick={() => setCurrentInput(prompt)}
-                      className="wadi-starter-chip"
+                      className="wadi-starter-chip flex-shrink-0"
                     >
                       {prompt}
                     </button>
@@ -699,13 +699,13 @@ export default function ChatInterface({
                 </div>
               )}
               {availableModels.length > 0 && (
-                <div className="wadi-model-selector mb-3 flex flex-wrap items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm">
+                <div className="wadi-model-selector mb-3 flex flex-col gap-2 rounded-lg px-3 py-2 text-sm sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
                   <span className="font-black text-black/72 dark:text-white/78">{copy.chat.model}</span>
                   <select
                     value={modelSelection}
                     onChange={(event) => setModelSelection(event.target.value)}
                     disabled={isBusyInCurrentSession}
-                    className="min-w-[220px] rounded-full border border-black/10 bg-white/90 px-3 py-1.5 text-sm font-bold text-gray-900 outline-none focus:border-[#1C7178] dark:border-white/10 dark:bg-[#111817] dark:text-gray-100"
+                    className="min-w-0 w-full sm:w-auto sm:min-w-[220px] rounded-full border border-black/10 bg-white/90 px-3 py-1.5 text-sm font-bold text-gray-900 outline-none focus:border-[#1C7178] dark:border-white/10 dark:bg-[#111817] dark:text-gray-100"
                   >
                     <option value="default">{copy.chat.modelDefault}</option>
                     {adaptiveAvailable && <option value="adaptive">{copy.chat.modelAdaptive}</option>}

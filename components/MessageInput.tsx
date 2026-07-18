@@ -392,7 +392,7 @@ export default function MessageInput({
               />
               <button
                 onClick={() => onFileRemove(file.id)}
-                className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center rounded-full bg-red-500 text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                className="absolute top-1 end-1 w-5 h-5 flex items-center justify-center rounded-full bg-red-500 text-white opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity hover:bg-red-600"
                 aria-label={`Remove ${file.name}`}
               >
                 <svg
@@ -461,7 +461,7 @@ export default function MessageInput({
       {/* Input area */}
       <div
         className={`wadi-composer-surface flex items-center rounded-[28px] p-2 transition-shadow ${
-          hasDraft ? 'is-writing gap-2' : 'is-empty gap-2'
+          hasDraft ? 'is-writing gap-1.5 sm:gap-2' : 'is-empty gap-1.5 sm:gap-2'
         }`}
         dir="ltr"
         onClick={handleComposerSurfaceClick}

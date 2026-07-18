@@ -799,6 +799,27 @@
     .wadi-thinking-composer-toggle span:last-child {
       display: none;
     }
+
+    /* Tighten composer on small screens */
+    .wadi-composer-surface {
+      padding: 0.35rem;
+      border-radius: 20px;
+    }
+
+    /* Header: shrink padding on mobile */
+    .wadi-chat-header {
+      padding-block: 0.5rem;
+    }
+
+    /* Sidebar full-width on very small screens */
+    .wadi-chat-sidebar {
+      width: min(18rem, 90vw);
+    }
+
+    /* Starter chips: allow full width scroll */
+    .wadi-chat-composer-wrap .wadi-starter-chip {
+      white-space: nowrap;
+    }
   }
 
   .wadi-chat-tool-area {

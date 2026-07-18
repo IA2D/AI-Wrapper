@@ -40,7 +40,16 @@ export default function MainLayout() {
   const [user, setUser] = useState<{ id: string; name: string; email: string; role?: 'user' | 'admin' } | null>(null);
   const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [currentSessionId, setCurrentSessionId] = useState<string | null>(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // On md+ screens open sidebar by default; close it on mobile
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 768px)');
+    setIsSidebarOpen(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsSidebarOpen(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
   const [activeTool, setActiveTool] = useState<ToolMode | null>(null);
   const [isMemoryOpen, setIsMemoryOpen] = useState(false);
   const [hasApiKeys, setHasApiKeys] = useState(false);
@@ -140,6 +149,10 @@ export default function MainLayout() {
     setCurrentSessionId(sessionId);
     setActiveTool(null);
     await StorageService.setCurrentSessionId(sessionId);
+    // Close sidebar on mobile after selecting a session
+    if (!window.matchMedia('(min-width: 768px)').matches) {
+      setIsSidebarOpen(false);
+    }
   }, []);
 
   const handleDeleteSession = useCallback(async (sessionId: string) => {
@@ -307,7 +320,7 @@ export default function MainLayout() {
               {hasApiKeys && (
                 <a
                   href="/api-console"
-                  className="wadi-chat-pill wadi-chat-pill-primary flex"
+                  className="wadi-chat-pill wadi-chat-pill-primary hidden sm:flex"
                 >
                   {copy.header.apiConsole}
                 </a>
@@ -315,7 +328,7 @@ export default function MainLayout() {
               <button
                 type="button"
                 onClick={() => setLocale(nextLocale(locale))}
-                className="wadi-chat-pill"
+                className="wadi-chat-pill hidden sm:flex"
                 lang={locale === 'en' ? 'ar' : 'en'}
                 title="Switch language"
               >
