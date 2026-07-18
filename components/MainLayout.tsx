@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { ChatSession, APIConfiguration } from '@/types';
 import { StorageService } from '@/services/StorageService';
 import { useChatSessions } from '@/hooks/useChatSessions';
@@ -304,7 +304,7 @@ export default function MainLayout() {
             </div>
 
             {/* Right: Controls */}
-            <div className="flex flex-shrink-0 items-center gap-2 md:gap-3">
+            <div className="flex flex-shrink-0 items-center gap-1.5 md:gap-2">
               <ThemeToggle
                 isDark={isDarkMode}
                 onChange={handleThemeChange}
@@ -336,7 +336,7 @@ export default function MainLayout() {
               </button>
               <button
                 onClick={() => setIsMemoryOpen(true)}
-                className="wadi-chat-icon-button"
+                className="wadi-chat-icon-button hidden sm:inline-flex"
                 aria-label={copy.header.memory}
                 title={copy.header.memory}
               >
@@ -351,6 +351,17 @@ export default function MainLayout() {
               >
                 {copy.header.logout}
               </button>
+
+              {/* Mobile-only overflow menu */}
+              <MobileMenu
+                locale={locale}
+                labels={copy.header}
+                userRole={user.role}
+                hasApiKeys={hasApiKeys}
+                onLocaleToggle={() => setLocale(nextLocale(locale))}
+                onMemory={() => setIsMemoryOpen(true)}
+                onLogout={handleLogout}
+              />
             </div>
           </div>
         </header>
@@ -389,6 +400,98 @@ export default function MainLayout() {
         </div>
       </div>
       <MemoryPanel isOpen={isMemoryOpen} onClose={() => setIsMemoryOpen(false)} />
+    </div>
+  );
+}
+
+// Mobile overflow menu — shown on xs screens only (< sm)
+interface MobileMenuProps {
+  locale: string;
+  labels: {
+    language: string;
+    apiConsole: string;
+    admin: string;
+    memory: string;
+    logout: string;
+  };
+  userRole?: string;
+  hasApiKeys: boolean;
+  onLocaleToggle: () => void;
+  onMemory: () => void;
+  onLogout: () => void;
+}
+
+function MobileMenu({ locale, labels, userRole, hasApiKeys, onLocaleToggle, onMemory, onLogout }: MobileMenuProps) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  return (
+    <div className="relative sm:hidden" ref={ref}>
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        className="wadi-chat-icon-button"
+        aria-label="More options"
+      >
+        <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01" />
+        </svg>
+      </button>
+
+      {open && (
+        <div className="absolute end-0 top-full z-50 mt-2 w-48 rounded-2xl border border-black/10 bg-white/95 py-1.5 shadow-[0_16px_48px_rgba(0,0,0,0.14)] backdrop-blur-xl dark:border-white/10 dark:bg-[#101413]/96">
+          <button
+            type="button"
+            onClick={() => { onLocaleToggle(); setOpen(false); }}
+            className="flex w-full items-center gap-3 px-4 py-2.5 text-sm font-black text-black/80 hover:bg-black/5 dark:text-white/80 dark:hover:bg-white/6"
+            dir="auto"
+            lang={locale === 'en' ? 'ar' : 'en'}
+          >
+            {labels.language}
+          </button>
+          {hasApiKeys && (
+            <a
+              href="/api-console"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 px-4 py-2.5 text-sm font-black text-[#1C7178] hover:bg-black/5 dark:hover:bg-white/6"
+            >
+              {labels.apiConsole}
+            </a>
+          )}
+          {userRole === 'admin' && (
+            <a
+              href="/admin"
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 px-4 py-2.5 text-sm font-black text-black/80 hover:bg-black/5 dark:text-white/80 dark:hover:bg-white/6"
+            >
+              {labels.admin}
+            </a>
+          )}
+          <button
+            type="button"
+            onClick={() => { onMemory(); setOpen(false); }}
+            className="flex w-full items-center gap-3 px-4 py-2.5 text-sm font-black text-black/80 hover:bg-black/5 dark:text-white/80 dark:hover:bg-white/6"
+          >
+            {labels.memory}
+          </button>
+          <div className="my-1 h-px bg-black/8 dark:bg-white/8" />
+          <button
+            type="button"
+            onClick={() => { onLogout(); setOpen(false); }}
+            className="flex w-full items-center gap-3 px-4 py-2.5 text-sm font-black text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30"
+          >
+            {labels.logout}
+          </button>
+        </div>
+      )}
     </div>
   );
 }
