@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { ChatSession } from '@/types';
 import { ToolMode } from './ToolWorkspace';
 import WadiLogo from './WadiLogo';
-import { textDirection } from '@/utils/textDirection';
 import { chatCopy } from '@/lib/chatCopy';
 import { useLanguage } from './LanguageProvider';
 
@@ -296,7 +295,6 @@ export default function Sidebar({
                           type="button"
                           onClick={() => { onSessionSelect(session.id); }}
                           className="min-w-0 flex-1 text-start"
-                          dir={textDirection(getSessionTitle(session))}
                         >
                           <div className="truncate text-sm font-black">
                             {getSessionTitle(session)}
