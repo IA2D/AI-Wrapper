@@ -109,7 +109,8 @@ export default function LandingNav() {
         {/* Left: logo + desktop nav links */}
         <div className="flex min-w-0 items-center gap-3">
           <a href="/" className="minds-brand-pill" aria-label="Wadi home">
-            <WadiLogo />
+            <WadiLogo showText={false} className="sm:hidden" />
+            <WadiLogo className="hidden sm:inline-flex" />
           </a>
           <nav className="minds-nav-pill hidden items-center lg:flex" aria-label="Primary navigation">
             {navItems.map((item) => (
@@ -132,50 +133,29 @@ export default function LandingNav() {
                 aria-expanded={userMenuOpen}
                 aria-haspopup="true"
               >
-                {/* Avatar circle */}
                 <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#1C7178] text-[11px] font-black text-white">
                   {userInitial}
                 </span>
                 <span className="max-w-[96px] truncate font-black">{user.name}</span>
-                <FiChevronDown
-                  className={`h-3.5 w-3.5 transition-transform duration-200 ${userMenuOpen ? 'rotate-180' : ''}`}
-                />
+                <FiChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${userMenuOpen ? 'rotate-180' : ''}`} />
               </button>
 
-              {/* Dropdown panel */}
               {userMenuOpen && (
-                <div
-                  className="absolute top-full mt-2 w-52 rounded-2xl border border-black/10 bg-white/95 py-2 shadow-[0_24px_60px_rgba(0,0,0,0.14)] backdrop-blur-2xl dark:border-white/10 dark:bg-[#101413]/96"
-                  style={{ insetInlineEnd: 0 }}
-                >
-                  {/* User info */}
+                <div className="absolute top-full mt-2 w-52 rounded-2xl border border-black/10 bg-white/95 py-2 shadow-[0_24px_60px_rgba(0,0,0,0.14)] backdrop-blur-2xl dark:border-white/10 dark:bg-[#101413]/96" style={{ insetInlineEnd: 0 }}>
                   <div className="border-b border-black/8 px-4 pb-2.5 pt-1 dark:border-white/8">
                     <p className="text-sm font-black text-black dark:text-white">{user.name}</p>
                     <p className="text-xs font-bold text-black/48 dark:text-white/48">{user.email}</p>
                   </div>
-
-                  {/* Links */}
                   <div className="py-1">
                     {userLinks.map((link) => (
-                      <a
-                        key={link.href}
-                        href={link.href}
-                        onClick={() => setUserMenuOpen(false)}
-                        className="flex items-center gap-3 px-4 py-2.5 text-sm font-black text-black/80 transition-colors hover:bg-black/[0.04] hover:text-[#1C7178] dark:text-white/80 dark:hover:bg-white/6 dark:hover:text-[#8fcfd3]"
-                      >
+                      <a key={link.href} href={link.href} onClick={() => setUserMenuOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm font-black text-black/80 transition-colors hover:bg-black/[0.04] hover:text-[#1C7178] dark:text-white/80 dark:hover:bg-white/6 dark:hover:text-[#8fcfd3]">
                         <span className="text-base" aria-hidden="true">{link.icon}</span>
                         {link.label}
                       </a>
                     ))}
                   </div>
-
-                  {/* Logout */}
                   <div className="border-t border-black/8 pt-1 dark:border-white/8">
-                    <button
-                      type="button"
-                      onClick={handleLogout}
-                      className="flex w-full items-center gap-3 px-4 py-2.5 text-sm font-black text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30"
-                    >
+                    <button type="button" onClick={handleLogout} className="flex w-full items-center gap-3 px-4 py-2.5 text-sm font-black text-red-600 transition-colors hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30">
                       <span className="text-base" aria-hidden="true">🚪</span>
                       {copy.nav.userLogout}
                     </button>
@@ -184,7 +164,6 @@ export default function LandingNav() {
               )}
             </div>
           ) : (
-            /* ── Logged-out: Sign In ── */
             <a href="/chat" className="minds-action-pill hidden sm:inline-flex">
               {copy.nav.signIn}
             </a>
@@ -204,20 +183,17 @@ export default function LandingNav() {
             onChange={handleThemeChange}
             className="minds-action-pill minds-theme-toggle hidden sm:inline-flex"
           />
-
-          {/* Open Wadi CTA — only show when logged out */}
           {!user && (
             <a href="/chat" className="minds-action-pill minds-action-primary hidden min-[520px]:inline-flex">
-              <span aria-hidden="true" className="minds-arrow">
-                <FiArrowRight />
-              </span>
+              <span aria-hidden="true" className="minds-arrow"><FiArrowRight /></span>
               {copy.nav.launch}
             </a>
           )}
 
+          {/* Hamburger — visible below lg on desktop, always on mobile */}
           <button
             type="button"
-            className="minds-menu-button lg:hidden"
+            className="minds-menu-button"
             aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((v) => !v)}

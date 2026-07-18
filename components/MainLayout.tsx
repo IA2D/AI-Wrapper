@@ -310,25 +310,19 @@ export default function MainLayout() {
                 onChange={handleThemeChange}
               />
               {user.role === 'admin' && (
-                <a
-                  href="/admin"
-                  className="wadi-chat-pill hidden md:flex"
-                >
+                <a href="/admin" className="wadi-chat-pill wadi-chat-pill-mobile-hide hidden md:flex">
                   {copy.header.admin}
                 </a>
               )}
               {hasApiKeys && (
-                <a
-                  href="/api-console"
-                  className="wadi-chat-pill wadi-chat-pill-primary hidden sm:flex"
-                >
+                <a href="/api-console" className="wadi-chat-pill wadi-chat-pill-primary wadi-chat-pill-mobile-hide hidden sm:flex">
                   {copy.header.apiConsole}
                 </a>
               )}
               <button
                 type="button"
                 onClick={() => setLocale(nextLocale(locale))}
-                className="wadi-chat-pill hidden sm:flex"
+                className="wadi-chat-pill wadi-chat-pill-mobile-hide hidden sm:flex"
                 lang={locale === 'en' ? 'ar' : 'en'}
                 title="Switch language"
               >
@@ -336,7 +330,7 @@ export default function MainLayout() {
               </button>
               <button
                 onClick={() => setIsMemoryOpen(true)}
-                className="wadi-chat-icon-button hidden sm:inline-flex"
+                className="wadi-chat-icon-button wadi-chat-pill-mobile-hide hidden sm:inline-flex"
                 aria-label={copy.header.memory}
                 title={copy.header.memory}
               >
@@ -347,7 +341,7 @@ export default function MainLayout() {
               </button>
               <button
                 onClick={handleLogout}
-                className="wadi-chat-pill hidden md:flex"
+                className="wadi-chat-pill wadi-chat-pill-mobile-hide hidden md:flex"
               >
                 {copy.header.logout}
               </button>
